@@ -164,11 +164,11 @@
     <ClCompile Include="..\deps\imgui\source\imgui_demo.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_draw.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_impl_glfw_gl3.cpp" />
-    <ClCompile Include="..\include\Scene.cpp" />
     <ClCompile Include="..\source\Component.cpp" />
     <ClCompile Include="..\source\Entity.cpp" />
     <ClCompile Include="..\source\main.cpp" />
     <ClCompile Include="..\source\MyApplication.cpp" />
+    <ClCompile Include="..\source\Scene.cpp" />
     <ClCompile Include="..\source\TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>

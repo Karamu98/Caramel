@@ -60,7 +60,7 @@
     <ClCompile Include="..\source\Component.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\Scene.cpp">
+    <ClCompile Include="..\source\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

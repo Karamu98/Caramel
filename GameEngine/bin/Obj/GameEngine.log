@@ -1,3 +1,20 @@
-﻿  MyApplication.cpp
-d:\gamedev\perforceprojects\students\1608758\ct6025 - shader programming\project\gameengine\source\myapplication.cpp(161): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
-  GameEngine.vcxproj -> D:\GameDev\PerforceProjects\Students\1608758\CT6025 - Shader Programming\Project\GameEngine\bin/GameEngine.exe
+﻿     Creating library D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.lib and object D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.exp
+framework.lib(Application.obj) : warning LNK4099: PDB 'framework.pdb' was not found with 'framework.lib(Application.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\framework.pdb'; linking object as if no debug info
+framework.lib(Error.obj) : warning LNK4099: PDB 'framework.pdb' was not found with 'framework.lib(Error.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\framework.pdb'; linking object as if no debug info
+framework.lib(Gizmos.obj) : warning LNK4099: PDB 'framework.pdb' was not found with 'framework.lib(Gizmos.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\framework.pdb'; linking object as if no debug info
+framework.lib(Utilities.obj) : warning LNK4099: PDB 'framework.pdb' was not found with 'framework.lib(Utilities.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\framework.pdb'; linking object as if no debug info
+framework.lib(egl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(egl_context.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(wgl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(wgl_context.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(win32_window.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(win32_window.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(win32_tls.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(win32_tls.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(win32_time.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(win32_time.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(win32_monitor.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(win32_monitor.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(win32_joystick.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(win32_joystick.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(win32_init.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(win32_init.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(window.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(window.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(vulkan.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(vulkan.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(monitor.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(monitor.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(input.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(input.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(init.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(init.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+framework.lib(context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'framework.lib(context.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\glfw.pdb'; linking object as if no debug info
+  GameEngine.vcxproj -> D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.exe
