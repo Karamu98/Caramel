@@ -1,3 +1,7 @@
 
 *.ipch
 *.lib
+Framework/deps/glfw/
+Framework/deps/glm/
+GameEngine/deps/glfw/
+GameEngine/deps/glm/
