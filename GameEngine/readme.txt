@@ -1,0 +1,2 @@
+Post build of Framework will call "updateframework.bat", this will copy the headers and lib files needed for GameEngine.
+This has been done to allow GameEngine to not need the full project of Framework to work but allows for updating of framework in the same project.

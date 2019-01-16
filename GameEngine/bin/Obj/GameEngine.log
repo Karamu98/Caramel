@@ -1,0 +1,3 @@
+﻿  MyApplication.cpp
+d:\gamedev\perforceprojects\students\1608758\ct6025 - shader programming\project\gameengine\source\myapplication.cpp(161): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+  GameEngine.vcxproj -> D:\GameDev\PerforceProjects\Students\1608758\CT6025 - Shader Programming\Project\GameEngine\bin/GameEngine.exe
