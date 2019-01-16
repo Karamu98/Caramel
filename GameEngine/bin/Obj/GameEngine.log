@@ -1,4 +1,6 @@
-﻿     Creating library D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.lib and object D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.exp
+﻿  main.cpp
+  LINK : D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.exe not found or not built by the last incremental link; performing full link
+     Creating library D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.lib and object D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.exp
 framework.lib(Application.obj) : warning LNK4099: PDB 'framework.pdb' was not found with 'framework.lib(Application.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\framework.pdb'; linking object as if no debug info
 framework.lib(Error.obj) : warning LNK4099: PDB 'framework.pdb' was not found with 'framework.lib(Error.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\framework.pdb'; linking object as if no debug info
 framework.lib(Gizmos.obj) : warning LNK4099: PDB 'framework.pdb' was not found with 'framework.lib(Gizmos.obj)' or at 'D:\GameDev\Git\Caramel\GameEngine\bin\framework.pdb'; linking object as if no debug info

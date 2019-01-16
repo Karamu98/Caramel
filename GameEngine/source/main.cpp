@@ -1,6 +1,6 @@
 #include "MyApplication.h"
 
-#define DEFAULT_SCREENWIDTH 1024
+#define DEFAULT_SCREENWIDTH 1280
 #define DEFAULT_SCREENHEIGHT 720
 // main that controls the creation/destruction of an application
 int main(int argc, char* argv[])
