@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/gl_core_4_4;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)deps/imgui/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/gl_core_4_4;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)deps/imgui/include;$(SolutionDir)vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -164,9 +164,13 @@
     <ClCompile Include="..\deps\imgui\source\imgui_demo.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_draw.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="..\include\MeshFilter.cpp" />
     <ClCompile Include="..\source\Component.cpp" />
     <ClCompile Include="..\source\Entity.cpp" />
+    <ClCompile Include="..\source\Log.cpp" />
     <ClCompile Include="..\source\main.cpp" />
+    <ClCompile Include="..\source\MeshFilter.cpp" />
+    <ClCompile Include="..\source\MeshRenderer.cpp" />
     <ClCompile Include="..\source\MyApplication.cpp" />
     <ClCompile Include="..\source\Scene.cpp" />
     <ClCompile Include="..\source\TransformComponent.cpp" />
@@ -185,6 +189,9 @@
     <ClInclude Include="..\include\Entity.h" />
     <ClInclude Include="..\include\Error.h" />
     <ClInclude Include="..\include\Gizmos.h" />
+    <ClInclude Include="..\include\Log.h" />
+    <ClInclude Include="..\include\MeshFilter.h" />
+    <ClInclude Include="..\include\MeshRenderer.h" />
     <ClInclude Include="..\include\MyApplication.h" />
     <ClInclude Include="..\include\Scene.h" />
     <ClInclude Include="..\include\TransformComponent.h" />

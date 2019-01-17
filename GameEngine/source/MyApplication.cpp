@@ -8,7 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw_gl3.h"
 #include "Component.h"
-
+#include "Log.h"
 
 #define DEFAULT_SCREENWIDTH 1280
 #define DEFAULT_SCREENHEIGHT 720
@@ -46,6 +46,10 @@ bool MyApplication::onCreate()
 	ImGui_ImplGlfwGL3_Init(m_window, true);
 	ImGui::StyleColorsDark();
 
+	// Initialise spd
+	Log::Init();
+	CL_CORE_INFO("Initialised.");
+
 	m_scene.Add(new Entity());
 
 	return true;
@@ -75,9 +79,6 @@ void MyApplication::Update(float a_deltaTime)
 		Gizmos::addLine(glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i),
 			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));
 	}
-
-	//Gizmos::addBox(glm::vec3(0, 0, 0), glm::vec3(1, 1, 3), true, glm::vec4(0.5, 1, 0.5f, 1));
-	//Gizmos::addCircle(glm::vec3(3, 3, 3), 5, 64, true, glm::vec4(1, 0.f, 1, 1));
 
 #pragma region ImGui
 

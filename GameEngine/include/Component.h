@@ -8,7 +8,9 @@ enum COMPONENT_TYPE
 {
 	TRANSFORM,
 	MODEL,
-	CAMERA
+	CAMERA,
+	MESHFILTER,
+	MESHRENDERER
 };
 
 class Component
