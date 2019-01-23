@@ -1,0 +1,3 @@
+delete[] source in loadShader line 54
+
+Do premake
