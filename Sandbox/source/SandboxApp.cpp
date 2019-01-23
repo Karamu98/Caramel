@@ -1,20 +1,15 @@
-#include <Caramel.h>
+#include "SandboxApp.h"
 
-class Sandbox : public Caramel::Application
-{
-public:
-	Sandbox()
-	{
-
-	}
-
-	~Sandbox()
-	{
-
-	}
-};
-
+// Has to be defined in application
 Caramel::Application* Caramel::CreateApplication()
 {
 	return new Sandbox();
+}
+
+Sandbox::Sandbox()
+{
+}
+
+Sandbox::~Sandbox()
+{
 }

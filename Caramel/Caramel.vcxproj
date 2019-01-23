@@ -45,12 +45,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)</OutDir>
     <IntDir>$(SolutionDir)bin-Int\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
-    <IncludePath>$(SolutionDir)Caramel\include\Caramel;$(SolutionDir)Caramel\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Caramel\vendor\spdlog\include;$(SolutionDir)Caramel\include\Caramel;$(SolutionDir)Caramel\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)</OutDir>
     <IntDir>$(SolutionDir)bin-Int\$(Configuration)-$(Platform)\$(ProjectName)</IntDir>
-    <IncludePath>$(SolutionDir)Caramel\include\Caramel;$(SolutionDir)Caramel\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Caramel\vendor\spdlog\include;$(SolutionDir)Caramel\include\Caramel;$(SolutionDir)Caramel\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -59,7 +59,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions)CL_PLATFORM_WINDOWS;CL_PLATFORM_WINDOWS;CL_BUILD_DLL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\Caramel;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\Caramel;$(SolutionDir)Caramel\vendor\spdlog\include;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -71,7 +71,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions)CL_PLATFORM_WINDOWS;CL_PLATFORM_WINDOWS;CL_BUILD_DLL</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\Caramel;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\Caramel;$(SolutionDir)Caramel\vendor\spdlog\include;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -83,8 +83,10 @@
     <ClInclude Include="include\Caramel\Application.h" />
     <ClInclude Include="include\Caramel\Core.h" />
     <ClInclude Include="include\Caramel\EntryPoint.h" />
+    <ClInclude Include="include\Caramel\Log.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Caramel\Log.cpp" />
     <ClCompile Include="source\Caramel\Application.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
