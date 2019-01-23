@@ -10,7 +10,7 @@ namespace Caramel
 		Application();
 		virtual ~Application();
 
-		void Run();
+		virtual void Run();
 	};
 
 	Application* CreateApplication();

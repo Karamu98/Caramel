@@ -13,3 +13,9 @@ Sandbox::Sandbox()
 Sandbox::~Sandbox()
 {
 }
+
+void Sandbox::Run()
+{
+	CL_CORE_INFO("Application Started!");
+	Application::Run();
+}

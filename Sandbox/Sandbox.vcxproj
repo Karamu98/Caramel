@@ -59,6 +59,9 @@
       <PreprocessorDefinitions>_MBCS;CL_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)Caramel\vendor\spdlog\include;$(SolutionDir)Sandbox\include;$(SolutionDir)Caramel\include</AdditionalIncludeDirectories>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>CALL $(ProjectDir)..\scripts\copyonbuild.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

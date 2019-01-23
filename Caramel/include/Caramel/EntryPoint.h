@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	CL_CORE_INFO("Initialised Log!");
 
 	auto app = Caramel::CreateApplication();
-	CL_CORE_INFO("Starting Application");
+	CL_CORE_WARN("Starting Application");
 	app->Run();
 	delete app;
 }
