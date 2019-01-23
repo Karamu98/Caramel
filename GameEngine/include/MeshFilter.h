@@ -3,6 +3,7 @@
 
 //includes
 #include "Component.h"
+#include <string>
 
 class Entity;
 
@@ -17,7 +18,12 @@ public:
 	virtual void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO);
 	virtual void OnGUI();
 
+	void LoadModel(std::string a_path);
+
 private:
+	const char* m_modelPath;
+
+	char* m_textBuffer;
 };
 
 #endif

@@ -9,6 +9,7 @@
 #include "imgui_impl_glfw_gl3.h"
 #include "Component.h"
 #include "Log.h"
+#include "MeshFilter.h"
 
 #define DEFAULT_SCREENWIDTH 1280
 #define DEFAULT_SCREENHEIGHT 720
@@ -60,7 +61,7 @@ void MyApplication::Update(float a_deltaTime)
 	// Needs to be called first
 	ImGui_ImplGlfwGL3_NewFrame();
 
-	// update our camera matrix using the keyboard/mouse
+	// Update our camera matrix using the keyboard/mouse
 	if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
 	{
 		Utility::freeMovement(m_cameraMatrix, a_deltaTime, 10);
@@ -135,6 +136,14 @@ void MyApplication::Update(float a_deltaTime)
 		if (bComponentAdd)
 		{
 			// List components here
+
+			if (ImGui::Button("Mesh Filter"))
+			{
+				MeshFilter* newComp = new MeshFilter(m_scene.selectedEntity);
+				m_scene.selectedEntity->AddComponent(newComp);
+			}
+
+
 			ImGui::NewLine();
 			if (ImGui::Button("Cancel"))
 			{

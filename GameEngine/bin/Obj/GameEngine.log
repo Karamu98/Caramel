@@ -1,3 +1,2 @@
-﻿  MyApplication.cpp
-d:\gamedev\git\caramel\gameengine\source\myapplication.cpp(159): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+﻿  MeshFilter.cpp
   GameEngine.vcxproj -> D:\GameDev\Git\Caramel\GameEngine\bin/GameEngine.exe

@@ -111,13 +111,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/gl_core_4_4;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)deps/imgui/include;$(SolutionDir)vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\assimp\include;$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/gl_core_4_4;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)deps/imgui/include;$(SolutionDir)vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FBX_Loader.lib;framework.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FBX_Loader.lib;framework.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -164,14 +165,15 @@
     <ClCompile Include="..\deps\imgui\source\imgui_demo.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_draw.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_impl_glfw_gl3.cpp" />
-    <ClCompile Include="..\include\MeshFilter.cpp" />
     <ClCompile Include="..\source\Component.cpp" />
     <ClCompile Include="..\source\Entity.cpp" />
     <ClCompile Include="..\source\Log.cpp" />
     <ClCompile Include="..\source\main.cpp" />
+    <ClCompile Include="..\source\Material.cpp" />
     <ClCompile Include="..\source\MeshFilter.cpp" />
     <ClCompile Include="..\source\MeshRenderer.cpp" />
     <ClCompile Include="..\source\MyApplication.cpp" />
+    <ClCompile Include="..\source\Renderer.cpp" />
     <ClCompile Include="..\source\Scene.cpp" />
     <ClCompile Include="..\source\TransformComponent.cpp" />
   </ItemGroup>
@@ -190,9 +192,11 @@
     <ClInclude Include="..\include\Error.h" />
     <ClInclude Include="..\include\Gizmos.h" />
     <ClInclude Include="..\include\Log.h" />
+    <ClInclude Include="..\include\Material.h" />
     <ClInclude Include="..\include\MeshFilter.h" />
     <ClInclude Include="..\include\MeshRenderer.h" />
     <ClInclude Include="..\include\MyApplication.h" />
+    <ClInclude Include="..\include\Renderer.h" />
     <ClInclude Include="..\include\Scene.h" />
     <ClInclude Include="..\include\TransformComponent.h" />
     <ClInclude Include="..\include\Utilities.h" />
