@@ -1,0 +1,32 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GLFW3", "GLFW3", "{FDAC7D42-E7F3-3A57-96B7-46E4564D4BC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "glfw.vcxproj", "{0B158001-F749-302C-972A-5DF61C89D6B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		MinSizeRel|x64 = MinSizeRel|x64
+		Release|x64 = Release|x64
+		RelWithDebInfo|x64 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Debug|x64.ActiveCfg = Debug|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Debug|x64.Build.0 = Debug|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Release|x64.ActiveCfg = Release|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.Release|x64.Build.0 = Release|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{0B158001-F749-302C-972A-5DF61C89D6B2}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0B158001-F749-302C-972A-5DF61C89D6B2} = {FDAC7D42-E7F3-3A57-96B7-46E4564D4BC8}
+	EndGlobalSection
+EndGlobal
