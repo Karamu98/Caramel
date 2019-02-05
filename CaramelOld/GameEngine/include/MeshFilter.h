@@ -24,6 +24,9 @@ private:
 	const char* m_modelPath;
 
 	char* m_textBuffer;
+
+	/// Mesh Data
+	
 };
 
 #endif
