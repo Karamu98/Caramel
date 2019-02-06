@@ -92,7 +92,7 @@ void MeshFilter::LoadModel(std::string a_path)
 	}
 	#pragma endregion
 
-	delete scene; // Delete the aiScene as we have the data in usable format now
+	//scene->~aiScene(); // Delete the aiScene as we have the data in usable format now
 
 	
 }
