@@ -52,12 +52,55 @@ void MeshFilter::LoadModel(std::string a_path)
 
 	CL_CORE_INFO(std::string("Loaded model at'" + a_path + "'!"));
 
-	/// TODO:
-	/// Grab model data into own types ETC \/
+	delete[] verts; // Clear whatever we may have had allocated previously
+	verts = new Vertex[scene->mMeshes[0]->mNumVertices]; // Assign the space we need for all the verticies
 
-	//scene->mMeshes[0]->mVertices //The meshes verticies
+#pragma region Conversion
+	for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++)
+	{
+		verts[i].position.x = scene->mMeshes[0]->mVertices[i].x;
+		verts[i].position.y = scene->mMeshes[0]->mVertices[i].y;
+		verts[i].position.z = scene->mMeshes[0]->mVertices[i].z;
+	}
+
+	if (scene->mMeshes[0]->HasNormals())
+	{
+		for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++)
+		{
+			verts[i].normals.x = scene->mMeshes[0]->mNormals[i].x;
+			verts[i].normals.y = scene->mMeshes[0]->mNormals[i].y;
+			verts[i].normals.z = scene->mMeshes[0]->mNormals[i].z;
+		}
+	}
+	else
+	{
+		CL_CORE_WARN("Mesh ", a_path, " has no normals.");
+	}
+
+	if (scene->mMeshes[0]->HasTangentsAndBitangents())
+	{
+		for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++)
+		{
+			verts[i].tans.x = scene->mMeshes[0]->mTangents[i].x;
+			verts[i].tans.y = scene->mMeshes[0]->mTangents[i].y;
+			verts[i].tans.z = scene->mMeshes[0]->mTangents[i].z;
+
+			verts[i].biTans.x = scene->mMeshes[0]->mBitangents[i].x;
+			verts[i].biTans.y = scene->mMeshes[0]->mBitangents[i].y;
+			verts[i].biTans.z = scene->mMeshes[0]->mBitangents[i].z;
+		}
+	}
+	#pragma endregion
+
+	delete scene; // Delete the aiScene as we have the data in usable format now
+
+	
 }
 
 void MeshFilter::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
 {
+	/// TODO
+	///
+	/// Transform vertex into world space using Transform component
+	/// Pass information to correct shader
 }

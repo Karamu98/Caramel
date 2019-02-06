@@ -4,8 +4,20 @@
 //includes
 #include "Component.h"
 #include <string>
+#include <vector>
+#include <glm/glm.hpp>
 
 class Entity;
+
+class Vertex
+{
+public:
+	glm::vec3 position;
+	glm::vec3 normals;
+	glm::vec3 tans;
+	glm::vec3 biTans;
+	glm::vec3 uvs;
+};
 
 class MeshFilter : public Component
 {
@@ -26,6 +38,7 @@ private:
 	char* m_textBuffer; // For ImGui
 
 	/// Mesh Data
+	Vertex* verts;
 	
 };
 
