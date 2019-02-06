@@ -1,3 +1,1 @@
-delete[] source in loadShader line 54
-
-Do premake
+Pull mesh data into own buffered format

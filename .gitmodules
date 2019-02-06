@@ -1,7 +1,0 @@
-[submodule "Caramel/vendor/spdlog"]
-	path = Caramel/vendor/spdlog
-	url = https://github.com/gabime/spdlog
-
-[submodule "Caramel/vendor/GLFW"]
-	path = Caramel/vendor/GLFW
-	url = https://github.com/glfw/glfw
