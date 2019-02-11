@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Framework">
-      <UniqueIdentifier>{faa10326-0d2d-47b1-83cf-214bf499c02f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GLIncludes">
       <UniqueIdentifier>{4089fd8d-dcbf-4e4e-951d-8cd49e82cec1}</UniqueIdentifier>
     </Filter>
@@ -73,18 +70,6 @@
   <ItemGroup>
     <ClInclude Include="..\include\MyApplication.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Application.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Error.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Gizmos.h">
-      <Filter>Header Files\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Utilities.h">
-      <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="..\deps\imgui\include\imconfig.h">
       <Filter>ImGui</Filter>

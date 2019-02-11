@@ -186,17 +186,18 @@
     <ClInclude Include="..\deps\imgui\include\stb_rect_pack.h" />
     <ClInclude Include="..\deps\imgui\include\stb_textedit.h" />
     <ClInclude Include="..\deps\imgui\include\stb_truetype.h" />
-    <ClInclude Include="..\include\Application.h" />
     <ClInclude Include="..\include\Component.h" />
     <ClInclude Include="..\include\Entity.h" />
-    <ClInclude Include="..\include\Error.h" />
-    <ClInclude Include="..\include\Gizmos.h" />
     <ClInclude Include="..\include\Log.h" />
     <ClInclude Include="..\include\MeshFilter.h" />
     <ClInclude Include="..\include\MyApplication.h" />
     <ClInclude Include="..\include\Scene.h" />
     <ClInclude Include="..\include\TransformComponent.h" />
-    <ClInclude Include="..\include\Utilities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework\framework\framework.vcxproj">
+      <Project>{473f1220-17d6-4b43-bf91-9f839980f0a3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
