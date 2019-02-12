@@ -3,7 +3,7 @@
 
 Scene::Scene()
 {
-	
+
 }
 
 Scene::~Scene()
@@ -34,7 +34,7 @@ void Scene::Update(float a_delta)
 	}
 }
 
-void Scene::Add(Entity * a_toAdd)
+Entity* Scene::Add(Entity * a_toAdd)
 {
 	m_sceneEntities.push_back(a_toAdd);
 	selectedEntity = a_toAdd;
@@ -62,11 +62,11 @@ void Scene::Delete(Entity * a_toDelete)
 	selectedEntity = m_sceneEntities.at(0);
 }
 
-void Scene::Duplicate()
+Entity* Scene::Duplicate()
 {
 }
 
-void Scene::Duplicate(Entity * a_toCopy)
+Entity* Scene::Duplicate(Entity * a_toCopy)
 {
 }
 

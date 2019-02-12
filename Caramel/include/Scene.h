@@ -12,11 +12,11 @@ public:
 	void Update(float a_delta);
 	void Save();
 	void Load(const char* a_pathToScene);
-	void Add(Entity* a_toAdd);
+	Entity* Add(Entity* a_toAdd);
 	void Delete();
 	void Delete(Entity* a_toDelete);
-	void Duplicate();
-	void Duplicate(Entity* a_toCopy);
+	Entity* Duplicate();
+	Entity* Duplicate(Entity* a_toCopy);
 
 	Component* FindComponentOfType(COMPONENT_TYPE a_type);
 	std::vector<Component*> FindComponentsOfType(COMPONENT_TYPE a_type);

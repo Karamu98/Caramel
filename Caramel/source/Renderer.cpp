@@ -20,6 +20,13 @@ Renderer::~Renderer()
 
 void Renderer::Init(bool a_isDeferred)
 {
+	// set the clear colour and enable depth testing and backface culling
+	glClearColor(0.25f, 0.25f, 0.25f, 1.f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	// Compile shaders and link
+
 	m_bDeferredRendering = a_isDeferred;
 
 	/// Set up default material
@@ -61,7 +68,7 @@ void Renderer::Render(Scene* a_sceneToRender)
 	/*
 	Grab active camera
 	Grab all active meshes
-	====================== Vertex Shading
+	====================== Vertex Shading (Pass all vertex data in one clump)
 	Grab all primitives
 	====================== Geometry Shading
 	====================== Tessalation	

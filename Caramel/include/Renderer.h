@@ -22,6 +22,9 @@ private:
 	bool m_bDeferredRendering; // Are we rendering forward or deferred?
 	Material* m_DefaultMaterial; // For any objects that do not have a material
 
+	/// Variables
+	unsigned int m_shaderProgram;
+
 
 	/// CACHE
 	Camera* activeCamera; // The active camera this frame.

@@ -32,11 +32,6 @@ bool MyApplication::onCreate()
 	// initialise the Gizmos helper class
 	Gizmos::create();
 
-	// set the clear colour and enable depth testing and backface culling
-	glClearColor(0.25f, 0.25f, 0.25f, 1.f);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-
 	// Initialise ImGui
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -50,7 +45,9 @@ bool MyApplication::onCreate()
 	// Initialise Renderer
 	m_renderer.Init(false);
 
+	// Add the default entity
 	m_scene.Add(new Entity());
+	
 
 	return true;
 }
