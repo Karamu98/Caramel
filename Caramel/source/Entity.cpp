@@ -63,19 +63,6 @@ void Entity::Update(float a_fDeltaTime)
 	}
 }
 
-void Entity::Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO)
-{
-	std::vector<Component*>::iterator xIter;
-	for (xIter = m_apComponentList.begin(); xIter < m_apComponentList.end(); ++xIter)
-	{
-		Component* pComponent = *xIter;
-		if (pComponent)
-		{
-			pComponent->Draw(a_uiProgramID, a_uiVBO, a_uiIBO);
-		}
-	}
-}
-
 void Entity::OnGUI()
 {
 	std::vector<Component*>::iterator xIter;

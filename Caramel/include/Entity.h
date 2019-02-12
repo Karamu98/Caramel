@@ -20,7 +20,6 @@ public:
 	~Entity();
 
 	virtual void Update(float a_fDeltaTime);
-	virtual void Draw(unsigned int a_uiProgramID, unsigned int a_uiVBO, unsigned int a_uiIBO);
 	virtual void OnGUI();
 
 	void AddComponent(Component* a_pComponent);

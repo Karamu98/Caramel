@@ -2,7 +2,7 @@
 #define __SCENE_H_
 
 #include <vector>
-#include "Entity.h"
+#include "Component.h"
 
 class Scene
 {
@@ -17,6 +17,9 @@ public:
 	void Delete(Entity* a_toDelete);
 	void Duplicate();
 	void Duplicate(Entity* a_toCopy);
+
+	Component* FindComponentOfType(COMPONENT_TYPE a_type);
+	std::vector<Component*> FindComponentsOfType(COMPONENT_TYPE a_type);
 
 	std::vector<Entity*> m_sceneEntities;
 	Entity* selectedEntity;	

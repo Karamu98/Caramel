@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Entity.h"
 
 Scene::Scene()
 {
@@ -67,4 +68,35 @@ void Scene::Duplicate()
 
 void Scene::Duplicate(Entity * a_toCopy)
 {
+}
+
+Component* Scene::FindComponentOfType(COMPONENT_TYPE a_type)
+{
+	Component* comp;
+	for (int i = 0; i < m_sceneEntities.size; i++)
+	{
+		comp = m_sceneEntities.at(i)->FindComponentOfType(a_type);
+
+		if (comp != nullptr)
+		{
+			return comp;
+		}
+	}
+}
+
+std::vector<Component*> Scene::FindComponentsOfType(COMPONENT_TYPE a_type)
+{
+	std::vector<Component*> list;
+	Component* comp;
+	for (int i = 0; i < m_sceneEntities.size; i++)
+	{
+		comp = m_sceneEntities.at(i)->FindComponentOfType(a_type);
+
+		if (comp != nullptr)
+		{
+			list.push_back(comp);
+		}
+	}
+
+	return list;
 }

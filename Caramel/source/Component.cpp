@@ -17,12 +17,12 @@ Component::~Component()
 {
 }
 
-void Component::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
-{
-}
-
 void Component::Update(float a_fDeltaTime)
 {
+	if (!m_bActive)
+	{
+		return;
+	}
 }
 
 void Component::OnGUI()

@@ -168,12 +168,15 @@
     <ClCompile Include="..\deps\imgui\source\imgui_demo.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_draw.cpp" />
     <ClCompile Include="..\deps\imgui\source\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="..\source\Camera.cpp" />
     <ClCompile Include="..\source\Component.cpp" />
     <ClCompile Include="..\source\Entity.cpp" />
     <ClCompile Include="..\source\Log.cpp" />
     <ClCompile Include="..\source\main.cpp" />
+    <ClCompile Include="..\source\Material.cpp" />
     <ClCompile Include="..\source\MeshFilter.cpp" />
     <ClCompile Include="..\source\MyApplication.cpp" />
+    <ClCompile Include="..\source\Renderer.cpp" />
     <ClCompile Include="..\source\Scene.cpp" />
     <ClCompile Include="..\source\TransformComponent.cpp" />
   </ItemGroup>
@@ -186,11 +189,15 @@
     <ClInclude Include="..\deps\imgui\include\stb_rect_pack.h" />
     <ClInclude Include="..\deps\imgui\include\stb_textedit.h" />
     <ClInclude Include="..\deps\imgui\include\stb_truetype.h" />
+    <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\Component.h" />
+    <ClInclude Include="..\include\Defines.h" />
     <ClInclude Include="..\include\Entity.h" />
     <ClInclude Include="..\include\Log.h" />
+    <ClInclude Include="..\include\Material.h" />
     <ClInclude Include="..\include\MeshFilter.h" />
     <ClInclude Include="..\include\MyApplication.h" />
+    <ClInclude Include="..\include\Renderer.h" />
     <ClInclude Include="..\include\Scene.h" />
     <ClInclude Include="..\include\TransformComponent.h" />
   </ItemGroup>

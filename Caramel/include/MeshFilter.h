@@ -27,7 +27,6 @@ public:
 	~MeshFilter();
 
 	virtual void Update(float a_fDeltaTime) {};
-	virtual void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO);
 	virtual void OnGUI();
 
 	void LoadModel(std::string a_path);

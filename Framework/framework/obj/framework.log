@@ -1,2 +1,16 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(377,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  gl_core_4_4.c
+  Application.cpp
+  Error.cpp
+  Gizmos.cpp
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(212): warning C4018: '<': signed/unsigned mismatch
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(232): warning C4100: 'a_transform': unreferenced formal parameter
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(231): warning C4100: 'a_fillColour': unreferenced formal parameter
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(231): warning C4100: 'a_filled': unreferenced formal parameter
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(230): warning C4100: 'a_segments': unreferenced formal parameter
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(230): warning C4100: 'a_fHalfLength': unreferenced formal parameter
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(229): warning C4100: 'a_radius': unreferenced formal parameter
+d:\gamedev\git\caramel\framework\framework\src\gizmos.cpp(229): warning C4100: 'a_center': unreferenced formal parameter
+  Utilities.cpp
+  Generating Code...
   framework.vcxproj -> D:\GameDev\Git\Caramel\Framework\framework\..\..\Caramel\lib\framework.lib

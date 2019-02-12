@@ -1,10 +1,14 @@
-#pragma once
 #ifndef __Application_H_
 #define __Application_H_
 
 #include "Application.h"
-#include "Scene.h"
 #include <glm/glm.hpp>
+#include "Renderer.h"
+#include "Scene.h"
+
+
+class Camera;
+
 
 // Derived application class that wraps up all globals neatly
 class MyApplication : public Application
@@ -25,10 +29,10 @@ protected:
 private:
 
 	// For the "Editor" camera
-	glm::mat4	m_cameraMatrix;
-	glm::mat4	m_projectionMatrix;
+	Camera* m_activeCam;
 
 	Scene m_scene;
+	Renderer m_renderer;
 
 	// UI Management
 	// State Control

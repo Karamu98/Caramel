@@ -10,9 +10,11 @@
 #include "Component.h"
 #include "Log.h"
 #include "MeshFilter.h"
+#include "Camera.h"
+#include "Entity.h"
+#include "Material.h"
+#include "Renderer.h"
 
-#define DEFAULT_SCREENWIDTH 1280
-#define DEFAULT_SCREENHEIGHT 720
 
 
 MyApplication::MyApplication()
@@ -30,12 +32,6 @@ bool MyApplication::onCreate()
 	// initialise the Gizmos helper class
 	Gizmos::create();
 
-	// create a world-space matrix for a camera
-	m_cameraMatrix = glm::inverse(glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
-
-	// create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 1000.0f);
-
 	// set the clear colour and enable depth testing and backface culling
 	glClearColor(0.25f, 0.25f, 0.25f, 1.f);
 	glEnable(GL_DEPTH_TEST);
@@ -47,9 +43,12 @@ bool MyApplication::onCreate()
 	ImGui_ImplGlfwGL3_Init(m_window, true);
 	ImGui::StyleColorsDark();
 
-	// Initialise spd
+	// Initialise logging system
 	Log::Init();
 	CL_CORE_INFO("Initialised.");
+
+	// Initialise Renderer
+	m_renderer.Init(false);
 
 	m_scene.Add(new Entity());
 
@@ -59,14 +58,7 @@ bool MyApplication::onCreate()
 void MyApplication::Update(float a_deltaTime)
 {
 	// Needs to be called first
-	ImGui_ImplGlfwGL3_NewFrame();
-
-	// Update our camera matrix using the keyboard/mouse
-	if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
-	{
-		Utility::freeMovement(m_cameraMatrix, a_deltaTime, 10);
-	}
-	
+	ImGui_ImplGlfwGL3_NewFrame();	
 
 	// clear all gizmos from last frame
 	Gizmos::clear();
@@ -262,11 +254,9 @@ void MyApplication::Draw()
 	// clear the backbuffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// get the view matrix from the world-space camera matrix
-	glm::mat4 viewMatrix = glm::inverse(m_cameraMatrix);
+	m_renderer.Draw(&m_scene);
 
-	// draw the gizmos from this frame
-	Gizmos::draw(viewMatrix, m_projectionMatrix);
+
 
 
 	// Needs to be called last

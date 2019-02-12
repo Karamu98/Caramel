@@ -96,11 +96,3 @@ void MeshFilter::LoadModel(std::string a_path)
 
 	
 }
-
-void MeshFilter::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
-{
-	/// TODO
-	///
-	/// Transform vertex into world space using Transform component
-	/// Pass information to correct shader
-}
