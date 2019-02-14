@@ -50,7 +50,7 @@ void MeshFilter::LoadModel(std::string a_path)
 		return;
 	}
 
-	CL_CORE_INFO(std::string("Loaded model at'" + a_path + "'!"));
+	CL_CORE_INFO(std::string("Loaded model at'" + a_path + "'."));
 
 	delete[] verts; // Clear whatever we may have had allocated previously
 	verts = new Vertex[scene->mMeshes[0]->mNumVertices]; // Assign the space we need for all the verticies
@@ -88,6 +88,15 @@ void MeshFilter::LoadModel(std::string a_path)
 			verts[i].biTans.x = scene->mMeshes[0]->mBitangents[i].x;
 			verts[i].biTans.y = scene->mMeshes[0]->mBitangents[i].y;
 			verts[i].biTans.z = scene->mMeshes[0]->mBitangents[i].z;
+		}
+	}
+
+	if (scene->mMeshes[0]->HasTextureCoords(0))
+	{
+		for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++)
+		{
+			verts[i].uvs.x = scene->mMeshes[0]->mTextureCoords[i]->x;
+			verts[i].uvs.y = scene->mMeshes[0]->mTextureCoords[i]->y;
 		}
 	}
 	#pragma endregion

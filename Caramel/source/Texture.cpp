@@ -78,22 +78,10 @@ void Texture::SaveToMeta()
 	}
 
 	// Output the override colour
-	if (m_overrideColour != nullptr)
-	{
-		file << m_overrideColour->x;
-		file << m_overrideColour->y;
-		file << m_overrideColour->z;
-		file << m_overrideColour->w;
-	}
-	else
-	{
-		file << FileTag::NO_MEMBER;
-	}
-
-	if (sizeof(file) <= 0)
-	{
-		CL_CORE_ERROR("No data to save");
-	}
+	file << m_overrideColour.x;
+	file << m_overrideColour.y;
+	file << m_overrideColour.z;
+	file << m_overrideColour.w;
 
 	// Close the file
 	file.close();
@@ -149,9 +137,6 @@ void Texture::LoadFromMeta(const char * a_filePathToMeta)
 		// Go back a byte
 		file.seekg(std::ios::cur - sizeof(FileTag::NO_MEMBER));
 
-		// Deallocate our member
-		delete m_overrideColour;
-
 		// Read in vector4
 		float x, y, z, w;
 		x = y = z = w = 0;
@@ -160,13 +145,12 @@ void Texture::LoadFromMeta(const char * a_filePathToMeta)
 		file >> z;
 		file >> w;
 		
-		m_overrideColour = new glm::vec4(x, y, z, w);
+		m_overrideColour = glm::vec4(x, y, z, w);
 
 	}
 	else
 	{
 		CL_CORE_INFO(a_filePathToMeta, ": has no override colour saved");
-		m_overrideColour = nullptr;
 	}
 
 	// Close the file after reading
@@ -178,3 +162,14 @@ unsigned int Texture::GetTextureID()
 {
 	return m_textureID;
 }
+
+glm::vec4* Texture::GetOverrideColour()
+{
+	return &m_overrideColour;
+}
+
+char * Texture::GetFilePath()
+{
+	return m_filePath;
+}
+

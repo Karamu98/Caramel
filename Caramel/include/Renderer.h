@@ -3,6 +3,7 @@
 
 class Material;
 class Scene;
+class Camera;
 
 class Renderer
 {
@@ -12,6 +13,7 @@ public:
 
 	void Init(bool a_isDeferred); // Initialises the renderer, setting up what rendering mode we are using
 	void Draw(Scene* a_sceneToRender); // Draws all of the object in a scene using the current rendering mode
+	void OnGUI();
 
 private:
 

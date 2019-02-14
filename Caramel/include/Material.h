@@ -18,6 +18,7 @@ public:
 	Material();
 	~Material();
 
+	void OnGUI();
 
 private:
 

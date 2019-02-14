@@ -16,7 +16,7 @@ public:
 	glm::vec3 normals;
 	glm::vec3 tans;
 	glm::vec3 biTans;
-	glm::vec3 uvs;
+	glm::vec2 uvs;
 };
 
 class MeshFilter : public Component

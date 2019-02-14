@@ -50,6 +50,11 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	Gizmos::draw(glm::inverse(activeCamera->GetCameraMatrix()), activeCamera->GetProjection());
 }
 
+void Renderer::OnGUI()
+{
+
+}
+
 /// <summary>
 /// Does the default amount of rendering before spliting into a technique
 /// </summary>
@@ -61,6 +66,7 @@ void Renderer::Render(Scene* a_sceneToRender)
 	{
 		return;
 	}
+
 	activeCamera = dynamic_cast<Camera*>(comp);
 	glm::mat4 viewMatrix = glm::inverse(activeCamera->GetCameraMatrix());
 	

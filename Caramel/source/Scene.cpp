@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Log.h"
 #include "Entity.h"
 
 Scene::Scene()
@@ -38,6 +39,7 @@ Entity* Scene::Add(Entity * a_toAdd)
 {
 	m_sceneEntities.push_back(a_toAdd);
 	selectedEntity = a_toAdd;
+	return a_toAdd;
 }
 
 void Scene::Delete()
@@ -64,16 +66,20 @@ void Scene::Delete(Entity * a_toDelete)
 
 Entity* Scene::Duplicate()
 {
+	CL_CORE_FATAL("NOT IMPLEMENTED");
+	return nullptr;
 }
 
 Entity* Scene::Duplicate(Entity * a_toCopy)
 {
+	CL_CORE_FATAL("NOT IMPLEMENTED");
+	return nullptr;
 }
 
 Component* Scene::FindComponentOfType(COMPONENT_TYPE a_type)
 {
 	Component* comp;
-	for (int i = 0; i < m_sceneEntities.size; i++)
+	for (int i = 0; i < m_sceneEntities.size(); i++)
 	{
 		comp = m_sceneEntities.at(i)->FindComponentOfType(a_type);
 
@@ -82,13 +88,15 @@ Component* Scene::FindComponentOfType(COMPONENT_TYPE a_type)
 			return comp;
 		}
 	}
+
+	return nullptr;
 }
 
 std::vector<Component*> Scene::FindComponentsOfType(COMPONENT_TYPE a_type)
 {
 	std::vector<Component*> list;
 	Component* comp;
-	for (int i = 0; i < m_sceneEntities.size; i++)
+	for (int i = 0; i < m_sceneEntities.size(); i++)
 	{
 		comp = m_sceneEntities.at(i)->FindComponentOfType(a_type);
 
