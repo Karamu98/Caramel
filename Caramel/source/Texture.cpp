@@ -3,10 +3,16 @@
 #include <iostream>
 #include <fstream>
 #include "Defines.h"
+#include "gl_core_4_4.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-void Texture::LoadImageFromFile(const char* a_filePath)
+
+/// <summary>
+/// Loads in an image and sends it to the GPU
+/// </summary>
+/// <param name="a_filePath">The file path to the image, starting from executable directory.</param>
+void Texture::LoadFromFile(const char* a_filePath)
 {
 	// TODO: Load in an image using STB image, help can be found on moodle
 
@@ -24,57 +30,26 @@ void Texture::LoadImageFromFile(const char* a_filePath)
 		return;
 	}
 
-	float* parser;
-	parser = (float*)data;
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x+=channels)
-		{
-			// Initalise the vec4
-			m_textureData.push_back(glm::vec4(-1, 1, -1, 0));
+	// Pass texture to GPU
+	glGenTextures(1, &m_textureID);
+	glBindTexture(GL_TEXTURE_2D, m_textureID);
 
-			
+	// Set up the texture options
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			int iter = (width * y) + x;
-			m_textureData.at(iter).x = *parser;
-			parser++;
-			m_textureData.at(iter).y = *parser;
-			parser++;
-			m_textureData.at(iter).z = *parser;
-			parser++;
-			m_textureData.at(iter).w = *parser;
-			parser++;
-		}
-	}
+	// Load and generate the texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
+	// Free loaded image
+	stbi_image_free(data);
 
 }
 
-std::vector<glm::vec4>* Texture::GetImage()
-{
-	// If there is no override colour, just return texture data
-	if (m_overrideColour == nullptr)
-	{
-		// If we have no texture loaded, log an error as it has been requested
-		if (m_textureData.empty())
-		{
-			CL_CORE_ERROR("Texture has not been loaded.");
-			return nullptr;
-		}
-		else 
-		{
-			return &m_textureData;
-		}
-	}
-	else
-	{
-		// Create m_outputData
-		// Iterate over all of m_textureData and apply colour, then set to m_outputData
-		return nullptr; // Return 
-	}
-}
-
-void Texture::SaveToFile()
+void Texture::SaveToMeta()
 {
 	std::ofstream file("textureTest.meta", std::ios::out|std::ios::binary);
 
@@ -102,26 +77,6 @@ void Texture::SaveToFile()
 		file << FileTag::NO_MEMBER;
 	}
 
-	// If the texture data isn't empty
-	if (!m_textureData.empty())
-	{
-		file << m_textureData.size();
-
-		for (int i = 0; i < m_textureData.size; i++)
-		{
-			// Add each value of colour to file, TODO: override glm::vec4 '<<' and '>>'
-			file << m_textureData.at(i).x;
-			file << m_textureData.at(i).y;
-			file << m_textureData.at(i).z;
-			file << m_textureData.at(i).w;
-		}
-	}
-	else
-	{
-		file << FileTag::NO_MEMBER;
-	}
-
-
 	// Output the override colour
 	if (m_overrideColour != nullptr)
 	{
@@ -144,7 +99,7 @@ void Texture::SaveToFile()
 	file.close();
 }
 
-void Texture::Load(const char * a_filePathToMeta)
+void Texture::LoadFromMeta(const char * a_filePathToMeta)
 {
 	// Read in meta data to member data
 	std::ifstream file(a_filePathToMeta, std::ios::binary);
@@ -188,39 +143,6 @@ void Texture::Load(const char * a_filePathToMeta)
 
 	file >> flagCheck;
 
-	// Loading in texture data
-	if (flagCheck != FileTag::NO_MEMBER)
-	{
-		// Go back a byte
-		file.seekg(std::ios::cur - sizeof(FileTag::NO_MEMBER));
-
-		// Read in the size of the data
-		int texSize;
-		file >> texSize;
-		// Clear our data vector
-		m_textureData.clear();
-
-		// Read in each vector4
-		for (int i = 0; i < texSize; i++)
-		{
-			float x, y, z, w;
-			x = y = z = w = 0;
-			file >> x;
-			file >> y;
-			file >> z;
-			file >> w;
-
-			m_textureData.push_back(glm::vec4(x, y, z, w));
-		}
-
-	}
-	else
-	{
-		CL_CORE_INFO(a_filePathToMeta, ": has no texture data saved");
-	}
-
-	file >> flagCheck;
-
 	// Loading in override colour
 	if (flagCheck != FileTag::NO_MEMBER)
 	{
@@ -250,4 +172,9 @@ void Texture::Load(const char * a_filePathToMeta)
 	// Close the file after reading
 	file.close();
 
+}
+
+unsigned int Texture::GetTextureID()
+{
+	return m_textureID;
 }

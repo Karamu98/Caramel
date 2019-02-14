@@ -7,16 +7,15 @@
 class Texture
 {
 public:
-	void LoadImageFromFile(const char* a_filePath);
-	std::vector<glm::vec4>* GetImage();
-	void SaveToFile();
-	void Load(const char* a_filePathToMeta);
+	void LoadFromFile(const char* a_filePath);
+	void SaveToMeta();
+	void LoadFromMeta(const char* a_filePathToMeta);
+	unsigned int GetTextureID();
 
 private:
 	char* m_filePath; // Stores the original file location
-	std::vector<glm::vec4> m_textureData; // This stores the colours of the input file
-	std::vector<glm::vec4> m_outputData; // This is the final output after override colour
 	glm::vec4* m_overrideColour; // This is the colour to apply to the texture
+	unsigned int m_textureID; // This stores the ID of the texture for later reference
 
 };
 
