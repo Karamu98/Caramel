@@ -1,6 +1,7 @@
 #include "MeshFilter.h"
 #include "Log.h"
 #include "imgui.h"
+#include "Material.h"
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -12,6 +13,8 @@ MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
 {
 	SetComponentType(MESHFILTER);
 	m_textBuffer = new char[64];
+
+	m_material = new Material();
 }
 
 MeshFilter::~MeshFilter()
@@ -28,7 +31,11 @@ void MeshFilter::OnGUI()
 	{
 		LoadModel(std::string(m_textBuffer));
 	}
+
+	m_material->OnGUI();
+
 	ImGui::NewLine();
+
 }
 
 void MeshFilter::LoadModel(std::string a_path)

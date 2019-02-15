@@ -33,6 +33,7 @@ void Scene::Update(float a_delta)
 			pCurrentEntity->Update(a_delta);
 		}
 	}
+
 }
 
 Entity* Scene::Add(Entity * a_toAdd)

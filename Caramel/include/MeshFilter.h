@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 
 class Entity;
+class Material;
 
 class Vertex
 {
@@ -35,6 +36,8 @@ private:
 	const char* m_modelPath;
 
 	char* m_textBuffer; // For ImGui
+
+	Material* m_material;
 
 	/// Mesh Data
 	Vertex* verts;

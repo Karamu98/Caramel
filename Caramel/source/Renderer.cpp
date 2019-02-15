@@ -6,6 +6,7 @@
 #include "Material.h"
 #include "Gizmos.h"
 #include "Log.h"
+#include "imgui.h"
 
 
 
@@ -29,11 +30,16 @@ void Renderer::Init(bool a_isDeferred)
 
 	m_bDeferredRendering = a_isDeferred;
 
+	CL_CORE_INFO("Renderer Initialised.");
+
 	/// Set up default material
 }
 
 void Renderer::Draw(Scene* a_sceneToRender)
 {
+	// clear the backbuffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	/// BIND
 
 	if (m_bDeferredRendering)
@@ -52,7 +58,7 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 void Renderer::OnGUI()
 {
-
+	
 }
 
 /// <summary>

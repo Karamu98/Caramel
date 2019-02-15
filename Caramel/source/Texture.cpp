@@ -6,7 +6,26 @@
 #include "gl_core_4_4.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include "imgui.h"
 
+
+Texture::Texture()
+{
+	m_overrideColour = glm::vec4(0, 0, 0, 0);
+	m_colour = new float*[4];
+	m_colour[0] = &m_overrideColour.x; m_colour[1] = &m_overrideColour.y;
+	m_colour[2] = &m_overrideColour.z; m_colour[3] = &m_overrideColour.w;
+
+	m_filePath = new char[64];
+
+}
+
+Texture::~Texture()
+{
+	delete[] *m_colour;
+	delete[] m_colour;
+	delete[] m_filePath;
+}
 
 /// <summary>
 /// Loads in an image and sends it to the GPU
@@ -163,13 +182,28 @@ unsigned int Texture::GetTextureID()
 	return m_textureID;
 }
 
-glm::vec4* Texture::GetOverrideColour()
+float** Texture::GetOverrideColour()
 {
-	return &m_overrideColour;
+	return m_colour;
 }
 
-char * Texture::GetFilePath()
+char* Texture::GetFilePath()
 {
 	return m_filePath;
+}
+
+void Texture::OnGUI(std::string a_name)
+{
+	ImGui::ColorEdit4(a_name.c_str(), *m_colour);
+	std::string id = "Texture" + a_name;
+	ImGui::PushID(id.c_str());
+	ImGui::InputText("Image Path", m_filePath, sizeof(char) * 64);
+
+	if (ImGui::Button("Load"))
+	{
+		LoadFromFile(m_filePath);
+	}
+
+	ImGui::PopID();
 }
 

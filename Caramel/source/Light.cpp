@@ -3,6 +3,7 @@
 #include "glm/ext.hpp"
 #include "Entity.h"
 #include "TransformComponent.h"
+#include "imgui.h"
 
 typedef Component PARENT;
 
@@ -23,4 +24,5 @@ void Light::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_
 
 void Light::OnGUI()
 {
+	
 }

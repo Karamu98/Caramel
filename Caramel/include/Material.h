@@ -23,10 +23,10 @@ public:
 private:
 
 	RendereringMode m_renderMode;
-	Texture m_albedo;
-	Texture m_metalic;
-	Texture m_normal;
-	Texture m_height;
+	Texture* m_albedo;
+	Texture* m_metalic;
+	Texture* m_normal;
+	Texture* m_height;
 
 	bool m_emission;
 

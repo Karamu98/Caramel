@@ -9,9 +9,10 @@ class Entity;
 
 typedef enum LightType
 {
-	POINT,
-	SPOT
-};
+	LIGHT_POINT,
+	LIGHT_SPOT,
+	LIGHT_DIRECTION
+}LightType;
 
 class Light : public Component
 {
@@ -28,6 +29,7 @@ private:
 
 	LightType m_lightType;
 	glm::vec4 m_colour;
+	float m_intensity;
 
 };
 

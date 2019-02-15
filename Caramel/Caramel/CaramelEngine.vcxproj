@@ -171,6 +171,7 @@
     <ClCompile Include="..\source\Camera.cpp" />
     <ClCompile Include="..\source\Component.cpp" />
     <ClCompile Include="..\source\Entity.cpp" />
+    <ClCompile Include="..\source\Light.cpp" />
     <ClCompile Include="..\source\Log.cpp" />
     <ClCompile Include="..\source\main.cpp" />
     <ClCompile Include="..\source\Material.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="..\include\Component.h" />
     <ClInclude Include="..\include\Defines.h" />
     <ClInclude Include="..\include\Entity.h" />
+    <ClInclude Include="..\include\Light.h" />
     <ClInclude Include="..\include\Log.h" />
     <ClInclude Include="..\include\Material.h" />
     <ClInclude Include="..\include\MeshFilter.h" />

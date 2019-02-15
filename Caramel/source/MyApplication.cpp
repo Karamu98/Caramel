@@ -45,8 +45,11 @@ bool MyApplication::onCreate()
 	// Initialise Renderer
 	m_renderer.Init(false);
 
-	// Add the default entity
-	m_scene.Add(new Entity());
+	// Add the default entity.
+	Entity* newEditor = new Entity();
+	Camera* newCam = new Camera(newEditor);
+	newEditor->AddComponent(newCam);
+	m_scene.Add(newEditor);
 	
 
 	return true;
@@ -69,6 +72,9 @@ void MyApplication::Update(float a_deltaTime)
 		Gizmos::addLine(glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i),
 			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));
 	}
+
+	
+
 
 #pragma region ImGui
 
@@ -107,6 +113,17 @@ void MyApplication::Update(float a_deltaTime)
 		{
 			bComponentTool = true;
 			bComponentAdd = false;
+		}
+
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Settings"))
+	{
+		if (ImGui::MenuItem("Renderer"))
+		{
+			ImGui::OpenPopup("Renderer Settings");
+			CL_CORE_INFO("Not implemented.");
 		}
 
 		ImGui::EndMenu();
@@ -241,6 +258,8 @@ void MyApplication::Update(float a_deltaTime)
 
 #pragma endregion ImGui
 
+	m_scene.Update(a_deltaTime);
+
 	// quit our application when escape is pressed  TODO: replace with save and exit
 	if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		quit();
@@ -248,13 +267,10 @@ void MyApplication::Update(float a_deltaTime)
 
 void MyApplication::Draw()
 {
-	// clear the backbuffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	m_renderer.Draw(&m_scene);
 
 
-
+	
 
 	// Needs to be called last
 	ImGui::Render();
