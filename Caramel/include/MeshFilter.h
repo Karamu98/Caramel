@@ -30,7 +30,7 @@ public:
 	virtual void Update(float a_fDeltaTime) {};
 	virtual void OnGUI();
 
-	void LoadModel(std::string a_path);
+	void LoadModel();
 
 private:
 	const char* m_modelPath;

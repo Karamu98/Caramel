@@ -29,7 +29,7 @@ void MeshFilter::OnGUI()
 	ImGui::InputText("Model Path", m_textBuffer, sizeof(char)*64);
 	if (ImGui::Button("Load path"))
 	{
-		LoadModel(std::string(m_textBuffer));
+		LoadModel();
 	}
 
 	m_material->OnGUI();
@@ -38,13 +38,13 @@ void MeshFilter::OnGUI()
 
 }
 
-void MeshFilter::LoadModel(std::string a_path)
+void MeshFilter::LoadModel()
 {
-	m_modelPath = a_path.c_str();
+	m_modelPath = m_textBuffer;
 
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile(a_path,
+	const aiScene* scene = importer.ReadFile(m_textBuffer,
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices|
@@ -52,12 +52,12 @@ void MeshFilter::LoadModel(std::string a_path)
 
 	if (scene == nullptr)
 	{
-		CL_CORE_ERROR(std::string("Failed to load model at '" + a_path + "'."));
+		CL_CORE_ERROR("Failed to load model at '", m_textBuffer, "'.");
 		delete scene;
 		return;
 	}
 
-	CL_CORE_INFO(std::string("Loaded model at'" + a_path + "'."));
+	CL_CORE_INFO("Loaded model at'", m_textBuffer, "'.");
 
 	delete[] verts; // Clear whatever we may have had allocated previously
 	verts = new Vertex[scene->mMeshes[0]->mNumVertices]; // Assign the space we need for all the verticies
@@ -81,7 +81,7 @@ void MeshFilter::LoadModel(std::string a_path)
 	}
 	else
 	{
-		CL_CORE_WARN("Mesh ", a_path, " has no normals.");
+		CL_CORE_WARN("Mesh ", m_textBuffer, " has no normals.");
 	}
 
 	if (scene->mMeshes[0]->HasTangentsAndBitangents())
