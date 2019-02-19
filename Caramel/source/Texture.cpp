@@ -16,8 +16,7 @@ Texture::Texture()
 	m_colour[0] = &m_overrideColour.x; m_colour[1] = &m_overrideColour.y;
 	m_colour[2] = &m_overrideColour.z; m_colour[3] = &m_overrideColour.w;
 
-	m_filePath = new char[64];
-
+	m_textBuffer = new char[64];
 }
 
 Texture::~Texture()
@@ -31,20 +30,20 @@ Texture::~Texture()
 /// Loads in an image and sends it to the GPU
 /// </summary>
 /// <param name="a_filePath">The file path to the image, starting from executable directory.</param>
-void Texture::LoadFromFile(const char* a_filePath)
+void Texture::LoadFromFile(std::string a_path)
 {
-	// TODO: Load in an image using STB image, help can be found on moodle
+	m_filePath = a_path.c_str();
 
 	int width, height, channels;
 	width = height = channels = 0;
 
 	// Load the image in using stb_image
-	unsigned char* data = stbi_load(a_filePath, &width, &height, &channels, 0);
+	unsigned char* data = stbi_load(m_filePath, &width, &height, &channels, 0);
 
 	// Null checking
 	if (data == nullptr)
 	{
-		CL_CORE_ERROR("Could not load: ", a_filePath, ".");
+		CL_CORE_ERROR("Could not load: " + std::string(m_textBuffer) + ".");
 		CL_CORE_ERROR("STB-> ",stbi_failure_reason());
 		return;
 	}
@@ -65,6 +64,8 @@ void Texture::LoadFromFile(const char* a_filePath)
 
 	// Free loaded image
 	stbi_image_free(data);
+
+	CL_CORE_INFO("Image at " + std::string(m_textBuffer) + " loaded.");
 
 }
 
@@ -132,15 +133,18 @@ void Texture::LoadFromMeta(const char * a_filePathToMeta)
 		file >> filePathSize;
 		// Deallocate any space we maybe using and reallocate to size needed
 		delete[] m_filePath;
-		m_filePath = new char[filePathSize];
+
+		char* tempFilePath = new char[filePathSize];
 
 		// Read in each character
 		for (int i = 0; i < filePathSize; i++)
 		{
 			char chara;
 			file >> chara;
-			m_filePath[i] = chara;
+			tempFilePath[i] = chara;
 		}
+
+		m_filePath = tempFilePath;
 	}
 	else
 	{
@@ -182,26 +186,16 @@ unsigned int Texture::GetTextureID()
 	return m_textureID;
 }
 
-float** Texture::GetOverrideColour()
-{
-	return m_colour;
-}
-
-char* Texture::GetFilePath()
-{
-	return m_filePath;
-}
-
 void Texture::OnGUI(std::string a_name)
 {
 	ImGui::ColorEdit4(a_name.c_str(), *m_colour);
 	std::string id = "Texture" + a_name;
 	ImGui::PushID(id.c_str());
-	ImGui::InputText("Image Path", m_filePath, sizeof(char) * 64);
+	ImGui::InputText("Image Path", m_textBuffer, sizeof(char) * 64);
 
 	if (ImGui::Button("Load"))
 	{
-		LoadFromFile(m_filePath);
+		LoadFromFile(m_textBuffer);
 	}
 
 	ImGui::PopID();

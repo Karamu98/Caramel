@@ -44,7 +44,7 @@ void MeshFilter::LoadModel()
 
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile(m_textBuffer,
+	const aiScene* scene = importer.ReadFile(m_modelPath,
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices|
@@ -52,12 +52,12 @@ void MeshFilter::LoadModel()
 
 	if (scene == nullptr)
 	{
-		CL_CORE_ERROR("Failed to load model at '", m_textBuffer, "'.");
+		CL_CORE_ERROR("Failed to load model at '" + std::string(m_textBuffer) + "'.");
 		delete scene;
 		return;
 	}
 
-	CL_CORE_INFO("Loaded model at'", m_textBuffer, "'.");
+	CL_CORE_INFO("Loaded model at'" + std::string(m_textBuffer) + "'.");
 
 	delete[] verts; // Clear whatever we may have had allocated previously
 	verts = new Vertex[scene->mMeshes[0]->mNumVertices]; // Assign the space we need for all the verticies
