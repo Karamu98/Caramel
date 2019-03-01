@@ -32,6 +32,10 @@ public:
 
 	void LoadModel();
 
+	/// Mesh Data
+	Vertex* verts;
+	int vertCount;
+
 private:
 	const char* m_modelPath;
 
@@ -39,8 +43,7 @@ private:
 
 	Material* m_material;
 
-	/// Mesh Data
-	Vertex* verts;
+	
 	
 };
 

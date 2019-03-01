@@ -7,6 +7,10 @@
 #include "Gizmos.h"
 #include "Log.h"
 #include "imgui.h"
+#include "gl_core_4_4.h"
+#include "MeshFilter.h"
+#include "Scene.h"
+#include "Entity.h"
 
 
 
@@ -31,6 +35,11 @@ void Renderer::Init(bool a_isDeferred)
 	m_bDeferredRendering = a_isDeferred;
 
 	CL_CORE_INFO("Renderer Initialised.");
+
+	glGenBuffers(1, &m_vBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vBufferID);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0); // Define where position is in our buffer
+	glEnableVertexAttribArray(0); // Enable this attribute
 
 	/// Set up default material
 }
@@ -95,6 +104,27 @@ void Renderer::ForwardRendering(Scene * a_sceneToRender)
 		CL_CORE_WARN("No cameras rendering.");
 		return;
 	}
+
+	for (int i = 0; i < a_sceneToRender->m_sceneEntities.size; i++)
+	{
+		MeshFilter* mesh = (MeshFilter*)a_sceneToRender->m_sceneEntities[i]->FindComponentOfType(COMPONENT_TYPE::MESHFILTER);
+
+		if (mesh != nullptr)
+		{
+			for (int v = 0; v < mesh->vertCount; v++)
+			{
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3, &mesh->verts[v].position, GL_DYNAMIC_DRAW); // Pass the positions
+				//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3, &mesh->verts[v].normals, GL_STATIC_DRAW); // Pass the normals
+				//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3, &mesh->verts[v].tans, GL_DYNAMIC_DRAW); // Pass the Tans
+				//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3, &mesh->verts[v].biTans, GL_DYNAMIC_DRAW); // Pass the BiTans
+				//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2, &mesh->verts[v].uvs, GL_DYNAMIC_DRAW); // Pass the UVs
+			}
+		}
+	}
+	
+	
+
+
 	/*
 	Grab all materials of parsed meshes
 	Grab all lights

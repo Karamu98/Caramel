@@ -23,6 +23,7 @@ private:
 
 	bool m_bDeferredRendering; // Are we rendering forward or deferred?
 	Material* m_DefaultMaterial; // For any objects that do not have a material
+	unsigned int m_vBufferID;
 
 	/// Variables
 	unsigned int m_shaderProgram;

@@ -62,6 +62,10 @@ void MeshFilter::LoadModel()
 	delete[] verts; // Clear whatever we may have had allocated previously
 	verts = new Vertex[scene->mMeshes[0]->mNumVertices]; // Assign the space we need for all the verticies
 
+	/// Use these to populate IBO
+	//scene->mMeshes[0]->mFaces[0].mIndices;
+	//scene->mMeshes[0]->mFaces[0].mNumIndices
+
 #pragma region Conversion
 	for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++)
 	{
@@ -98,14 +102,14 @@ void MeshFilter::LoadModel()
 		}
 	}
 
-	if (scene->mMeshes[0]->HasTextureCoords(0))
-	{
-		for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++)
-		{
-			verts[i].uvs.x = scene->mMeshes[0]->mTextureCoords[i]->x;
-			verts[i].uvs.y = scene->mMeshes[0]->mTextureCoords[i]->y;
-		}
-	}
+	//if (scene->mMeshes[0]->HasTextureCoords(0))
+	//{
+	//	for (int i = 0; i < scene->mMeshes[0]->mNumVertices; i++)
+	//	{
+	//		verts[i].uvs.x = scene->mMeshes[0]->mTextureCoords[i]->x;
+	//		verts[i].uvs.y = scene->mMeshes[0]->mTextureCoords[i]->y;
+	//	}
+	//}
 	#pragma endregion
 
 	//scene->~aiScene(); // Delete the aiScene as we have the data in usable format now
