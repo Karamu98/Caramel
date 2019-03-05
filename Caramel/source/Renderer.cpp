@@ -2,7 +2,6 @@
 #include "Component.h"
 #include "Scene.h"
 #include "Camera.h"
-#include "GLFW/glfw3.h"
 #include "Material.h"
 #include "Gizmos.h"
 #include "Log.h"
@@ -105,7 +104,7 @@ void Renderer::ForwardRendering(Scene * a_sceneToRender)
 		return;
 	}
 
-	for (int i = 0; i < a_sceneToRender->m_sceneEntities.size; i++)
+	for (int i = 0; i < a_sceneToRender->m_sceneEntities.size(); i++)
 	{
 		MeshFilter* mesh = (MeshFilter*)a_sceneToRender->m_sceneEntities[i]->FindComponentOfType(COMPONENT_TYPE::MESHFILTER);
 

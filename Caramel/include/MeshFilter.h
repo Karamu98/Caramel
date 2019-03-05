@@ -32,6 +32,22 @@ public:
 
 	void LoadModel();
 
+	void bind() {
+		glBindBuffer(GL_VERTEX_ARRAY, m_vbufferObject);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibufferObject);
+	}
+
+	void unBind() { glBindBuffer(GL_VERTEX_ARRAY, 0); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+	
+	void FillVBO(void* a_data, unsigned int a_num)
+	{
+		glBufferData(GL_VERTEX_ARRAY, sizeof(Vertex) * a_num, a_data, 0);
+	}
+
+	void subVBOData(void* a_data, unsigned int a_num)
+	{
+		glBufferSubData(GL_VERTEX_ARRAY, char*(0) + offset, sizeof(Vertex), a_data); // change a prt of the data
+	}
 	/// Mesh Data
 	Vertex* verts;
 	int vertCount;
@@ -43,7 +59,8 @@ private:
 
 	Material* m_material;
 
-	
+	unsigned int m_vbufferObject;
+	unsigned int m_ibufferObject;
 	
 };
 
