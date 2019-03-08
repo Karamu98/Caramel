@@ -27,9 +27,11 @@ public:
 									  unsigned int a_outputAttributeCount = 0, const char** a_outputAttributes = nullptr);
 
 	static void GetGLErrors();
-private:
+
 	// helper function for loading shader code into memory
 	static unsigned char*	fileToBuffer(const char* a_szPath);
+private:
+
 
 
 };

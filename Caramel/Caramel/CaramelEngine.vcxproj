@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CL_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)vendor\assimp\include;$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/gl_core_4_4;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)deps/imgui/include;$(SolutionDir)vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -175,10 +175,12 @@
     <ClCompile Include="..\source\Log.cpp" />
     <ClCompile Include="..\source\main.cpp" />
     <ClCompile Include="..\source\Material.cpp" />
+    <ClCompile Include="..\source\Mesh.cpp" />
     <ClCompile Include="..\source\MeshFilter.cpp" />
     <ClCompile Include="..\source\MyApplication.cpp" />
     <ClCompile Include="..\source\Renderer.cpp" />
     <ClCompile Include="..\source\Scene.cpp" />
+    <ClCompile Include="..\source\Shader.cpp" />
     <ClCompile Include="..\source\Texture.cpp" />
     <ClCompile Include="..\source\TransformComponent.cpp" />
   </ItemGroup>
@@ -198,10 +200,12 @@
     <ClInclude Include="..\include\Light.h" />
     <ClInclude Include="..\include\Log.h" />
     <ClInclude Include="..\include\Material.h" />
+    <ClInclude Include="..\include\Mesh.h" />
     <ClInclude Include="..\include\MeshFilter.h" />
     <ClInclude Include="..\include\MyApplication.h" />
     <ClInclude Include="..\include\Renderer.h" />
     <ClInclude Include="..\include\Scene.h" />
+    <ClInclude Include="..\include\Shader.h" />
     <ClInclude Include="..\include\Texture.h" />
     <ClInclude Include="..\include\TransformComponent.h" />
   </ItemGroup>

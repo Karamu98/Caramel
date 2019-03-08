@@ -1,7 +1,8 @@
 #ifndef _RENDERER_H__
 #define _RENDERER_H__
 
-class Material;
+#include "Shader.h"
+
 class Scene;
 class Camera;
 
@@ -12,22 +13,11 @@ public:
 	~Renderer();
 
 	void Init(bool a_isDeferred); // Initialises the renderer, setting up what rendering mode we are using
-	void Draw(Scene* a_sceneToRender); // Draws all of the object in a scene using the current rendering mode
+	void Draw(Scene* a_sceneToRender); // Draws all of the objects in a scene using the current rendering mode
 	void OnGUI();
 
 private:
-
-	void Render(Scene* a_sceneToRender);
-	void ForwardRendering(Scene* a_sceneToRender);
-	void DeferredRendering(Scene* a_sceneToRender);
-
-	bool m_bDeferredRendering; // Are we rendering forward or deferred?
-	Material* m_DefaultMaterial; // For any objects that do not have a material
-	unsigned int m_vBufferID;
-
-	/// Variables
-	unsigned int m_shaderProgram;
-
+	Shader m_shader;
 
 	/// CACHE
 	Camera* activeCamera; // The active camera this frame.

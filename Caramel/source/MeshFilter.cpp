@@ -2,6 +2,7 @@
 #include "Log.h"
 #include "imgui.h"
 #include "Material.h"
+#include "gl_core_4_4.h"
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -13,8 +14,6 @@ MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
 {
 	SetComponentType(MESHFILTER);
 	m_textBuffer = new char[64];
-
-	m_material = new Material();
 }
 
 MeshFilter::~MeshFilter()
@@ -31,8 +30,6 @@ void MeshFilter::OnGUI()
 	{
 		LoadModel();
 	}
-
-	m_material->OnGUI();
 
 	ImGui::NewLine();
 
@@ -59,8 +56,8 @@ void MeshFilter::LoadModel()
 
 	CL_CORE_INFO("Loaded model at'" + std::string(m_textBuffer) + "'.");
 
-	delete[] verts; // Clear whatever we may have had allocated previously
-	verts = new Vertex[scene->mMeshes[0]->mNumVertices]; // Assign the space we need for all the verticies
+	verts.clear(); // Clear whatever we may have had allocated previously
+	verts.reserve(scene->mMeshes[0]->mNumVertices); // Preallocate all our space to save resizing
 
 	/// Use these to populate IBO
 	//scene->mMeshes[0]->mFaces[0].mIndices;
@@ -115,4 +112,26 @@ void MeshFilter::LoadModel()
 	//scene->~aiScene(); // Delete the aiScene as we have the data in usable format now
 
 	
+}
+
+void MeshFilter::Draw(Shader* a_shader)
+{
+
+}
+
+void MeshFilter::SetupMesh()
+{
+	
+}
+
+void MeshFilter::Bind()
+{
+	glBindBuffer(GL_VERTEX_ARRAY, m_vBufferObject);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBufferObject);
+}
+
+void MeshFilter::Unbind()
+{
+	glBindBuffer(GL_VERTEX_ARRAY, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
