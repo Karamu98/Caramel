@@ -50,6 +50,15 @@ bool MyApplication::onCreate()
 	Camera* newCam = new Camera(newEditor);
 	newEditor->AddComponent(newCam);
 	m_scene.Add(newEditor);
+
+
+	// Add the sword
+	Entity* swordEntity = new Entity();
+	Shader modelShader = Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
+	MeshFilter* newMesh = new MeshFilter(swordEntity);
+	swordEntity->AddComponent(newMesh);
+	newMesh->LoadModel("models/Sword_LOD1.fbx");
+	newMesh->SetShader(&modelShader);
 	
 
 	return true;

@@ -1,7 +1,7 @@
 #ifndef __SHADER_H_
 #define __SHADER_H_
 #include <string>
-
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -14,13 +14,18 @@ public :
 	/// <param name='a_geometryShader'>The file path to a valid geometry shader. (Optional)</param>
 	/// <param name='a_tessalationShader'>The file path to a valid tessalation shader. (Optional)</param>
 	Shader(const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader = nullptr, const char* a_tessalationShader = nullptr);
-	
+
 	Shader();
 
 	/// <summary>
 	/// Binds this shader for use.
 	/// </summary>
-	void Use();
+	void Bind();
+
+	/// <summary>
+	/// Unbinds shader.
+	/// </summary>
+	void Unbind();
 
 	/// <summary>
 	/// Sets a boolean uniform value by name.
@@ -43,6 +48,26 @@ public :
 	/// <param name='a_value'>The new value we want the variable to have.</param>
 	void SetFloat(const std::string& a_name, float a_value);
 
+	/// <summary>
+	/// Sets a vector4 unifrom value by name.
+	/// </summary>
+	/// <param name='a_name'>The name of the variable we want to change.</param>
+	/// <param name='a_value'>The new value we want the variable to have.</param>
+	void SetVec4(const std::string& a_name, glm::vec4 a_value);
+
+	/// <summary>
+	/// Sets a vector3 unifrom value by name.
+	/// </summary>
+	/// <param name='a_name'>The name of the variable we want to change.</param>
+	/// <param name='a_value'>The new value we want the variable to have.</param>
+	void SetVec3(const std::string& a_name, glm::vec3 a_value);
+
+	/// <summary>
+	/// Sets a Matrix4x4 unifrom value by name.
+	/// </summary>
+	/// <param name='a_name'>The name of the variable we want to change.</param>
+	/// <param name='a_value'>The new value we want the variable to have.</param>
+	void SetMat4(const std::string& a_name, glm::mat4 a_value);
 
 private:
 

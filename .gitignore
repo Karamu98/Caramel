@@ -7,3 +7,5 @@ bin-Int/
 # Files
 
 *.user
+Caramel/lib/framework.lib
+Caramel/lib/framework.pdb

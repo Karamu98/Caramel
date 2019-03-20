@@ -16,13 +16,13 @@ public:
 	unsigned int GetTextureID();
 	void OnGUI(std::string a_name);
 
-private:
+	std::string m_type; // Stores the type of texture this is, used with loading models with materials
 	const char* m_filePath; // Stores the original file location
-	glm::vec4 m_overrideColour; // This is the colour to apply to the texture
 	unsigned int m_textureID; // This stores the ID of the texture for later reference
 
+private:
+
 	// ImGui
-	float** m_colour;
 	char* m_textBuffer;
 
 };

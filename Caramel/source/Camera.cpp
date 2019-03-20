@@ -52,7 +52,17 @@ glm::mat4 Camera::GetCameraMatrix()
 	return m_cameraMatrix;
 }
 
-glm::mat4 Camera::GetProjection()
+glm::mat4 Camera::GetProjectionMatrix()
 {
 	return glm::perspective(glm::pi<float>() * (m_fov / 360), DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 5000.0f);
+}
+
+glm::mat4 Camera::GetViewMatrix()
+{
+	return glm::inverse(m_cameraMatrix);
+}
+
+glm::mat4 Camera::GetProjectionView()
+{
+	return m_projectionMatrix * GetViewMatrix();
 }

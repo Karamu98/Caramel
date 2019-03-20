@@ -18,7 +18,9 @@ public:
 	virtual void OnGUI();
 
 	glm::mat4 GetCameraMatrix();
-	glm::mat4 GetProjection(); // Returns a new projection matrix
+	glm::mat4 GetProjectionMatrix(); // Returns a new projection matrix
+	glm::mat4 GetViewMatrix();
+	glm::mat4 GetProjectionView();
 
 
 private:

@@ -6,11 +6,16 @@
 #include <string>
 #include <glm/glm.hpp>
 
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+
+#include "Mesh.h"
+#include "Texture.h"
+
 class Entity;
-class Material;
 class Shader;
-class Mesh;
-class Texture;
+class Camera;
 
 class MeshFilter : public Component
 {
@@ -23,34 +28,27 @@ public:
 	virtual void OnGUI();
 
 	void LoadModel();
-	void Draw(Shader* a_shader);
-
-	// Helper functions
-	void SetupMesh();
-	void Bind();
-	void Unbind();
-	
-	//void FillVBO(void* a_data, unsigned int a_num)
-	//{
-	//	glBufferData(GL_VERTEX_ARRAY, sizeof(Vertex) * a_num, a_data, 0);
-	//}
-
-	//void subVBOData(void* a_data, unsigned int a_num)
-	//{
-	//	glBufferSubData(GL_VERTEX_ARRAY, char*(0) + offset, sizeof(Vertex), a_data); // change a prt of the data
-	//}
-
-
-	/// Mesh Data
+	void LoadModel(std::string a_path);
+	void SetShader(Shader* a_shaderToUse);
+	void Draw(Camera* a_camera);
 
 
 private:
+
+	// Model loading
+	void ProcessNode(aiNode* a_node, const aiScene* a_scene);
+	Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene);
+	std::vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+
+	// Model load data
+	std::vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+	std::vector<Mesh> meshes;
 	const char* m_modelPath;
 
 	char* m_textBuffer; // For ImGui
 
-	Material* m_material;
-	
+	Shader* m_modelShader;
+
 };
 
 #endif
