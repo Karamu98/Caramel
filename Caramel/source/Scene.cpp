@@ -19,6 +19,11 @@ Scene::~Scene()
 			delete pCurrentEntity;
 		}
 	}
+
+	if (selectedEntity != nullptr)
+	{
+		delete selectedEntity;
+	}
 }
 
 void Scene::Update(float a_delta)

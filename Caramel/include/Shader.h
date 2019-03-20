@@ -14,8 +14,7 @@ public :
 	/// <param name='a_geometryShader'>The file path to a valid geometry shader. (Optional)</param>
 	/// <param name='a_tessalationShader'>The file path to a valid tessalation shader. (Optional)</param>
 	Shader(const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader = nullptr, const char* a_tessalationShader = nullptr);
-
-	Shader();
+	~Shader();
 
 	/// <summary>
 	/// Binds this shader for use.

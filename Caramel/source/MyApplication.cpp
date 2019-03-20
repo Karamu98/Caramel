@@ -23,7 +23,10 @@ MyApplication::MyApplication()
 
 MyApplication::~MyApplication()
 {
-
+	if (m_activeCam != nullptr)
+	{
+		delete m_activeCam;
+	}
 }
 
 bool MyApplication::onCreate()

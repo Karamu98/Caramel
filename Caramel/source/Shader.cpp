@@ -95,6 +95,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 	if (!VerifyShader(vertexShader))
 	{
 		// Cleanup
+		return;
 	}
 
 	// Fragment shader setup
@@ -104,6 +105,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 	if (!VerifyShader(fragmentShader))
 	{
 		// Cleanup
+		return;
 	}
 
 	// Geometry shader setup
@@ -115,6 +117,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		if (!VerifyShader(geometryShader))
 		{
 			// Cleanup
+			return;
 		}
 		else
 		{
@@ -131,6 +134,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		if (!VerifyShader(tessalationShader))
 		{
 			// Cleanup
+			return;
 		}
 		else
 		{
@@ -185,8 +189,9 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 
 }
 
-Shader::Shader()
+Shader::~Shader()
 {
+	glDeleteProgram(m_shaderProgram);
 }
 
 void Shader::Bind()
