@@ -163,7 +163,10 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		char* infoLog = new char[infoLogLength];
 
 		glGetProgramInfoLog(m_shaderProgram, infoLogLength, 0, infoLog);
-		CL_CORE_ERROR("Failed linking program.\n", infoLog, "\n");
+
+		std::string log = std::string(infoLog);
+
+		CL_CORE_ERROR("Failed linking program.\n" + log);
 		delete[] infoLog;
 	}
 
@@ -241,7 +244,10 @@ bool Shader::VerifyShader(unsigned int & a_shaderHandle)
 		char* infoLog = new char[infoLogLength];
 
 		glGetShaderInfoLog(a_shaderHandle, infoLogLength, 0, infoLog);
-		CL_CORE_ERROR("Failed to compile shader.\n", infoLog, "\n");
+
+		std::string log = std::string(infoLog);
+
+		CL_CORE_ERROR("Failed to compile shader.\n" + log);
 		delete[] infoLog;
 
 

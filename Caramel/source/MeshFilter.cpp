@@ -1,9 +1,9 @@
 #include "MeshFilter.h"
 #include "Log.h"
 #include "imgui.h"
-#include "ModelMaterial.h"
 #include "gl_core_4_4.h"
 #include "Camera.h"
+#include "Shader.h"
 
 
 typedef Component PARENT;

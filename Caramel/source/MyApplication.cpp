@@ -12,7 +12,6 @@
 #include "MeshFilter.h"
 #include "Camera.h"
 #include "Entity.h"
-#include "Material.h"
 #include "Renderer.h"
 
 
