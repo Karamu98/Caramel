@@ -4,9 +4,9 @@ in Vertex
 {
   vec4 vPosition;
   vec4 vNormal;
-  vec2 vUV;
   vec4 vTans;
   vec4 vBiTans;
+  vec2 vUV;
   vec3 HalfDir;
   vec3 LightDir;
 }vertex;
