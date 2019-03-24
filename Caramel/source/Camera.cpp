@@ -15,10 +15,10 @@ m_bIsPossesed(true)
 	SetComponentType(CAMERA);
 	m_localPosition = glm::vec4(0, 5, 0, 1); // Set the camera just above root	
 
-	glm::vec3* pos = &pGetOwnerEntity()->pGetRootTransformComp()->GetCurrentPosition();
+	glm::vec3 pos = pGetOwnerEntity()->pGetRootTransformComp()->GetCurrentPosition();
 
-	m_cameraMatrix = glm::inverse(glm::lookAt(*pos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0))); // Spawn a camera looking at origin at the entity pos
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 1000.0f); // Create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
+	m_cameraMatrix = glm::inverse(glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 5000.0f); // Create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
 }
 
 Camera::~Camera()
@@ -38,9 +38,6 @@ void Camera::Update(float a_fDeltaTime)
 	m_cameraMatrix = *rootTransform;
 
 	m_cameraMatrix[3] = m_cameraMatrix[3] + m_localPosition;
-
-	// Create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * (m_fov / 360), DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 5000.0f);
 }
 
 void Camera::OnGUI()
@@ -54,7 +51,7 @@ glm::mat4 Camera::GetCameraMatrix()
 
 glm::mat4 Camera::GetProjectionMatrix()
 {
-	return glm::perspective(glm::pi<float>() * (m_fov / 360), DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 5000.0f);
+	return m_projectionMatrix;
 }
 
 glm::mat4 Camera::GetViewMatrix()

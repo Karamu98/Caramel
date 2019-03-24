@@ -1,11 +1,11 @@
-#version 150
+#version 330
 
 
-in vec4 Position;
-in vec4 Normal;
-in vec2 UV;
-in vec4 Tans;
-in vec4 BiTans;
+layout (location = 0) in vec4 Position;
+layout (location = 1) in vec4 Normal;
+layout (location = 2) in vec4 Tans;
+layout (location = 3) in vec4 BiTans;
+layout (location = 4) in vec2 UV;
 
 out Vertex
 {
@@ -28,13 +28,13 @@ uniform vec4 lightDirection;
 
 void main()
 {
-  vNormal = Normal;
-  vUV = UV;
-  vTans = Tans;
-  vBiTans = BiTans;
+  vec4 vNormal = Normal;
+  vec2 vUV = UV;
+  vec4 vTans = Tans;
+  vec4 vBiTans = BiTans;
 
   vertex.vPosition = Model * Position;
-  vertex.vNormal = ViewMatrix * NormalMatrix * Normal;
+  vertex.vNormal = Normal;
   vertex.vUV = UV;
   vertex.vTans = Tans;
   vertex.vBiTans = BiTans;

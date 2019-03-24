@@ -9,8 +9,7 @@ class Texture
 public:
 	Texture();
 	~Texture();
-
-	void LoadFromFile(std::string a_path);
+	unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma);
 	void SaveToMeta();
 	void LoadFromMeta(const char* a_filePathToMeta);
 	unsigned int GetTextureID();

@@ -4,6 +4,8 @@
 #include "gl_core_4_4.h"
 #include "Camera.h"
 #include "Shader.h"
+#include "Entity.h"
+#include "TransformComponent.h"
 
 
 typedef Component PARENT;
@@ -65,6 +67,8 @@ void MeshFilter::LoadModel(std::string a_path)
 		return;
 	}
 
+	m_dir = std::string(a_path).substr(0, std::string(a_path).find_last_of('/'));
+
 	CL_CORE_INFO("Loaded model at'" + a_path + "'.");
 
 	// process ASSIMP's root node recursively
@@ -79,9 +83,15 @@ void MeshFilter::SetShader(Shader * a_shaderToUse)
 void MeshFilter::Draw(Camera* a_camera)
 {
 	m_modelShader->Bind();
+
+	glm::mat4 proj = a_camera->GetProjectionView();
 	m_modelShader->SetMat4("ProjectionView", a_camera->GetProjectionView());
 	m_modelShader->SetMat4("ViewMatrix", a_camera->GetViewMatrix());
 	m_modelShader->SetVec4("cameraPosition", a_camera->GetCameraMatrix()[3]);
+
+	glm::mat4 m4ModelMat = *pGetOwnerEntity()->pGetRootTransformComp()->pGetTransformMatrix();
+	m_modelShader->SetMat4("Model", m4ModelMat); //:::CONTINUE::: You need a way to manipulate all the meshes in a model when it moves, you also need to get world space for any of these meshes
+	m_modelShader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
 
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
@@ -117,7 +127,8 @@ Mesh MeshFilter::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
-		glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
+		glm::vec4 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
+		vector.w = 0;
 		// positions
 		vector.x = mesh->mVertices[i].x;
 		vector.y = mesh->mVertices[i].y;
@@ -141,16 +152,32 @@ Mesh MeshFilter::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 		else
 			vertex.uvs = glm::vec2(0.0f, 0.0f);
 		// tangent
-		vector.x = mesh->mTangents[i].x;
-		vector.y = mesh->mTangents[i].y;
-		vector.z = mesh->mTangents[i].z;
-		vertex.tans = vector;
-		// bitangent
-		vector.x = mesh->mBitangents[i].x;
-		vector.y = mesh->mBitangents[i].y;
-		vector.z = mesh->mBitangents[i].z;
-		vertex.biTans = vector;
-		vertices.push_back(vertex);
+		if (mesh->mTangents != nullptr)
+		{
+			vector.x = mesh->mTangents[i].x;
+			vector.y = mesh->mTangents[i].y;
+			vector.z = mesh->mTangents[i].z;
+			vertex.tans = vector;
+			// bitangent
+			vector.x = mesh->mBitangents[i].x;
+			vector.y = mesh->mBitangents[i].y;
+			vector.z = mesh->mBitangents[i].z;
+			vertex.biTans = vector;
+			vertices.push_back(vertex);
+		}
+		else
+		{
+			vector.x = 0;
+			vector.y = 0;
+			vector.z = 0;
+			vertex.tans = vector;
+			// bitangent
+			vector.x =  0;
+			vector.y =  0;
+			vector.z =  0;
+			vertex.biTans = vector;
+			vertices.push_back(vertex);
+		}
 	}
 	// now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -198,7 +225,7 @@ std::vector<Texture> MeshFilter::LoadMaterialTextures(aiMaterial *mat, aiTexture
 		bool skip = false;
 		for (unsigned int j = 0; j < textures_loaded.size(); j++)
 		{
-			if (std::strcmp(textures_loaded.at(j).m_filePath, filePath.C_Str()) == 0)
+			if (std::strcmp(textures_loaded[j].m_filePath, filePath.C_Str()) == 0)
 			{
 				textures.push_back(textures_loaded[j]);
 				skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
@@ -208,11 +235,11 @@ std::vector<Texture> MeshFilter::LoadMaterialTextures(aiMaterial *mat, aiTexture
 		if (!skip)
 		{   // if texture hasn't been loaded already, load it
 			Texture texture;
-			texture.LoadFromFile(filePath.C_Str());
+			texture.m_textureID = texture.TextureFromFile(filePath.C_Str(), m_dir, false);
 			texture.m_type = typeName;
 			texture.m_filePath = filePath.C_Str();
 			textures.push_back(texture);
-			textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+			//textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
 		}
 	}
 	return textures;

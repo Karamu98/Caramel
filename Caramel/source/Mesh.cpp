@@ -26,19 +26,18 @@ void Mesh::Draw(Shader* a_shader)
 		std::string number;
 		std::string name = textures[i].m_type;
 		if (name == "texture_diffuse")
+		{
 			number = std::to_string(diffuseNr++);
+		}
 		else if (name == "texture_specular")
+		{
 			number = std::to_string(specularNr++);
+		}
 
-		a_shader->SetFloat(("material." + name + number).c_str(), i);
+		a_shader->SetInt((name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].m_textureID);
 	}
 	glActiveTexture(GL_TEXTURE0);
-
-
-	glm::mat4 m4ModelMat = glm::mat4();
-	//a_shader->SetMat4("Model", ) :::CONTINUE::: You need a way to manipulate all the meshes in a model when it moves, you also need to get world space for any of these meshes
-	a_shader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
 
 	// Draw mesh
 	glBindVertexArray(m_vArrayObject);
@@ -62,20 +61,20 @@ void Mesh::Setup()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW); // Copy all of the indices into our buffer
 
 	// Vertex positions
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	// Vertex normals
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)offsetof(Vertex, normals));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normals));
-	// Vertex uvs
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uvs));
 	// Vertex tans
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tans));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)offsetof(Vertex, tans));
+	glEnableVertexAttribArray(2);
 	// Vertex bitans
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)offsetof(Vertex, biTans));
+	glEnableVertexAttribArray(3);
+	// Vertex uvs
+	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char*)offsetof(Vertex, uvs));
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, biTans));
 
 	glBindVertexArray(0);
 

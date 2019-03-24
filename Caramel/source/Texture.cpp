@@ -16,50 +16,51 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-	delete[] m_filePath;
+	//delete m_filePath;
 }
 
 /// <summary>
 /// Loads in an image and sends it to the GPU
 /// </summary>
 /// <param name="a_filePath">The file path to the image, starting from executable directory.</param>
-void Texture::LoadFromFile(std::string a_path)
+unsigned int Texture::TextureFromFile(const char *path, const std::string &directory, bool gamma)
 {
-	m_filePath = a_path.c_str();
+	std::string filename = std::string(path);
+	filename = directory + '/' + filename;
 
-	int width, height, channels;
-	width = height = channels = 0;
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
 
-	// Load the image in using stb_image
-	unsigned char* data = stbi_load(m_filePath, &width, &height, &channels, 0);
-
-	// Null checking
-	if (data == nullptr)
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+	if (data)
 	{
-		CL_CORE_ERROR("Could not load: " + std::string(m_textBuffer) + ".");
-		CL_CORE_ERROR("STB-> ",stbi_failure_reason());
-		return;
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		CL_CORE_INFO(std::string("Texture failed to load at path: " + filename + "."));
+		stbi_image_free(data);
 	}
 
-	// Pass texture to GPU
-	glGenTextures(1, &m_textureID);
-	glBindTexture(GL_TEXTURE_2D, m_textureID);
-
-	// Set up the texture options
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Load and generate the texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	// Free loaded image
-	stbi_image_free(data);
-
-	CL_CORE_INFO("Image at " + std::string(m_textBuffer) + " loaded.");
-
+	return textureID;
 }
 
 void Texture::SaveToMeta()
@@ -159,7 +160,7 @@ void Texture::OnGUI(std::string a_name)
 
 	if (ImGui::Button("Load"))
 	{
-		LoadFromFile(m_textBuffer);
+		
 	}
 
 	ImGui::PopID();

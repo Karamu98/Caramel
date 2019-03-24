@@ -20,7 +20,7 @@ Scene::~Scene()
 		}
 	}
 
-	if (selectedEntity != nullptr)
+	if (selectedEntity == nullptr)
 	{
 		delete selectedEntity;
 	}

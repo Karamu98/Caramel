@@ -48,6 +48,7 @@ Entity::Entity(Entity * a_original)
 
 Entity::~Entity()
 {
+
 }
 
 void Entity::Update(float a_fDeltaTime)

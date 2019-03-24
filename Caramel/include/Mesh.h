@@ -10,11 +10,11 @@ class Shader;
 struct Vertex
 {
 public:
-	glm::vec3 position;
-	glm::vec3 normals;
+	glm::vec4 position;
+	glm::vec4 normals;
+	glm::vec4 tans;
+	glm::vec4 biTans;
 	glm::vec2 uvs;
-	glm::vec3 tans;
-	glm::vec3 biTans;
 };
 
 class Mesh

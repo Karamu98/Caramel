@@ -1,4 +1,4 @@
-#version 150
+#version 330
 
 in Vertex
 {
@@ -13,10 +13,10 @@ in Vertex
 
 out vec4 FragColor;
 
-uniform sampler2D material.texture_diffuse1;
-uniform sampler2D material.texture_specular1;
-uniform sampler2D material.texture_normal1;
-uniform sampler2D material.texture_height1;
+uniform sampler2D texture_diffuse;
+uniform sampler2D texture_specular1;
+uniform sampler2D texture_normal1;
+uniform sampler2D texture_height1;
 
  struct Light{
  vec3 ambient;
@@ -30,18 +30,18 @@ uniform sampler2D material.texture_height1;
 void main()
 {
 
-	vec3 albedo = vec3( 1.0, 0.4, 0.4 );
+	vec4 albedo = texture(texture_diffuse, vertex.vUV);
 
 	//Phong ambient color
 	vec3 ambient = sceneLight.ambient;
 	//Phong Diffuse
-	vec3 diffuse = max(0,dot(vNormal.xyz, vertex.LightDir))* sceneLight.diffuse;
+	vec3 diffuse = max(0,dot(vertex.vNormal.xyz, vertex.LightDir))* sceneLight.diffuse;
 
 	//Calculate Specular Component
-	vec3 specular = pow(max(0,dot(vertex.HalfDir, vertex.Normal.xyz)),specularTerm)*sceneLight.specular;
+	vec3 specular = pow(max(0,dot(vertex.HalfDir, vertex.vNormal.xyz)),specularTerm)*sceneLight.specular;
 
-	vec3 linearColour = albedo * (ambient + diffuse + specular);
+	vec3 linearColour = albedo.rgb * (ambient + diffuse + specular);
 	//gamma correction
 	vec3 gammaCorrected = pow(linearColour, vec3(1.0/2.2));
-	FragColor = vec4(gammaCorrected, 1.0f);
+	FragColor = albedo;//vec4(gammaCorrected, 1.0f);
 }

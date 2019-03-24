@@ -144,6 +144,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 
 	m_shaderProgram = glCreateProgram();
 
+
 	glAttachShader(m_shaderProgram, vertexShader);
 	if (bValidGeo)
 	{
@@ -233,7 +234,9 @@ void Shader::SetVec3(const std::string & a_name, glm::vec3 a_value)
 
 void Shader::SetMat4(const std::string & a_name, glm::mat4 a_value)
 {
-	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, a_name.c_str()), 1, false, glm::value_ptr(a_value));
+	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	glUniformMatrix4fv(loc, 1, false, glm::value_ptr(a_value));
 }
 
 bool Shader::VerifyShader(unsigned int & a_shaderHandle)

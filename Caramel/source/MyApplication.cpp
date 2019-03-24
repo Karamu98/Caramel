@@ -56,11 +56,17 @@ bool MyApplication::onCreate()
 
 	// Add the sword
 	Entity* swordEntity = new Entity();
-	Shader modelShader = Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
+	m_modelShader = new Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
+
+	m_modelShader->Bind();
+
+
 	MeshFilter* newMesh = new MeshFilter(swordEntity);
 	swordEntity->AddComponent(newMesh);
-	newMesh->LoadModel("models/Sword_LOD1.fbx");
-	newMesh->SetShader(&modelShader);
+	m_scene.Add(swordEntity);
+	newMesh->SetShader(m_modelShader);
+	newMesh->LoadModel("models/nanosuit.obj");
+	
 	
 
 	return true;
