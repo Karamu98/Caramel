@@ -13,18 +13,16 @@ typedef Component PARENT;
 MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
 {
 	SetComponentType(MESHFILTER);
-	m_textBuffer = new char[64];
 }
 
 MeshFilter::~MeshFilter()
-{
+{	
 }
 
 void MeshFilter::OnGUI()
 {
 	// List Transfrom Component
 	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Model Component");
-	//ImGui::Text(std::string("Model path: " + m_modelPath).c_str());
 	ImGui::InputText("Model Path", m_textBuffer, sizeof(char)*64);
 	if (ImGui::Button("Load path"))
 	{
@@ -37,10 +35,12 @@ void MeshFilter::OnGUI()
 
 void MeshFilter::LoadModel()
 {
-	m_modelPath = m_textBuffer;
+	UnloadModel();
+
+	std::string location = m_textBuffer;
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(m_modelPath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	const aiScene* scene = importer.ReadFile(location, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (scene == nullptr)
 	{
@@ -48,6 +48,8 @@ void MeshFilter::LoadModel()
 		delete scene;
 		return;
 	}
+
+	m_dir = std::string(m_textBuffer).substr(0, std::string(m_textBuffer).find_last_of('/'));
 
 	CL_CORE_INFO("Loaded model at'" + std::string(m_textBuffer) + "'.");
 
@@ -58,6 +60,9 @@ void MeshFilter::LoadModel()
 void MeshFilter::LoadModel(std::string a_path)
 {
 	UnloadModel();
+
+	m_textBuffer = new char[a_path.size()];
+	memcpy(m_textBuffer, a_path.c_str(), a_path.size());
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(a_path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -122,8 +127,11 @@ Mesh MeshFilter::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 {
 	// data to fill
 	std::vector<Vertex> vertices;
+	vertices.reserve(mesh->mNumVertices);
 	std::vector<unsigned int> indices;
+	indices.reserve(mesh->mNumFaces * mesh->mFaces[0].mNumIndices);
 	std::vector<Texture> textures;
+	textures.reserve(4);
 
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -256,4 +264,17 @@ void MeshFilter::UnloadModel()
 			meshes[i].Unload();
 		}
 	}
+
+	if (textures_loaded.size() > 0)
+	{
+		for (Texture tex : textures_loaded)
+		{
+			tex.Unload();
+		}
+	}
+
+	textures_loaded.clear();
+	meshes.clear();
+	m_dir = std::string();
+	
 }

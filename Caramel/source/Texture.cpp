@@ -16,7 +16,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-	//delete m_filePath;
+
 }
 
 /// <summary>
@@ -58,6 +58,7 @@ unsigned int Texture::TextureFromFile(const char *path, const std::string &direc
 	{
 		CL_CORE_INFO(std::string("Texture failed to load at path: " + filename + "."));
 		stbi_image_free(data);
+		return -1;
 	}
 
 	return textureID;
@@ -120,7 +121,7 @@ void Texture::LoadFromMeta(const char * a_filePathToMeta)
 		int filePathSize;
 		file >> filePathSize;
 		// Deallocate any space we maybe using and reallocate to size needed
-		delete[] m_filePath;
+		delete m_filePath;
 
 		char* tempFilePath = new char[filePathSize];
 
@@ -164,5 +165,10 @@ void Texture::OnGUI(std::string a_name)
 	}
 
 	ImGui::PopID();
+}
+
+void Texture::Unload()
+{
+	glDeleteTextures(1, &m_textureID);
 }
 

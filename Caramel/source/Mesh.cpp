@@ -47,9 +47,16 @@ void Mesh::Draw(Shader* a_shader)
 
 void Mesh::Unload()
 {
-	glDeleteVertexArrays(1, &m_vArrayObject);
+	vertices.clear();
+	indices.clear();
+	for (Texture tex : textures)
+	{
+		tex.Unload();
+	}
+	textures.clear();
 	glDeleteBuffers(1, &m_vBufferObject);
 	glDeleteBuffers(1, &m_iBufferObject);
+	glDeleteVertexArrays(1, &m_vArrayObject);
 }
 
 void Mesh::Setup()
@@ -62,10 +69,10 @@ void Mesh::Setup()
 	glBindVertexArray(m_vArrayObject);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vBufferObject);
 
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW); // Copy all of the vertices into our buffer
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_DYNAMIC_DRAW); // Copy all of the vertices into our buffer
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW); // Copy all of the indices into our buffer
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_DYNAMIC_DRAW); // Copy all of the indices into our buffer
 
 	// Vertex positions
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);

@@ -14,6 +14,7 @@ public:
 	void LoadFromMeta(const char* a_filePathToMeta);
 	unsigned int GetTextureID();
 	void OnGUI(std::string a_name);
+	void Unload();
 
 	std::string m_type; // Stores the type of texture this is, used with loading models with materials
 	const char* m_filePath; // Stores the original file location

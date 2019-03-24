@@ -23,6 +23,7 @@ m_bIsPossesed(true)
 
 Camera::~Camera()
 {
+
 }
 
 void Camera::Update(float a_fDeltaTime)

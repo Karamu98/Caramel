@@ -14,7 +14,7 @@ Scene::~Scene()
 	for (xIter = m_sceneEntities.begin(); xIter < m_sceneEntities.end(); ++xIter)
 	{
 		Entity* pCurrentEntity = *xIter;
-		if (pCurrentEntity)
+		if (pCurrentEntity != nullptr)
 		{
 			delete pCurrentEntity;
 		}

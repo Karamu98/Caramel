@@ -48,7 +48,10 @@ Entity::Entity(Entity * a_original)
 
 Entity::~Entity()
 {
-
+	for (Component* comp : m_apComponentList)
+	{
+		delete comp;
+	}
 }
 
 void Entity::Update(float a_fDeltaTime)
