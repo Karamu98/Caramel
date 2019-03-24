@@ -57,6 +57,8 @@ void MeshFilter::LoadModel()
 
 void MeshFilter::LoadModel(std::string a_path)
 {
+	UnloadModel();
+
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(a_path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
@@ -243,4 +245,15 @@ std::vector<Texture> MeshFilter::LoadMaterialTextures(aiMaterial *mat, aiTexture
 		}
 	}
 	return textures;
+}
+
+void MeshFilter::UnloadModel()
+{
+	if (meshes.size() > 0)
+	{
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			meshes[i].Unload();
+		}
+	}
 }

@@ -45,6 +45,13 @@ void Mesh::Draw(Shader* a_shader)
 	glBindVertexArray(0);
 }
 
+void Mesh::Unload()
+{
+	glDeleteVertexArrays(1, &m_vArrayObject);
+	glDeleteBuffers(1, &m_vBufferObject);
+	glDeleteBuffers(1, &m_iBufferObject);
+}
+
 void Mesh::Setup()
 {
 	// Generate the required buffers

@@ -65,7 +65,7 @@ bool MyApplication::onCreate()
 	swordEntity->AddComponent(newMesh);
 	m_scene.Add(swordEntity);
 	newMesh->SetShader(m_modelShader);
-	newMesh->LoadModel("models/soulspear.fbx");
+	newMesh->LoadModel("models/Sword_LOD1.obj");
 	
 	
 

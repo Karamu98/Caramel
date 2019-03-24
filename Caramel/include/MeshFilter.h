@@ -40,6 +40,8 @@ private:
 	Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene);
 	std::vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 
+	void UnloadModel();
+
 	// Model load data
 	std::vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 	std::vector<Mesh> meshes;
