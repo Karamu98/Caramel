@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Renderer.h"
+#include "TransformComponent.h"
 
 
 MyApplication::MyApplication()
@@ -48,22 +49,33 @@ bool MyApplication::onCreate()
 
 	// Add the default entity.
 	Entity* newEditor = new Entity();
+	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
 	newEditor->AddComponent(newCam);
 	m_scene.Add(newEditor);
 
-
-	// Add the sword
-	Entity* swordEntity = new Entity();
 	m_modelShader = new Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
-	m_waveShader =  new Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
+	m_waveShader = new Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
 
 
-	MeshFilter* newMesh = new MeshFilter(swordEntity);
-	swordEntity->AddComponent(newMesh);
-	m_scene.Add(swordEntity);
-	newMesh->SetShader(m_modelShader);
-	newMesh->LoadModel("models/Jamie/soulspear.fbx");
+	// Add the ruins
+	Entity* ruinsEntity = new Entity(); // Create the entity
+	ruinsEntity->SetName("Ruins");
+	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
+	ruins->SetShader(m_modelShader); // Apply the shader to the mesh filter
+	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
+	ruinsEntity->AddComponent(ruins); // Add it to the entity
+	m_scene.Add(ruinsEntity); // Add the entity to scene for tracking
+
+	// Add the waves
+	Entity* wavesEntity = new Entity(); // Create the entity
+	wavesEntity->SetName("Waves");
+	MeshFilter* waves = new MeshFilter(wavesEntity); // Create its mesh filter
+	waves->SetShader(m_waveShader); // Apply the shader to the mesh filter
+	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
+	wavesEntity->AddComponent(waves); // Add it to the entity
+	m_scene.Add(wavesEntity); // Add the entity to scene for tracking
+
 
 	
 	
