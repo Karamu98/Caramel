@@ -15,7 +15,9 @@ m_bIsPossesed(true)
 	SetComponentType(CAMERA);
 	m_localPosition = glm::vec4(0, 5, 0, 1); // Set the camera just above root	
 
-	glm::vec3 pos = pGetOwnerEntity()->pGetRootTransformComp()->GetCurrentPosition();
+	glm::vec3 pos = pGetOwnerEntity()->GetRootTransform()->GetCurrentPosition();
+
+	
 
 	m_cameraMatrix = glm::inverse(glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 5000.0f); // Create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
@@ -30,7 +32,7 @@ void Camera::Update(float a_fDeltaTime)
 {
 	PARENT::Update(a_fDeltaTime);
 
-	glm::mat4* rootTransform = pGetOwnerEntity()->pGetRootTransformComp()->pGetTransformMatrix();
+	glm::mat4* rootTransform = pGetOwnerEntity()->GetRootTransform()->pGetTransformMatrix();
 
 	if (m_bIsPossesed)
 	{

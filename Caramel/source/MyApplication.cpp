@@ -57,15 +57,16 @@ bool MyApplication::onCreate()
 	// Add the sword
 	Entity* swordEntity = new Entity();
 	m_modelShader = new Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
-
-	m_modelShader->Bind();
+	Shader* waveShader = new Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
 
 
 	MeshFilter* newMesh = new MeshFilter(swordEntity);
 	swordEntity->AddComponent(newMesh);
 	m_scene.Add(swordEntity);
-	newMesh->SetShader(m_modelShader);
-	newMesh->LoadModel("models/Sword_LOD1.obj");
+	newMesh->SetShader(waveShader);
+	newMesh->LoadModel("models/Sword/Sword_LOD1.obj");
+
+	
 	
 	
 

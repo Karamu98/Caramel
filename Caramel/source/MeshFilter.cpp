@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "Entity.h"
+#include "Utilities.h"
 #include "TransformComponent.h"
 
 
@@ -23,7 +24,7 @@ void MeshFilter::OnGUI()
 {
 	// List Transfrom Component
 	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Model Component");
-	ImGui::InputText("Model Path", m_textBuffer, sizeof(char)*64);
+	ImGui::InputText("Model Path", m_textBuffer, IM_ARRAYSIZE(m_textBuffer));
 	if (ImGui::Button("Load path"))
 	{
 		LoadModel();
@@ -61,8 +62,7 @@ void MeshFilter::LoadModel(std::string a_path)
 {
 	UnloadModel();
 
-	m_textBuffer = new char[a_path.size()];
-	memcpy(m_textBuffer, a_path.c_str(), a_path.size());
+	memcpy(m_textBuffer, a_path.c_str(), sizeof(char) * 127);
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(a_path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -92,11 +92,12 @@ void MeshFilter::Draw(Camera* a_camera)
 	m_modelShader->Bind();
 
 	glm::mat4 proj = a_camera->GetProjectionView();
+	m_modelShader->SetFloat("Time", Utility::getTotalTime());
 	m_modelShader->SetMat4("ProjectionView", a_camera->GetProjectionView());
 	m_modelShader->SetMat4("ViewMatrix", a_camera->GetViewMatrix());
 	m_modelShader->SetVec4("cameraPosition", a_camera->GetCameraMatrix()[3]);
 
-	glm::mat4 m4ModelMat = *pGetOwnerEntity()->pGetRootTransformComp()->pGetTransformMatrix();
+	glm::mat4 m4ModelMat = *pGetOwnerEntity()->GetRootTransform()->pGetTransformMatrix();
 	m_modelShader->SetMat4("Model", m4ModelMat); //:::CONTINUE::: You need a way to manipulate all the meshes in a model when it moves, you also need to get world space for any of these meshes
 	m_modelShader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
 

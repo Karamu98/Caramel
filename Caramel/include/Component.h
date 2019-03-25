@@ -19,7 +19,7 @@ class Component
 public:
 
 	Component(Entity* a_pOwnerEntity);
-	~Component();
+	virtual ~Component();
 
 	virtual void Update(float a_fDeltaTime);
 	virtual void OnGUI();

@@ -17,6 +17,8 @@ class Entity;
 class Shader;
 class Camera;
 
+/// Ian Hudson helped a lot with helping me understand the model loading and data management.
+
 class MeshFilter : public Component
 {
 public:
@@ -48,7 +50,7 @@ private:
 
 	std::string m_dir;
 
-	char* m_textBuffer; // For ImGui
+	char m_textBuffer[128]; // For ImGui
 
 	Shader* m_modelShader;
 

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Component.h"
+#include <map>
 
 class Scene
 {
@@ -17,9 +18,6 @@ public:
 	void Delete(Entity* a_toDelete);
 	Entity* Duplicate();
 	Entity* Duplicate(Entity* a_toCopy);
-
-	Component* FindComponentOfType(COMPONENT_TYPE a_type);
-	std::vector<Component*> FindComponentsOfType(COMPONENT_TYPE a_type);
 
 	std::vector<Entity*> m_sceneEntities;
 	Entity* selectedEntity;	

@@ -2,6 +2,9 @@
 #define __SHADER_H_
 #include <string>
 #include <glm/glm.hpp>
+#include <map>
+
+
 
 class Shader
 {

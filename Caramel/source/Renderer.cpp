@@ -1,7 +1,6 @@
 #include "Renderer.h"
 #include "Component.h"
 #include "Scene.h"
-#include "Camera.h"
 #include "Gizmos.h"
 #include "Log.h"
 #include "imgui.h"
@@ -9,6 +8,9 @@
 #include "MeshFilter.h"
 #include "Scene.h"
 #include "Entity.h"
+#include "TransformComponent.h"
+#include "Camera.h"
+
 
 
 
@@ -39,24 +41,24 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	for (Entity* entity : a_sceneToRender->m_sceneEntities)
 	{
-		Component* comp;
 		if (activeCamera == nullptr)
 		{
-			comp = entity->FindComponentOfType(COMPONENT_TYPE::CAMERA);
-			if (comp != nullptr)
+			Camera* cam = entity->GetComponentOfType<Camera>();
+			if (cam != nullptr)
 			{
-				activeCamera = static_cast<Camera*>(comp);
+				activeCamera = cam;
 			}
 		}
 
-		comp = entity->FindComponentOfType(COMPONENT_TYPE::MESHFILTER);
+
+		MeshFilter* mesh = entity->GetComponentOfType<MeshFilter>();
 		
-		if(comp == nullptr)
+		if(mesh == nullptr)
 		{
 			continue;
 		}
 
-		MeshFilter* meshFilter = static_cast<MeshFilter*>(comp);
+		MeshFilter* meshFilter = mesh;
 
 		meshFilter->Draw(activeCamera);
 	}

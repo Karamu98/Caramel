@@ -18,7 +18,7 @@ Light::~Light()
 
 void Light::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
 {
-	glm::vec3 pos = pGetOwnerEntity()->pGetRootTransformComp()->GetCurrentPosition();
+	glm::vec3 pos = pGetOwnerEntity()->GetRootTransform()->GetCurrentPosition();
 	glUniform3fv(glGetUniformLocation(a_uProgramID, "LightPos"), 1, glm::value_ptr(pos));
 }
 

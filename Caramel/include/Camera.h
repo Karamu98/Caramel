@@ -7,6 +7,7 @@
 
 class Entity;
 
+
 class Camera : public Component
 {
 public:
