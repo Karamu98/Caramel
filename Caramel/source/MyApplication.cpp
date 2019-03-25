@@ -61,6 +61,8 @@ bool MyApplication::onCreate()
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(); // Create the entity
 	ruinsEntity->SetName("Ruins");
+	ruinsEntity->GetRootTransform()->SetScale(glm::vec3(0.1, 0.1, 0.1));
+	ruinsEntity->GetRootTransform()->SetCurrentPosition(glm::vec3(0, 1, 0));
 	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
 	ruins->SetShader(m_modelShader); // Apply the shader to the mesh filter
 	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
@@ -70,6 +72,7 @@ bool MyApplication::onCreate()
 	// Add the waves
 	Entity* wavesEntity = new Entity(); // Create the entity
 	wavesEntity->SetName("Waves");
+	wavesEntity->GetRootTransform()->SetScale(glm::vec3(3, 1, 3));
 	MeshFilter* waves = new MeshFilter(wavesEntity); // Create its mesh filter
 	waves->SetShader(m_waveShader); // Apply the shader to the mesh filter
 	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
