@@ -11,13 +11,9 @@ public:
 	Scene();
 	~Scene();
 	void Update(float a_delta);
-	void Save();
-	void Load(const char* a_pathToScene);
 	Entity* Add(Entity* a_toAdd);
 	void Delete();
 	void Delete(Entity* a_toDelete);
-	Entity* Duplicate();
-	Entity* Duplicate(Entity* a_toCopy);
 
 	std::vector<Entity*> m_sceneEntities;
 	Entity* selectedEntity;	

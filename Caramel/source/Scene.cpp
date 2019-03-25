@@ -65,15 +65,3 @@ void Scene::Delete(Entity * a_toDelete)
 	m_sceneEntities.erase(m_sceneEntities.begin() + old);
 	selectedEntity = m_sceneEntities[0];
 }
-
-Entity* Scene::Duplicate()
-{
-	CL_CORE_FATAL("NOT IMPLEMENTED");
-	return nullptr;
-}
-
-Entity* Scene::Duplicate(Entity * a_toCopy)
-{
-	CL_CORE_FATAL("NOT IMPLEMENTED");
-	return nullptr;
-}

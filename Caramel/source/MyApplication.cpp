@@ -15,7 +15,6 @@
 #include "Renderer.h"
 
 
-
 MyApplication::MyApplication()
 {
 
@@ -57,14 +56,14 @@ bool MyApplication::onCreate()
 	// Add the sword
 	Entity* swordEntity = new Entity();
 	m_modelShader = new Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
-	Shader* waveShader = new Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
+	m_waveShader =  new Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
 
 
 	MeshFilter* newMesh = new MeshFilter(swordEntity);
 	swordEntity->AddComponent(newMesh);
 	m_scene.Add(swordEntity);
-	newMesh->SetShader(waveShader);
-	newMesh->LoadModel("models/Sword/Sword_LOD1.obj");
+	newMesh->SetShader(m_modelShader);
+	newMesh->LoadModel("models/Jamie/soulspear.fbx");
 
 	
 	
@@ -93,7 +92,6 @@ void MyApplication::Update(float a_deltaTime)
 
 	
 
-
 #pragma region ImGui
 
 #pragma region Menu_Bar
@@ -104,11 +102,6 @@ void MyApplication::Update(float a_deltaTime)
 		{
 			Entity* newEntity = new Entity();
 			m_scene.Add(newEntity);
-		}
-
-		if (ImGui::MenuItem("Duplicate", "Ctrl+D"))
-		{
-			m_scene.Duplicate();
 		}
 
 		if (ImGui::MenuItem("Delete"))
@@ -297,6 +290,8 @@ void MyApplication::Draw()
 
 void MyApplication::Destroy()
 {
+	delete m_modelShader;
+	delete m_waveShader;
 	ImGui_ImplGlfwGL3_Shutdown();
 	ImGui::DestroyContext();
 
