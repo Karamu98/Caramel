@@ -8,8 +8,6 @@ typedef Component PARENT;
 
 TransformComponent::TransformComponent(Entity* pOwner) : PARENT(pOwner)
 {
-	SetComponentType(TRANSFORM);
-
 	SetCurrentPosition(glm::vec3(0, 0, 0));
 	SetFacingDirection(glm::vec3(0, 0, 1));
 	SetUpDirection(glm::vec3(0, 1, 0));
@@ -28,7 +26,7 @@ void TransformComponent::OnGUI()
 	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Transform Component");
 	ImGui::Text("Name: ");
 	ImGui::SameLine(50);
-	ImGui::InputText("", (char*)pGetOwnerEntity()->GetName()->c_str(), 10);
+	ImGui::InputText("", (char*)GetOwnerEntity()->GetName()->c_str(), 10);
 	ImGui::Text("Position: ");
 	ImGui::InputFloat(": X", &m_m4TransformMatrix[3].x);
 	ImGui::InputFloat(": Y", &m_m4TransformMatrix[3].y);
@@ -42,6 +40,11 @@ void TransformComponent::OnGUI()
 		SetRightDirection(glm::vec3(1, 0, 0));
 	}
 	ImGui::NewLine();
+}
+
+bool TransformComponent::OnDelete()
+{
+	return false;
 }
 
 glm::vec3 TransformComponent::GetRightDirection()

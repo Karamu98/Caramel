@@ -209,6 +209,7 @@ void Shader::Unbind()
 
 void Shader::RegisterRenderable(MeshFilter* a_other)
 {
+	a_other->m_owningShader = this;
 	m_toRender.push_back(a_other);
 }
 
@@ -220,7 +221,7 @@ void Shader::Draw()
 	}
 }
 
-void Shader::UnregisterRenderable(MeshFilter * a_other)
+void Shader::UnregisterRenderable(MeshFilter* a_other)
 {
 	ptrdiff_t old = std::find(m_toRender.begin(), m_toRender.end(), a_other) - m_toRender.begin();
 

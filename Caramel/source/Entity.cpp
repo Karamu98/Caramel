@@ -69,6 +69,14 @@ void Entity::AddComponent(Component * a_pComponent)
 	m_apComponentList.push_back(a_pComponent);
 }
 
+void Entity::DeleteComponent(Component* a_pComponent)
+{
+	ptrdiff_t old = std::find(m_apComponentList.begin(), m_apComponentList.end(), a_pComponent) - m_apComponentList.begin();
+
+	m_apComponentList.erase(m_apComponentList.begin() + old);
+	delete a_pComponent;
+}
+
 std::vector<Component*>* Entity::GetComponentList()
 {
 	return &m_apComponentList;

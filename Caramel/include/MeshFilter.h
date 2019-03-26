@@ -27,10 +27,13 @@ public:
 
 	virtual void Update(float a_fDeltaTime) {};
 	virtual void OnGUI();
+	virtual bool OnDelete();
 
 	void LoadModel();
 	void LoadModel(std::string a_path);
 	void Draw(Shader* a_shader);
+
+	Shader* m_owningShader;
 
 
 private:
@@ -48,7 +51,9 @@ private:
 
 	std::string m_dir;
 
-	char m_textBuffer[128]; // For ImGui
+
+	char m_modelTextbuff[128]; // For ImGui
+	char m_shaderTextbuff[128]; // For ImGui
 };
 
 #endif

@@ -27,6 +27,7 @@ public:
 
 	virtual void Update(float a_fDeltaTime) {};
 	virtual void OnGUI();
+	virtual bool OnDelete();
 
 
 	glm::vec3 GetRightDirection();

@@ -11,7 +11,6 @@ typedef Component PARENT;
 
 MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
 {
-	SetComponentType(MESHFILTER);
 }
 
 MeshFilter::~MeshFilter()
@@ -22,35 +21,58 @@ void MeshFilter::OnGUI()
 {
 	// List Transfrom Component
 	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Model Component");
-	ImGui::InputText("Model Path", m_textBuffer, IM_ARRAYSIZE(m_textBuffer));
+	ImGui::InputText("Model Path", m_modelTextbuff, IM_ARRAYSIZE(m_modelTextbuff));
 	if (ImGui::Button("Load path"))
 	{
 		LoadModel();
 	}
+	ImGui::InputText("Shader name", m_shaderTextbuff, IM_ARRAYSIZE(m_shaderTextbuff));
+	if (ImGui::Button("Attach to Shader"))
+	{
+		
+	}
+
 
 	ImGui::NewLine();
 
+}
+
+bool MeshFilter::OnDelete()
+{
+	ImGui::PushID(GetOwnerEntity() + GetModelNumber());
+	if (ImGui::Button("Mesh"))
+	{
+		m_owningShader->UnregisterRenderable(this);
+		GetOwnerEntity()->DeleteComponent(this);
+		ImGui::PopID();
+		return true;
+	}
+	else
+	{
+		ImGui::PopID();
+		return false;
+	}
 }
 
 void MeshFilter::LoadModel()
 {
 	UnloadModel();
 
-	std::string location = m_textBuffer;
+	std::string location = m_modelTextbuff;
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(location, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (scene == nullptr)
 	{
-		CL_CORE_ERROR("Failed to load model at '" + std::string(m_textBuffer) + "'.");
+		CL_CORE_ERROR("Failed to load model at '" + std::string(m_modelTextbuff) + "'.");
 		delete scene;
 		return;
 	}
 
-	m_dir = std::string(m_textBuffer).substr(0, std::string(m_textBuffer).find_last_of('/'));
+	m_dir = std::string(m_modelTextbuff).substr(0, std::string(m_modelTextbuff).find_last_of('/'));
 
-	CL_CORE_INFO("Loaded model at'" + std::string(m_textBuffer) + "'.");
+	CL_CORE_INFO("Loaded model at'" + std::string(m_modelTextbuff) + "'.");
 
 	// process ASSIMP's root node recursively
 	ProcessNode(scene->mRootNode, scene);
@@ -60,14 +82,14 @@ void MeshFilter::LoadModel(std::string a_path)
 {
 	UnloadModel();
 
-	memcpy(m_textBuffer, a_path.c_str(), sizeof(char) * 127);
+	memcpy(m_modelTextbuff, a_path.c_str(), sizeof(char) * 127);
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(a_path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (scene == nullptr)
 	{
-		CL_CORE_ERROR("Failed to load model at '" + std::string(m_textBuffer) + "'.");
+		CL_CORE_ERROR("Failed to load model at '" + std::string(m_modelTextbuff) + "'.");
 		delete scene;
 		return;
 	}
@@ -82,7 +104,7 @@ void MeshFilter::LoadModel(std::string a_path)
 
 void MeshFilter::Draw(Shader* a_shader)
 {
-	glm::mat4 m4ModelMat = *pGetOwnerEntity()->GetRootTransform()->pGetTransformMatrix();
+	glm::mat4 m4ModelMat = *GetOwnerEntity()->GetRootTransform()->pGetTransformMatrix();
 	a_shader->SetMat4("Model", m4ModelMat); //:::CONTINUE::: You need a way to manipulate all the meshes in a model when it moves, you also need to get world space for any of these meshes
 	a_shader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
 

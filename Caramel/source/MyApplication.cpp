@@ -166,6 +166,7 @@ void MyApplication::Update(float a_deltaTime)
 			if (ImGui::Button("Mesh Filter"))
 			{
 				MeshFilter* newComp = new MeshFilter(m_scene.selectedEntity);
+				bComponentTool = false;
 			}
 
 
@@ -177,42 +178,16 @@ void MyApplication::Update(float a_deltaTime)
 		}
 		else
 		{
-			std::vector<Component*>::iterator xIter = m_scene.selectedEntity->GetComponentList()->begin();
-			std::vector<Component*>::iterator end = m_scene.selectedEntity->GetComponentList()->end();
+			std::vector<Component*>* comps = m_scene.selectedEntity->GetComponentList();
 
-			for (xIter; xIter != end; xIter++)
+			for (int i = 0; i < m_scene.selectedEntity->GetComponentList()->size(); i++)
 			{
-				Component* comp = *xIter;
-
-				if (!comp)
+				if (comps->at(i)->OnDelete())
 				{
-					return;
-				}
-
-
-				ImGui::PushID(xIter - m_scene.selectedEntity->GetComponentList()->begin());
-				switch (comp->GetComponentType())
-				{
-				case TRANSFORM:
-				{
-					break;
-				}
-				default:
-				{
-					ptrdiff_t old = std::find(m_scene.selectedEntity->GetComponentList()->begin(), m_scene.selectedEntity->GetComponentList()->end(), comp) - m_scene.selectedEntity->GetComponentList()->begin();
-
-					m_scene.selectedEntity->GetComponentList()->erase(m_scene.selectedEntity->GetComponentList()->begin() + old);
 					bComponentTool = false;
-					break;
-				}
-				}
-				ImGui::PopID();
-				if (!bComponentTool)
-				{
-					break;
 				}
 			}
-
+			
 			ImGui::NewLine();
 			if (ImGui::Button("Cancel"))
 			{

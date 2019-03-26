@@ -7,9 +7,9 @@
 
 Component::Component(Entity* a_pOwnerEntity)
 	: m_pOwnerEntity(a_pOwnerEntity),
-	m_bActive(true),
-	m_eComponentType(TRANSFORM)
+	m_bActive(true)
 {
+	m_modelNumber = a_pOwnerEntity->GetComponentList()->size();
 	a_pOwnerEntity->AddComponent(this);
 }
 
@@ -27,29 +27,7 @@ void Component::Update(float a_fDeltaTime)
 
 void Component::OnGUI()
 {
-	switch (m_eComponentType)
-	{
-	case TRANSFORM:
-	{
-		ImGui::TextColored(ImVec4(255, 255, 255, 1), "Transform");
-		break;
-	}
-	case MODEL:
-	{
-		ImGui::TextColored(ImVec4(255, 255, 255, 1), "Model Component");
-		break;
-	}
-	case CAMERA:
-	{
-		ImGui::TextColored(ImVec4(255, 255, 255, 1), "Camera");
-		break;
-	}
-
-	default:
-		break;
-	}
-
-	ImGui::PushID(m_eComponentType);
+	ImGui::PushID(m_pOwnerEntity);
 	if (!m_bActive)
 	{
 		if (ImGui::Button("Activate"))
@@ -69,18 +47,7 @@ void Component::OnGUI()
 
 }
 
-COMPONENT_TYPE Component::GetComponentType()
-{
-	return m_eComponentType;
-
-}
-
-void Component::SetComponentType(COMPONENT_TYPE a_type)
-{
-	m_eComponentType = a_type;
-}
-
-Entity* Component::pGetOwnerEntity()
+Entity* Component::GetOwnerEntity()
 {
 	return m_pOwnerEntity;
 }
@@ -93,6 +60,11 @@ bool Component::IsEnabled()
 void Component::SetEnabled(bool a_newState)
 {
 	m_bActive = a_newState;
+}
+
+unsigned int Component::GetModelNumber()
+{
+	return m_modelNumber;
 }
 
 

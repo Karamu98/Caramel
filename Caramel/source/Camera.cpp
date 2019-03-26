@@ -5,6 +5,7 @@
 #include "Defines.h"
 #include "Utilities.h"
 
+
 typedef Component PARENT;
 
 Camera::Camera(Entity * a_pOwner) : PARENT(a_pOwner),
@@ -12,10 +13,9 @@ m_fov(90),
 m_cameraSpeed(3),
 m_bIsPossesed(true)
 {
-	SetComponentType(CAMERA);
 	m_localPosition = glm::vec4(0, 5, 0, 1); // Set the camera just above root	
 
-	glm::vec3 pos = pGetOwnerEntity()->GetRootTransform()->GetCurrentPosition();
+	glm::vec3 pos = GetOwnerEntity()->GetRootTransform()->GetCurrentPosition();
 
 	
 
@@ -32,7 +32,7 @@ void Camera::Update(float a_fDeltaTime)
 {
 	PARENT::Update(a_fDeltaTime);
 
-	glm::mat4* rootTransform = pGetOwnerEntity()->GetRootTransform()->pGetTransformMatrix();
+	glm::mat4* rootTransform = GetOwnerEntity()->GetRootTransform()->pGetTransformMatrix();
 
 	if (m_bIsPossesed)
 	{
@@ -45,6 +45,22 @@ void Camera::Update(float a_fDeltaTime)
 
 void Camera::OnGUI()
 {
+}
+
+bool Camera::OnDelete()
+{
+	ImGui::PushID(GetOwnerEntity() + GetModelNumber());
+	if (ImGui::Button("Camera"))
+	{
+		GetOwnerEntity()->DeleteComponent(this);
+		ImGui::PopID();
+		return true;
+	}
+	else
+	{
+		ImGui::PopID();
+		return false;
+	}
 }
 
 glm::mat4 Camera::GetCameraMatrix()

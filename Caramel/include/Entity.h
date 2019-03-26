@@ -9,7 +9,6 @@
 
 class Component;
 class TransformComponent;
-enum COMPONENT_TYPE;
 class Scene;
 
 class Entity
@@ -23,6 +22,7 @@ public:
 	virtual void OnGUI();
 
 	void AddComponent(Component* a_pComponent);
+	void DeleteComponent(Component* a_pComponent);
 
 	template <typename T> T* GetComponentOfType(int a_element = 0) const;
 	template <typename T> std::vector<T*> FindComponentsOfType() const;

@@ -9,7 +9,6 @@ typedef Component PARENT;
 
 Light::Light(Entity * a_pOwner) : PARENT(a_pOwner)
 {
-	SetComponentType(LIGHT);
 }
 
 Light::~Light()
@@ -18,7 +17,7 @@ Light::~Light()
 
 void Light::Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO)
 {
-	glm::vec3 pos = pGetOwnerEntity()->GetRootTransform()->GetCurrentPosition();
+	glm::vec3 pos = GetOwnerEntity()->GetRootTransform()->GetCurrentPosition();
 	glUniform3fv(glGetUniformLocation(a_uProgramID, "LightPos"), 1, glm::value_ptr(pos));
 }
 

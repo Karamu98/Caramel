@@ -1,18 +1,9 @@
 #ifndef _COMPONENT_H_
 #define _COMPONENT_H_
 
+#include "imgui.h"
 
 class Entity;
-
-enum COMPONENT_TYPE
-{
-	TRANSFORM,
-	MODEL,
-	CAMERA,
-	MESHFILTER,
-	MESHRENDERER,
-	LIGHT
-};
 
 class Component
 {
@@ -23,18 +14,19 @@ public:
 
 	virtual void Update(float a_fDeltaTime);
 	virtual void OnGUI();
+	virtual bool OnDelete() = 0;
 
-	COMPONENT_TYPE GetComponentType();
-	void SetComponentType(COMPONENT_TYPE a_type);
-	Entity* pGetOwnerEntity();
+	Entity* GetOwnerEntity();
 	bool IsEnabled();
 	void SetEnabled(bool a_newState = true);
+
+	unsigned int GetModelNumber();
 
 
 private:
 
 	Entity* m_pOwnerEntity;
-	COMPONENT_TYPE m_eComponentType;
+	unsigned int m_modelNumber;
 	bool m_bActive;
 
 };
