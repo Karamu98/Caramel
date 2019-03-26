@@ -52,14 +52,7 @@ bool MyApplication::onCreate()
 	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
 
-	// Create the shaders
-	//Shader modShader = Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
-	//Shader waveShader = Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
-
-	//// Add them to the renderer
-	//m_renderer.AddShader("ModelShader", modShader);
-	//m_renderer.AddShader("WaveShader", waveShader);
-
+	// Create the shaders and add them to the renderer
 	Shader* modShader = m_renderer.CreateShader("Model", "shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
 	Shader* waveShader = m_renderer.CreateShader("Wave", "shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
 

@@ -17,13 +17,13 @@ public:
 	void Draw(Scene* a_sceneToRender); // Draws all of the objects in a scene using the current rendering mode
 	void OnGUI();
 
-	Shader* AddShader(const char* a_name, Shader& a_newShader);
+	Shader* AddShader(const char* a_name, Shader* a_newShader);
 	Shader* CreateShader(const char* a_name, const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader = nullptr, const char* a_tessalationShader = nullptr);
 	Shader* GetShader(const char* a_name);
 
 private:
 
-	std::map<std::string, Shader> m_shaders;
+	std::map<std::string, Shader*> m_shaders;
 };
 
 

@@ -191,9 +191,6 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 
 }
 
-Shader::Shader()
-{
-}
 
 Shader::~Shader()
 {

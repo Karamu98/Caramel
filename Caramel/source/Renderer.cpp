@@ -22,6 +22,10 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
+	for (auto &shader : m_shaders)
+	{
+		delete shader.second;
+	}
 }
 
 void Renderer::Init(bool a_isDeferred)
@@ -48,14 +52,14 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	for (auto &shader : m_shaders )
 	{
-		shader.second.Bind();
-		shader.second.SetFloat("Time", Utility::getTotalTime());
-		shader.second.SetMat4("ProjectionView", activeCam->GetProjectionView());
-		shader.second.SetMat4("ViewMatrix", activeCam->GetViewMatrix());
-		shader.second.SetVec4("cameraPosition", activeCam->GetCameraMatrix()[3]);
-		shader.second.Draw();
-		shader.second.Unbind();
+		shader.second->Bind();
+		shader.second->SetFloat("Time", Utility::getTotalTime());
+		shader.second->SetMat4("ProjectionView", activeCam->GetProjectionView());
+		shader.second->SetMat4("ViewMatrix", activeCam->GetViewMatrix());
+		shader.second->SetVec4("cameraPosition", activeCam->GetCameraMatrix()[3]);
+		shader.second->Draw();
 	}
+	glUseProgram(0);
 
 	// Draw the gizmos from this frame
 	Gizmos::draw(glm::inverse(activeCam->GetCameraMatrix()), activeCam->GetProjectionMatrix());
@@ -66,23 +70,21 @@ void Renderer::OnGUI()
 	
 }
 
-Shader* Renderer::AddShader(const char* a_name, Shader& a_newShader)
+Shader* Renderer::AddShader(const char* a_name, Shader* a_newShader)
 {
 	m_shaders[a_name] = a_newShader;
 
-	return &m_shaders[a_name];
+	return m_shaders[a_name];
 }
 
 Shader* Renderer::CreateShader(const char* a_name, const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader, const char* a_tessalationShader)
 {
-	Shader newShader = Shader(a_vertexPath, a_fragPath, a_geometryShader, a_tessalationShader);
+	m_shaders[a_name] = new Shader(a_vertexPath, a_fragPath, a_geometryShader, a_tessalationShader);
 
-	m_shaders[a_name] = newShader;
-
-	return &m_shaders[a_name];
+	return m_shaders[a_name];
 }
 
 Shader* Renderer::GetShader(const char* a_name)
 {
-	return &m_shaders[a_name];
+	return m_shaders[a_name];
 }

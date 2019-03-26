@@ -21,7 +21,6 @@ public :
 	/// <param name='a_geometryShader'>The file path to a valid geometry shader. (Optional)</param>
 	/// <param name='a_tessalationShader'>The file path to a valid tessalation shader. (Optional)</param>
 	Shader(const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader = nullptr, const char* a_tessalationShader = nullptr);
-	Shader();
 	~Shader();
 
 	/// <summary>
@@ -40,7 +39,9 @@ public :
 	/// <param name='a_other'>A pointer to a mesh to render.</param>
 	void RegisterRenderable(MeshFilter* a_other);
 
-
+	/// <summary>
+	/// Sets base shader uniforms and draws each tracked renderable.
+	/// </summary>
 	void Draw();
 
 	/// <summary>
