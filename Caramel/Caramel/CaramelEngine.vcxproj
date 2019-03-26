@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -181,7 +181,7 @@
     <ClCompile Include="..\source\Scene.cpp" />
     <ClCompile Include="..\source\Shader.cpp" />
     <ClCompile Include="..\source\Texture.cpp" />
-    <ClCompile Include="..\source\TransformComponent.cpp" />
+    <ClCompile Include="..\source\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\deps\gl_core_4_4\gl_core_4_4.h" />
@@ -205,7 +205,7 @@
     <ClInclude Include="..\include\Scene.h" />
     <ClInclude Include="..\include\Shader.h" />
     <ClInclude Include="..\include\Texture.h" />
-    <ClInclude Include="..\include\TransformComponent.h" />
+    <ClInclude Include="..\include\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\framework\framework.vcxproj">

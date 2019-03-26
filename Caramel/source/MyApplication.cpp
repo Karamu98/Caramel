@@ -13,7 +13,6 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Renderer.h"
-#include "TransformComponent.h"
 
 
 MyApplication::MyApplication()
@@ -61,15 +60,15 @@ bool MyApplication::onCreate()
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
 	ruinsEntity->SetName("Ruins");
-	ruinsEntity->GetRootTransform()->SetScale(glm::vec3(0.1, 0.1, 0.1));
-	ruinsEntity->GetRootTransform()->SetCurrentPosition(glm::vec3(0, 1, 0));
+	ruinsEntity->GetTransform()->SetScale(glm::vec3(0.1, 0.1, 0.1));
+	ruinsEntity->GetTransform()->SetPosition(glm::vec3(0, 1, 0));
 	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
 	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
 
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
 	wavesEntity->SetName("Waves");
-	wavesEntity->GetRootTransform()->SetScale(glm::vec3(3, 1, 3));
+	wavesEntity->GetTransform()->SetScale(glm::vec3(3, 1, 3));
 	MeshFilter* waves = new MeshFilter(wavesEntity); // Create its mesh filter
 	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
 

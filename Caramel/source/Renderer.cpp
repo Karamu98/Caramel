@@ -8,7 +8,6 @@
 #include "MeshFilter.h"
 #include "Scene.h"
 #include "Entity.h"
-#include "TransformComponent.h"
 #include "Camera.h"
 #include "Utilities.h"
 

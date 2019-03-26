@@ -1,7 +1,7 @@
 #include "Entity.h"
-#include "TransformComponent.h"
+#include "Transform.h"
 #include "imgui.h"
-
+#include "Gizmos.h"
 #include "Component.h"
 #include <iostream>
 #include <string>
@@ -18,10 +18,6 @@ Entity::Entity(Scene* a_scene)
 	m_uiEntityID = s_uiEntityIDCount++;
 
 	SetName(std::string("Default ") += std::to_string(GetEntityID()));
-
-	new TransformComponent(this);
-
-	m_rootTransform = GetComponentOfType<TransformComponent>(0);
 }
 
 Entity::~Entity()
@@ -52,6 +48,27 @@ void Entity::Update(float a_fDeltaTime)
 
 void Entity::OnGUI()
 {
+	Gizmos::addTransform(*m_Transform.GetMatrix(), 1);
+
+	auto positionRow = &((*m_Transform.GetMatrix())[3]);
+
+	// List Transfrom Component
+	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Transform Component");
+	ImGui::Text("Name: ");
+	ImGui::SameLine(50);
+	ImGui::InputText("", (char*)GetName()->c_str(), 10);
+	ImGui::Text("Position: ");
+	ImGui::InputFloat(": X", &((*positionRow)[0]));
+	ImGui::InputFloat(": Y", &((*positionRow)[1]));
+	ImGui::InputFloat(": Z", &((*positionRow)[2]));
+	//ImGui::Text("Position X: %i Y: %i Z: %i", (int)pGetOwnerEntity()->pGetRootTransformComp()->GetCurrentPosition().x, (int)pGetOwnerEntity()->pGetRootTransformComp()->GetCurrentPosition().y, (int)pGetOwnerEntity()->pGetRootTransformComp()->GetCurrentPosition().z);
+	if (ImGui::Button("Reset"))
+	{
+		m_Transform.Reset();
+	}
+	ImGui::NewLine();
+
+
 	std::vector<Component*>::iterator xIter;
 	for (xIter = m_apComponentList.begin(); xIter < m_apComponentList.end(); ++xIter)
 	{
@@ -82,9 +99,9 @@ std::vector<Component*>* Entity::GetComponentList()
 	return &m_apComponentList;
 }
 
-TransformComponent * Entity::GetRootTransform()
+Transform* Entity::GetTransform()
 {
-	return m_rootTransform;
+	return &m_Transform;
 }
 
 std::string* Entity::GetName()

@@ -4,11 +4,11 @@
 // Includes
 #include <map>
 #include <vector>
+#include "Transform.h"
 
 
 
 class Component;
-class TransformComponent;
 class Scene;
 
 class Entity
@@ -28,7 +28,7 @@ public:
 	template <typename T> std::vector<T*> FindComponentsOfType() const;
 	std::vector<Component*>* GetComponentList();
 
-	TransformComponent* GetRootTransform();
+	Transform* GetTransform();
 
 	std::string* GetName();
 	void SetName(std::string a_newName);
@@ -39,7 +39,7 @@ private:
 	unsigned int m_uiEntityID;
 
 	std::string ssName;
-	TransformComponent* m_rootTransform;
+	Transform m_Transform;
 	
 	std::vector<Component*>m_apComponentList;
 
