@@ -39,6 +39,7 @@ public:
 	void SetUpDirection(glm::vec3 vUpDirection);
 	void SetFacingDirection(glm::vec3 vFacingDirection);
 	void SetCurrentPosition(glm::vec3 vCurrentPosition);
+	void SetScale(glm::vec3 a_newScale);
 
 private:
 

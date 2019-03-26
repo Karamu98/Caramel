@@ -84,6 +84,13 @@ void TransformComponent::SetCurrentPosition(glm::vec3 vCurrentPosition)
 	SetEntityMatrixRow(POSITION_VECTOR, vCurrentPosition);
 }
 
+void TransformComponent::SetScale(glm::vec3 a_newScale)
+{
+	SetEntityMatrixRow(UP_VECTOR, GetUpDirection() * a_newScale.y);
+	SetEntityMatrixRow(RIGHT_VECTOR, GetRightDirection() * a_newScale.x);
+	SetEntityMatrixRow(FORWARD_VECTOR, GetFacingDirection() * a_newScale.z);
+}
+
 glm::mat4* TransformComponent::pGetTransformMatrix()
 {
 	return &m_m4TransformMatrix;
