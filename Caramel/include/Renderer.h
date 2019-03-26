@@ -2,6 +2,7 @@
 #define _RENDERER_H__
 
 #include "Shader.h"
+#include <map>
 
 class Scene;
 class Camera;
@@ -16,10 +17,13 @@ public:
 	void Draw(Scene* a_sceneToRender); // Draws all of the objects in a scene using the current rendering mode
 	void OnGUI();
 
+	Shader* AddShader(const char* a_name, Shader& a_newShader);
+	Shader* CreateShader(const char* a_name, const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader = nullptr, const char* a_tessalationShader = nullptr);
+	Shader* GetShader(const char* a_name);
+
 private:
 
-	/// CACHE
-	Camera* activeCamera; // The active camera this frame.
+	std::map<std::string, Shader> m_shaders;
 };
 
 

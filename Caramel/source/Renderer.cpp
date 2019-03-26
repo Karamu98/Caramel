@@ -10,6 +10,7 @@
 #include "Entity.h"
 #include "TransformComponent.h"
 #include "Camera.h"
+#include "Utilities.h"
 
 
 
@@ -38,36 +39,50 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	// clear the backbuffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	Camera* activeCam = a_sceneToRender->GetActiveCamera();
 
-	for (Entity* entity : a_sceneToRender->m_sceneEntities)
+	if (activeCam == nullptr)
 	{
-		if (activeCamera == nullptr)
-		{
-			Camera* cam = entity->GetComponentOfType<Camera>();
-			if (cam != nullptr)
-			{
-				activeCamera = cam;
-			}
-		}
+		return;
+	}
 
-
-		MeshFilter* mesh = entity->GetComponentOfType<MeshFilter>();
-		
-		if(mesh == nullptr)
-		{
-			continue;
-		}
-
-		MeshFilter* meshFilter = mesh;
-
-		meshFilter->Draw(activeCamera);
+	for (auto &shader : m_shaders )
+	{
+		shader.second.Bind();
+		shader.second.SetFloat("Time", Utility::getTotalTime());
+		shader.second.SetMat4("ProjectionView", activeCam->GetProjectionView());
+		shader.second.SetMat4("ViewMatrix", activeCam->GetViewMatrix());
+		shader.second.SetVec4("cameraPosition", activeCam->GetCameraMatrix()[3]);
+		shader.second.Draw();
+		shader.second.Unbind();
 	}
 
 	// Draw the gizmos from this frame
-	Gizmos::draw(glm::inverse(activeCamera->GetCameraMatrix()), activeCamera->GetProjectionMatrix());
+	Gizmos::draw(glm::inverse(activeCam->GetCameraMatrix()), activeCam->GetProjectionMatrix());
 }
 
 void Renderer::OnGUI()
 {
 	
+}
+
+Shader* Renderer::AddShader(const char* a_name, Shader& a_newShader)
+{
+	m_shaders[a_name] = a_newShader;
+
+	return &m_shaders[a_name];
+}
+
+Shader* Renderer::CreateShader(const char* a_name, const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader, const char* a_tessalationShader)
+{
+	Shader newShader = Shader(a_vertexPath, a_fragPath, a_geometryShader, a_tessalationShader);
+
+	m_shaders[a_name] = newShader;
+
+	return &m_shaders[a_name];
+}
+
+Shader* Renderer::GetShader(const char* a_name)
+{
+	return &m_shaders[a_name];
 }

@@ -2,10 +2,8 @@
 #include "Log.h"
 #include "imgui.h"
 #include "gl_core_4_4.h"
-#include "Camera.h"
 #include "Shader.h"
 #include "Entity.h"
-#include "Utilities.h"
 #include "TransformComponent.h"
 
 
@@ -82,30 +80,16 @@ void MeshFilter::LoadModel(std::string a_path)
 	ProcessNode(scene->mRootNode, scene);
 }
 
-void MeshFilter::SetShader(Shader * a_shaderToUse)
+void MeshFilter::Draw(Shader* a_shader)
 {
-	m_modelShader = a_shaderToUse;
-}
-
-void MeshFilter::Draw(Camera* a_camera)
-{
-	m_modelShader->Bind();
-
-	glm::mat4 proj = a_camera->GetProjectionView();
-	m_modelShader->SetFloat("Time", Utility::getTotalTime());
-	m_modelShader->SetMat4("ProjectionView", a_camera->GetProjectionView());
-	m_modelShader->SetMat4("ViewMatrix", a_camera->GetViewMatrix());
-	m_modelShader->SetVec4("cameraPosition", a_camera->GetCameraMatrix()[3]);
-
 	glm::mat4 m4ModelMat = *pGetOwnerEntity()->GetRootTransform()->pGetTransformMatrix();
-	m_modelShader->SetMat4("Model", m4ModelMat); //:::CONTINUE::: You need a way to manipulate all the meshes in a model when it moves, you also need to get world space for any of these meshes
-	m_modelShader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
+	a_shader->SetMat4("Model", m4ModelMat); //:::CONTINUE::: You need a way to manipulate all the meshes in a model when it moves, you also need to get world space for any of these meshes
+	a_shader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
 
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Draw(m_modelShader);
+		meshes[i].Draw(a_shader);
 	}
-	m_modelShader->Unbind();
 
 }
 

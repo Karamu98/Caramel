@@ -7,17 +7,19 @@
 #include <string>
 #include "Log.h"
 #include "Camera.h"
+#include "Scene.h"
 
 unsigned int Entity::s_uiEntityIDCount = 0;
 
-Entity::Entity()
+Entity::Entity(Scene* a_scene)
 {
+	a_scene->Add(this);
 	//Increment entity ID
 	m_uiEntityID = s_uiEntityIDCount++;
 
 	SetName(std::string("Default ") += std::to_string(GetEntityID()));
 
-	AddComponent(new TransformComponent(this));
+	new TransformComponent(this);
 
 	m_rootTransform = GetComponentOfType<TransformComponent>(0);
 }

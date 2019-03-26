@@ -10,7 +10,7 @@ Component::Component(Entity* a_pOwnerEntity)
 	m_bActive(true),
 	m_eComponentType(TRANSFORM)
 {
-
+	a_pOwnerEntity->AddComponent(this);
 }
 
 Component::~Component()
@@ -83,6 +83,16 @@ void Component::SetComponentType(COMPONENT_TYPE a_type)
 Entity* Component::pGetOwnerEntity()
 {
 	return m_pOwnerEntity;
+}
+
+bool Component::IsEnabled()
+{
+	return m_bActive;
+}
+
+void Component::SetEnabled(bool a_newState)
+{
+	m_bActive = a_newState;
 }
 
 

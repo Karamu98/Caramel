@@ -3,8 +3,12 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <map>
+#include "MeshFilter.h"
 
 
+class Scene;
+
+class Renderer;
 
 class Shader
 {
@@ -17,6 +21,7 @@ public :
 	/// <param name='a_geometryShader'>The file path to a valid geometry shader. (Optional)</param>
 	/// <param name='a_tessalationShader'>The file path to a valid tessalation shader. (Optional)</param>
 	Shader(const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader = nullptr, const char* a_tessalationShader = nullptr);
+	Shader();
 	~Shader();
 
 	/// <summary>
@@ -28,6 +33,21 @@ public :
 	/// Unbinds shader.
 	/// </summary>
 	void Unbind();
+
+	/// <summary>
+	/// Registers a mesh to be rendered to the shader
+	/// </summary>
+	/// <param name='a_other'>A pointer to a mesh to render.</param>
+	void RegisterRenderable(MeshFilter* a_other);
+
+
+	void Draw();
+
+	/// <summary>
+	/// Unregisters a mesh to be rendered to the shader
+	/// </summary>
+	/// <param name='a_other'>A pointer to a mesh to render.</param>
+	void UnregisterRenderable(MeshFilter* a_other);
 
 	/// <summary>
 	/// Sets a boolean uniform value by name.
@@ -80,6 +100,7 @@ private:
 	bool VerifyShader(unsigned int& a_shaderHandle);
 
 	unsigned int m_shaderProgram;
+	std::vector<MeshFilter*> m_toRender;
 };
 
 

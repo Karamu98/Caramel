@@ -27,6 +27,8 @@ public:
 	COMPONENT_TYPE GetComponentType();
 	void SetComponentType(COMPONENT_TYPE a_type);
 	Entity* pGetOwnerEntity();
+	bool IsEnabled();
+	void SetEnabled(bool a_newState = true);
 
 
 private:

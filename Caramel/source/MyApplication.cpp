@@ -48,38 +48,39 @@ bool MyApplication::onCreate()
 	m_renderer.Init(false);
 
 	// Add the default entity.
-	Entity* newEditor = new Entity();
+	Entity* newEditor = new Entity(&m_scene);
 	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
-	newEditor->AddComponent(newCam);
-	m_scene.Add(newEditor);
 
-	m_modelShader = new Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
-	m_waveShader = new Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
+	// Create the shaders
+	//Shader modShader = Shader("shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
+	//Shader waveShader = Shader("shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
 
+	//// Add them to the renderer
+	//m_renderer.AddShader("ModelShader", modShader);
+	//m_renderer.AddShader("WaveShader", waveShader);
+
+	Shader* modShader = m_renderer.CreateShader("Model", "shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
+	Shader* waveShader = m_renderer.CreateShader("Wave", "shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
+
+	/// Adding Scene entities
 
 	// Add the ruins
-	Entity* ruinsEntity = new Entity(); // Create the entity
+	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
 	ruinsEntity->SetName("Ruins");
 	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
-	ruins->SetShader(m_modelShader); // Apply the shader to the mesh filter
 	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
-	ruinsEntity->AddComponent(ruins); // Add it to the entity
-	m_scene.Add(ruinsEntity); // Add the entity to scene for tracking
 
 	// Add the waves
-	Entity* wavesEntity = new Entity(); // Create the entity
+	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
 	wavesEntity->SetName("Waves");
 	MeshFilter* waves = new MeshFilter(wavesEntity); // Create its mesh filter
-	waves->SetShader(m_waveShader); // Apply the shader to the mesh filter
 	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
-	wavesEntity->AddComponent(waves); // Add it to the entity
-	m_scene.Add(wavesEntity); // Add the entity to scene for tracking
 
+	// Track renderables in their shaders
+	modShader->RegisterRenderable(ruins);
+	waveShader->RegisterRenderable(waves);
 
-	
-	
-	
 
 	return true;
 }
@@ -112,7 +113,7 @@ void MyApplication::Update(float a_deltaTime)
 	{
 		if (ImGui::MenuItem("Create", "Ctrl+N"))
 		{
-			Entity* newEntity = new Entity();
+			Entity* newEntity = new Entity(&m_scene);
 			m_scene.Add(newEntity);
 		}
 
@@ -169,7 +170,6 @@ void MyApplication::Update(float a_deltaTime)
 			if (ImGui::Button("Mesh Filter"))
 			{
 				MeshFilter* newComp = new MeshFilter(m_scene.selectedEntity);
-				m_scene.selectedEntity->AddComponent(newComp);
 			}
 
 
@@ -292,9 +292,6 @@ void MyApplication::Draw()
 {
 	m_renderer.Draw(&m_scene);
 
-
-	
-
 	// Needs to be called last
 	ImGui::Render();
 	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
@@ -302,8 +299,6 @@ void MyApplication::Draw()
 
 void MyApplication::Destroy()
 {
-	delete m_modelShader;
-	delete m_waveShader;
 	ImGui_ImplGlfwGL3_Shutdown();
 	ImGui::DestroyContext();
 

@@ -15,7 +15,6 @@
 
 class Entity;
 class Shader;
-class Camera;
 
 /// Ian Hudson helped a lot with helping me understand the model loading and data management.
 
@@ -31,8 +30,7 @@ public:
 
 	void LoadModel();
 	void LoadModel(std::string a_path);
-	void SetShader(Shader* a_shaderToUse);
-	void Draw(Camera* a_camera);
+	void Draw(Shader* a_shader);
 
 
 private:
@@ -51,9 +49,6 @@ private:
 	std::string m_dir;
 
 	char m_textBuffer[128]; // For ImGui
-
-	Shader* m_modelShader;
-
 };
 
 #endif

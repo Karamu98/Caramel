@@ -4,6 +4,7 @@
 #include "gl_core_4_4.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Renderer.h"
 
 
 // If this is defined, we don't want to delete shaders to allow for easy debugging
@@ -190,6 +191,10 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 
 }
 
+Shader::Shader()
+{
+}
+
 Shader::~Shader()
 {
 	glDeleteProgram(m_shaderProgram);
@@ -203,6 +208,26 @@ void Shader::Bind()
 void Shader::Unbind()
 {
 	glUseProgram(0);
+}
+
+void Shader::RegisterRenderable(MeshFilter* a_other)
+{
+	m_toRender.push_back(a_other);
+}
+
+void Shader::Draw()
+{
+	for (MeshFilter* mesh : m_toRender)
+	{
+		mesh->Draw(this);
+	}
+}
+
+void Shader::UnregisterRenderable(MeshFilter * a_other)
+{
+	ptrdiff_t old = std::find(m_toRender.begin(), m_toRender.end(), a_other) - m_toRender.begin();
+
+	m_toRender.erase(m_toRender.begin() + old);
 }
 
 void Shader::SetBool(const std::string& a_name, bool a_value)

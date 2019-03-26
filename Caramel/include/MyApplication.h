@@ -30,8 +30,6 @@ private:
 
 	// For the "Editor" camera
 	Camera* m_activeCam;
-	Shader* m_modelShader;
-	Shader* m_waveShader;
 
 	Scene m_scene;
 	Renderer m_renderer;

@@ -10,12 +10,13 @@
 class Component;
 class TransformComponent;
 enum COMPONENT_TYPE;
+class Scene;
 
 class Entity
 {
 public:
 
-	Entity();
+	Entity(Scene* a_scene);
 	~Entity();
 
 	virtual void Update(float a_fDeltaTime);
@@ -24,6 +25,7 @@ public:
 	void AddComponent(Component* a_pComponent);
 
 	template <typename T> T* GetComponentOfType(int a_element = 0) const;
+	template <typename T> std::vector<T*> FindComponentsOfType() const;
 	std::vector<Component*>* GetComponentList();
 
 	TransformComponent* GetRootTransform();
@@ -43,9 +45,6 @@ private:
 
 	static unsigned int s_uiEntityIDCount;
 };
-
-
-#endif // _ENTITY_H
 
 template<typename T>
 T * Entity::GetComponentOfType(int a_element) const
@@ -80,3 +79,27 @@ T * Entity::GetComponentOfType(int a_element) const
 		return nullptr;
 	}
 }
+
+template<typename T>
+std::vector<T*> Entity::FindComponentsOfType() const
+{
+	std::vector<T*> allComps; // Stores a list of identicle typed' components
+	Component* pComponent;
+
+	// Iterates over a list of components
+	for (int i = 0; i < m_apComponentList.size(); i++)
+	{
+		pComponent = m_apComponentList[i];
+
+		T* casted = dynamic_cast<T*>(pComponent); // Cast it to our type
+
+		if (casted != nullptr) // If it's valid
+		{
+			allComps.push_back(casted); // Add it to the list
+		}
+	}
+
+	return allComps;
+}
+
+#endif // _ENTITY_H

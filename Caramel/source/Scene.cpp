@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Log.h"
 #include "Entity.h"
+#include "Camera.h"
 
 
 Scene::Scene()
@@ -41,6 +42,27 @@ Entity* Scene::Add(Entity * a_toAdd)
 	m_sceneEntities.push_back(a_toAdd);
 	selectedEntity = a_toAdd;
 	return a_toAdd;
+}
+
+Camera* Scene::GetActiveCamera()
+{
+	// If our camera is not valid, find another
+	if (m_activeCamera == nullptr)
+	{
+		// Get all cameras in the scene
+		std::vector<Camera*> sceneCameras = FindAllComponentsOfType<Camera>();
+
+		// Test for first enabled camera
+		for (Camera* cam : sceneCameras)
+		{
+			if (cam->IsEnabled())
+			{
+				m_activeCamera = cam;
+				break;
+			}
+		}
+	}
+	return m_activeCamera;
 }
 
 void Scene::Delete()
