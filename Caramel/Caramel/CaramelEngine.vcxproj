@@ -202,6 +202,7 @@
     <ClInclude Include="..\include\Mesh.h" />
     <ClInclude Include="..\include\MeshFilter.h" />
     <ClInclude Include="..\include\MyApplication.h" />
+    <ClInclude Include="..\include\Plane.h" />
     <ClInclude Include="..\include\PointLight.h" />
     <ClInclude Include="..\include\Renderer.h" />
     <ClInclude Include="..\include\Scene.h" />

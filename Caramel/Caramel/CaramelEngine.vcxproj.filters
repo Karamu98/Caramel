@@ -28,6 +28,9 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{e1a193c9-1267-4d67-a694-2e63c818e13c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Primitives">
+      <UniqueIdentifier>{71c8d91a-7422-4f6e-a121-a169da4e9174}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\MyApplication.cpp">
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="..\include\PointLight.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Plane.h">
+      <Filter>Header Files\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

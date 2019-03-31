@@ -149,7 +149,7 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	// First pass deferred
 
-	for (auto &shader : m_shaders )
+	for (auto &shader : m_shaders)
 	{
 		shader.second->Bind();
 		shader.second->SetFloat("Time", Utility::getTotalTime());
