@@ -1,1 +1,0 @@
-Pull mesh data into own buffered format

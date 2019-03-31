@@ -6,13 +6,7 @@
 #include "glm/glm.hpp"
 
 class Entity;
-
-typedef enum LightType
-{
-	LIGHT_POINT,
-	LIGHT_SPOT,
-	LIGHT_DIRECTION
-}LightType;
+class Shader;
 
 class Light : public Component
 {
@@ -22,14 +16,14 @@ public:
 	~Light();
 
 	virtual void Update(float a_fDeltaTime) {};
-	virtual void Draw(unsigned int a_uProgramID, unsigned int a_uVBO, unsigned int a_uIBO);
-	virtual void OnGUI();
+	virtual void Draw(Shader* a_shader) = 0;
+	virtual void OnGUI() = 0;
 
 private:
 
-	LightType m_lightType;
-	glm::vec4 m_colour;
-	float m_intensity;
+	glm::vec3 m_ambientColour;
+	glm::vec3 m_diffuseColour;
+	glm::vec3 m_specularColour;
 
 };
 

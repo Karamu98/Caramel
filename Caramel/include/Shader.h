@@ -40,7 +40,7 @@ public :
 	void RegisterRenderable(MeshFilter* a_other);
 
 	/// <summary>
-	/// Sets base shader uniforms and draws each tracked renderable.
+	/// Draws each tracked renderable.
 	/// </summary>
 	void Draw();
 

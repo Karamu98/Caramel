@@ -177,6 +177,7 @@
     <ClCompile Include="..\source\Mesh.cpp" />
     <ClCompile Include="..\source\MeshFilter.cpp" />
     <ClCompile Include="..\source\MyApplication.cpp" />
+    <ClCompile Include="..\source\PointLight.cpp" />
     <ClCompile Include="..\source\Renderer.cpp" />
     <ClCompile Include="..\source\Scene.cpp" />
     <ClCompile Include="..\source\Shader.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\include\Mesh.h" />
     <ClInclude Include="..\include\MeshFilter.h" />
     <ClInclude Include="..\include\MyApplication.h" />
+    <ClInclude Include="..\include\PointLight.h" />
     <ClInclude Include="..\include\Renderer.h" />
     <ClInclude Include="..\include\Scene.h" />
     <ClInclude Include="..\include\Shader.h" />

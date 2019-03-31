@@ -63,18 +63,18 @@ bool MyApplication::onCreate()
 	ruinsEntity->GetTransform()->SetScale(glm::vec3(0.1, 0.1, 0.1));
 	ruinsEntity->GetTransform()->SetPosition(glm::vec3(0, 1, 0));
 	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
-	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
+	ruins->LoadModel("models/Jamie/soulspear.fbx"); // Load the model
 
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
 	wavesEntity->SetName("Waves");
 	wavesEntity->GetTransform()->SetScale(glm::vec3(3, 1, 3));
 	MeshFilter* waves = new MeshFilter(wavesEntity); // Create its mesh filter
-	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
+	//waves->LoadModel("models/Sea/Sea.obj"); // Load the model
 
 	// Track renderables in their shaders
 	modShader->RegisterRenderable(ruins);
-	waveShader->RegisterRenderable(waves);
+	//waveShader->RegisterRenderable(waves);
 
 
 	return true;
