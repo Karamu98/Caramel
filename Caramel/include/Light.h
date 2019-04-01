@@ -16,10 +16,11 @@ public:
 	~Light();
 
 	virtual void Update(float a_fDeltaTime) {};
-	virtual void Draw(Shader* a_shader) = 0;
-	virtual void OnGUI() = 0;
+	virtual void Draw(Shader* a_shader, int a_number) = 0;
+	virtual void OnGUI();
+	virtual bool OnDelete();
 
-private:
+protected:
 
 	glm::vec3 m_ambientColour;
 	glm::vec3 m_diffuseColour;

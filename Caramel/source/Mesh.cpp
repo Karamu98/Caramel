@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "gl_core_4_4.h"
+#include "glad/glad.h"
 #include "Shader.h"
 #include <string>
 #include "Texture.h"

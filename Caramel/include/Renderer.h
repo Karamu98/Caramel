@@ -3,6 +3,7 @@
 
 #include "Shader.h"
 #include <map>
+#include "Plane.h"
 
 class Scene;
 class Camera;
@@ -26,7 +27,8 @@ private:
 	// For deferred rendering
 	Shader* m_firstPass;
 	Shader* m_secondLight;
-	unsigned int m_firstPassBuffer, m_posBufferID, m_normBuffer, m_colandSpecID;
+	unsigned int m_firstPassBuffer, m_posBufferID, m_normBuffer, m_colandSpecID, m_depthBuffer;
+	Plane m_defQuad;
 
 	std::map<std::string, Shader*> m_shaders;
 };

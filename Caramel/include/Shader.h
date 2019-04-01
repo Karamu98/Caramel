@@ -98,7 +98,7 @@ private:
 	/// Checks if the shader compiled successfully. Returns false on fail and will print details to console.
 	/// </summary>
 	/// <param name='a_shaderHandle'>The shader handle we want to test.</param>
-	bool VerifyShader(unsigned int& a_shaderHandle);
+	bool VerifyShader(unsigned int& a_shaderHandle, std::string a_path);
 
 	unsigned int m_shaderProgram;
 	std::vector<MeshFilter*> m_toRender;

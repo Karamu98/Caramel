@@ -75,8 +75,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)include;$(SolutionDir)..\Framework\framework\include;$(IncludePath)</IncludePath>
-    <SourcePath>$(SolutionDir)source;$(SolutionDir)..\Framework\framework\src;$(SolutionDir)deps\imgui\source;$(SolutionDir)deps\glew-2.0.0\src;$(SourcePath)</SourcePath>
+    <IncludePath>$(SolutionDir)include;$(IncludePath)</IncludePath>
+    <SourcePath>$(SolutionDir)source;$(SolutionDir)deps\imgui\source;$(SolutionDir)deps\glew-2.0.0\src;$(SourcePath)</SourcePath>
     <OutDir>$(SolutionDir)bin/</OutDir>
     <IntDir>$(SolutionDir)bin/Obj/</IntDir>
     <LibraryPath>$(SolutionDir)lib;$(LibraryPath)</LibraryPath>
@@ -108,10 +108,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CL_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLAD;CL_DEBUG;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\assimp\include;$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/gl_core_4_4;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)deps/imgui/include;$(SolutionDir)vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../Framework/deps/glad/include;$(SolutionDir)../Framework/deps/imgui/examples;$(SolutionDir)../Framework/deps/imgui/include;$(SolutionDir)vendor\assimp\include;$(SolutionDir)deps/glew/include;$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)vendor\spdlog\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -163,13 +163,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\deps\gl_core_4_4\gl_core_4_4.c" />
-    <ClCompile Include="..\deps\imgui\source\imgui.cpp" />
-    <ClCompile Include="..\deps\imgui\source\imgui_demo.cpp" />
-    <ClCompile Include="..\deps\imgui\source\imgui_draw.cpp" />
-    <ClCompile Include="..\deps\imgui\source\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="..\source\Camera.cpp" />
     <ClCompile Include="..\source\Component.cpp" />
+    <ClCompile Include="..\source\DirectionalLight.cpp" />
     <ClCompile Include="..\source\Entity.cpp" />
     <ClCompile Include="..\source\Light.cpp" />
     <ClCompile Include="..\source\Log.cpp" />
@@ -177,25 +173,20 @@
     <ClCompile Include="..\source\Mesh.cpp" />
     <ClCompile Include="..\source\MeshFilter.cpp" />
     <ClCompile Include="..\source\MyApplication.cpp" />
+    <ClCompile Include="..\source\Plane.cpp" />
     <ClCompile Include="..\source\PointLight.cpp" />
     <ClCompile Include="..\source\Renderer.cpp" />
     <ClCompile Include="..\source\Scene.cpp" />
     <ClCompile Include="..\source\Shader.cpp" />
+    <ClCompile Include="..\source\SpotLight.cpp" />
     <ClCompile Include="..\source\Texture.cpp" />
     <ClCompile Include="..\source\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\deps\gl_core_4_4\gl_core_4_4.h" />
-    <ClInclude Include="..\deps\imgui\include\imconfig.h" />
-    <ClInclude Include="..\deps\imgui\include\imgui.h" />
-    <ClInclude Include="..\deps\imgui\include\imgui_impl_glfw_gl3.h" />
-    <ClInclude Include="..\deps\imgui\include\imgui_internal.h" />
-    <ClInclude Include="..\deps\imgui\include\stb_rect_pack.h" />
-    <ClInclude Include="..\deps\imgui\include\stb_textedit.h" />
-    <ClInclude Include="..\deps\imgui\include\stb_truetype.h" />
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\Component.h" />
     <ClInclude Include="..\include\Defines.h" />
+    <ClInclude Include="..\include\DirectionalLight.h" />
     <ClInclude Include="..\include\Entity.h" />
     <ClInclude Include="..\include\Light.h" />
     <ClInclude Include="..\include\Log.h" />
@@ -207,17 +198,18 @@
     <ClInclude Include="..\include\Renderer.h" />
     <ClInclude Include="..\include\Scene.h" />
     <ClInclude Include="..\include\Shader.h" />
+    <ClInclude Include="..\include\SpotLight.h" />
     <ClInclude Include="..\include\Texture.h" />
     <ClInclude Include="..\include\Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\framework\framework.vcxproj">
-      <Project>{473f1220-17d6-4b43-bf91-9f839980f0a3}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\resources\shaders\modelFragment.glsl" />
     <None Include="..\resources\shaders\modelVertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework\framework.vcxproj">
+      <Project>{473f1220-17d6-4b43-bf91-9f839980f0a3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

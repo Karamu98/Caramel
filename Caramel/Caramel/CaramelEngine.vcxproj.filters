@@ -13,23 +13,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="GLIncludes">
-      <UniqueIdentifier>{4089fd8d-dcbf-4e4e-951d-8cd49e82cec1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Components">
       <UniqueIdentifier>{b8ef6555-5c1e-4105-85d2-701fc464f024}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{97d6968b-d6ad-4636-aaf6-76a43503956c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ImGui">
-      <UniqueIdentifier>{9c1f1d57-7c50-4422-97f9-88cb3275e37a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{e1a193c9-1267-4d67-a694-2e63c818e13c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Primitives">
       <UniqueIdentifier>{71c8d91a-7422-4f6e-a121-a169da4e9174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Primitives">
+      <UniqueIdentifier>{644ce891-9d8d-4b1c-8c42-e50f3dbde8ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -38,21 +35,6 @@
     </ClCompile>
     <ClCompile Include="..\source\main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\deps\gl_core_4_4\gl_core_4_4.c">
-      <Filter>GLIncludes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\deps\imgui\source\imgui.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\deps\imgui\source\imgui_demo.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\deps\imgui\source\imgui_draw.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\deps\imgui\source\imgui_impl_glfw_gl3.cpp">
-      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\source\Entity.cpp">
       <Filter>Source Files</Filter>
@@ -93,40 +75,25 @@
     <ClCompile Include="..\source\PointLight.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\DirectionalLight.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\SpotLight.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Plane.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\MyApplication.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\imgui\include\imconfig.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\imgui\include\imgui.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\imgui\include\imgui_impl_glfw_gl3.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\imgui\include\imgui_internal.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\imgui\include\stb_rect_pack.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\imgui\include\stb_textedit.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\imgui\include\stb_truetype.h">
-      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Component.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="..\deps\gl_core_4_4\gl_core_4_4.h">
-      <Filter>GLIncludes</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Scene.h">
       <Filter>Header Files</Filter>
@@ -166,6 +133,12 @@
     </ClInclude>
     <ClInclude Include="..\include\Plane.h">
       <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\DirectionalLight.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SpotLight.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

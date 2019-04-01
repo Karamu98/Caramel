@@ -1,7 +1,7 @@
-#include "..\include\Shader.h"
+#include "Shader.h"
 #include "Utilities.h"
 #include "Log.h"
-#include "gl_core_4_4.h"
+#include "glad/glad.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Renderer.h"
@@ -18,9 +18,32 @@
 
 #endif
 
+unsigned char* FileToBuffer(const char* a_sPath)
+{
+	// open file for text reading
+	FILE* pFile = fopen(a_sPath, "rb");
+	if (pFile == nullptr)
+	{
+		return nullptr;
+	}
+
+	// get number of bytes in file
+	fseek(pFile, 0, SEEK_END);
+	unsigned int uiLength = (unsigned int)ftell(pFile);
+	fseek(pFile, 0, SEEK_SET);
+
+	// allocate buffer and read file contents
+	unsigned char* acBuffer = new unsigned char[uiLength + 1];
+	memset(acBuffer, 0, uiLength + 1);
+	fread(acBuffer, sizeof(unsigned char), uiLength, pFile);
+
+	fclose(pFile);
+	return acBuffer;
+}
 
 
-Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * a_geometryShader, const char * a_tessalationShader)
+
+Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * a_geometryPath, const char * a_tessPath)
 {
 	// These will hold the source of our files if we specify them
 	unsigned char* vertSource;
@@ -44,11 +67,15 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 	}
 	else
 	{
-		vertSource = Utility::fileToBuffer(a_vertexPath);
+		vertSource = FileToBuffer(a_vertexPath);
 		if (vertSource == nullptr)
 		{
-			CL_CORE_ERROR("A vertex shader could not be loaded at ", a_vertexPath);
+			CL_CORE_ERROR("A vertex shader could not be loaded at " + std::string(a_vertexPath));
 			return;
+		}
+		else
+		{
+			CL_CORE_INFO("Vertex shader loaded at " + std::string(a_vertexPath));
 		}
 	}
 
@@ -59,31 +86,43 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 	}
 	else
 	{
-		fragSource = Utility::fileToBuffer(a_fragPath);
+		fragSource = FileToBuffer(a_fragPath);
 		if (fragSource == nullptr)
 		{
-			CL_CORE_ERROR("A fragment shader could not be loaded at ", fragSource);
+			CL_CORE_ERROR("A fragment shader could not be loaded at " + std::string(a_fragPath));
 			return;
+		}
+		else
+		{
+			CL_CORE_INFO("Fragment shader loaded at " + std::string(a_fragPath));
 		}
 	}
 
-	if (a_geometryShader != nullptr)
+	if (a_geometryPath != nullptr)
 	{
-		geoSource = Utility::fileToBuffer(a_geometryShader);
+		geoSource = FileToBuffer(a_geometryPath);
 		if (geoSource == nullptr)
 		{
-			CL_CORE_ERROR("A geometry shader could not be loaded at ", geoSource);
+			CL_CORE_ERROR("A geometry shader could not be loaded at ", std::string(a_geometryPath));
 			return;
+		}
+		else
+		{
+			CL_CORE_INFO("Geometry shader loaded at " + std::string(a_geometryPath));
 		}
 	}
 
-	if (a_tessalationShader != nullptr)
+	if (a_tessPath != nullptr)
 	{
-		tessSource = Utility::fileToBuffer(a_tessalationShader);
+		tessSource = FileToBuffer(a_tessPath);
 		if (tessSource == nullptr)
 		{
-			CL_CORE_ERROR("A tessalation shader could not be loaded at ", tessSource);
+			CL_CORE_ERROR("A tessalation shader could not be loaded at " + std::string(a_tessPath));
 			return;
+		}
+		else
+		{
+			CL_CORE_INFO("Tessalation shader loaded at " + std::string(a_tessPath));
 		}
 	}
 
@@ -93,7 +132,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, (const char**)&vertSource, NULL);
 	glCompileShader(vertexShader);
-	if (!VerifyShader(vertexShader))
+	if (!VerifyShader(vertexShader, a_vertexPath))
 	{
 		// Cleanup
 		return;
@@ -103,7 +142,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, (const char**)&fragSource, NULL);
 	glCompileShader(fragmentShader);
-	if (!VerifyShader(fragmentShader))
+	if (!VerifyShader(fragmentShader, a_fragPath))
 	{
 		// Cleanup
 		return;
@@ -115,7 +154,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(geometryShader, 1, (const char**)&geoSource, NULL);
 		glCompileShader(geometryShader);
-		if (!VerifyShader(geometryShader))
+		if (!VerifyShader(geometryShader, a_geometryPath))
 		{
 			// Cleanup
 			return;
@@ -132,7 +171,7 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		geometryShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
 		glShaderSource(tessalationShader, 1, (const char**)&tessSource, NULL);
 		glCompileShader(tessalationShader);
-		if (!VerifyShader(tessalationShader))
+		if (!VerifyShader(tessalationShader, a_tessPath))
 		{
 			// Cleanup
 			return;
@@ -262,7 +301,7 @@ void Shader::SetMat4(const std::string & a_name, glm::mat4 a_value)
 	glUniformMatrix4fv(loc, 1, false, glm::value_ptr(a_value));
 }
 
-bool Shader::VerifyShader(unsigned int & a_shaderHandle)
+bool Shader::VerifyShader(unsigned int & a_shaderHandle, std::string a_path)
 {
 	int success = GL_FALSE;
 
@@ -278,7 +317,7 @@ bool Shader::VerifyShader(unsigned int & a_shaderHandle)
 
 		std::string log = std::string(infoLog);
 
-		CL_CORE_ERROR("Failed to compile shader.\n" + log);
+		CL_CORE_ERROR("Failed to compile shader at " + std::string(a_path) + ".\n" + log);
 		delete[] infoLog;
 
 

@@ -1,7 +1,7 @@
 #include "MeshFilter.h"
 #include "Log.h"
 #include "imgui.h"
-#include "gl_core_4_4.h"
+#include "glad/glad.h"
 #include "Shader.h"
 #include "Entity.h"
 
@@ -104,7 +104,7 @@ void MeshFilter::LoadModel(std::string a_path)
 void MeshFilter::Draw(Shader* a_shader)
 {
 	glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
-	a_shader->SetMat4("Model", m4ModelMat); //:::CONTINUE::: You need a way to manipulate all the meshes in a model when it moves, you also need to get world space for any of these meshes
+	a_shader->SetMat4("model", m4ModelMat);
 	a_shader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
 
 	for (unsigned int i = 0; i < meshes.size(); i++)

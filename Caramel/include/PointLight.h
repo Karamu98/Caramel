@@ -12,7 +12,7 @@ public:
 	~PointLight();
 
 	virtual void Update(float a_fDeltaTime) {};
-	virtual void Draw(Shader* a_shader);
+	virtual void Draw(Shader* a_shader, int a_number);
 	virtual void OnGUI();
 
 private:
@@ -20,7 +20,6 @@ private:
 	float m_constant;
 	float m_linear;
 	float m_quadratic;
-	float m_radius;
 };
 
 

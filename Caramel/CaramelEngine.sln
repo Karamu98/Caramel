@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CaramelEngine", "Caramel\CaramelEngine.vcxproj", "{6B96BB06-6C90-4E81-A949-CFD78E5F5CD4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "framework", "..\Framework\framework\framework.vcxproj", "{473F1220-17D6-4B43-BF91-9F839980F0A3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "framework", "..\Framework\framework.vcxproj", "{473F1220-17D6-4B43-BF91-9F839980F0A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

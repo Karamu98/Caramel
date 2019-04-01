@@ -1,18 +1,20 @@
 #include "MyApplication.h"
-#include "gl_core_4_4.h"
+#include "glad/glad.h"
 #include "Gizmos.h"
 #include "Utilities.h"
 #include <GLFW/glfw3.h>
 #include <glm/ext.hpp>
 #include <iostream>
 #include "imgui.h"
-#include "imgui_impl_glfw_gl3.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
 #include "Component.h"
 #include "Log.h"
 #include "MeshFilter.h"
 #include "Camera.h"
 #include "Entity.h"
 #include "Renderer.h"
+#include "DirectionalLight.h"
 
 
 MyApplication::MyApplication()
@@ -22,10 +24,6 @@ MyApplication::MyApplication()
 
 MyApplication::~MyApplication()
 {
-	if (m_activeCam != nullptr)
-	{
-		delete m_activeCam;
-	}
 }
 
 bool MyApplication::onCreate()
@@ -34,9 +32,12 @@ bool MyApplication::onCreate()
 	Gizmos::create();
 
 	// Initialise ImGui
+	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	ImGui_ImplGlfwGL3_Init(m_window, true);
+	const char* glsl_version = "#version 150";
+	ImGui_ImplOpenGL3_Init(glsl_version);
+	ImGui_ImplGlfw_InitForOpenGL(m_window, false);
 	ImGui::StyleColorsDark();
 
 	// Initialise logging system
@@ -52,10 +53,13 @@ bool MyApplication::onCreate()
 	Camera* newCam = new Camera(newEditor);
 
 	// Create the shaders and add them to the renderer
-	Shader* modShader = m_renderer.CreateShader("Model", "shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
-	Shader* waveShader = m_renderer.CreateShader("Wave", "shaders/waveVertex.glsl", "shaders/modelFragment.glsl");
 
 	/// Adding Scene entities
+
+
+	// Add a directional light
+	Entity* lightHolder = new Entity(&m_scene);
+	DirectionalLight* sceneLight = new DirectionalLight(lightHolder);
 
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
@@ -73,7 +77,7 @@ bool MyApplication::onCreate()
 	//waves->LoadModel("models/Sea/Sea.obj"); // Load the model
 
 	// Track renderables in their shaders
-	modShader->RegisterRenderable(ruins);
+	//modShader->RegisterRenderable(ruins);
 	//waveShader->RegisterRenderable(waves);
 
 
@@ -83,7 +87,8 @@ bool MyApplication::onCreate()
 void MyApplication::Update(float a_deltaTime)
 {
 	// Needs to be called first
-	ImGui_ImplGlfwGL3_NewFrame();	
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
 
 	// clear all gizmos from last frame
 	Gizmos::clear();
@@ -98,6 +103,7 @@ void MyApplication::Update(float a_deltaTime)
 			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));
 	}
 
+	m_renderer.OnGUI();
 	
 
 #pragma region ImGui
@@ -264,14 +270,11 @@ void MyApplication::Draw()
 
 	// Needs to be called last
 	ImGui::Render();
-	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void MyApplication::Destroy()
 {
-	ImGui_ImplGlfwGL3_Shutdown();
-	ImGui::DestroyContext();
-
 	Gizmos::destroy();
 }
 

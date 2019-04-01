@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "Defines.h"
-#include "gl_core_4_4.h"
+#include "glad/glad.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include "imgui.h"

@@ -4,7 +4,6 @@
 #include "Gizmos.h"
 #include "Log.h"
 #include "imgui.h"
-#include "gl_core_4_4.h"
 #include "MeshFilter.h"
 #include "Scene.h"
 #include "Entity.h"
@@ -12,6 +11,7 @@
 #include "Utilities.h"
 #include "Defines.h"
 #include "PointLight.h"
+#include "glad/glad.h"
 
 
 
@@ -38,10 +38,10 @@ void Renderer::Init(bool a_isDeferred)
 
 
 	// Create the default deferred rendering shaders
-	m_firstPass = new Shader("shaders/deferredVertex", "shaders/deferredFrag");
+	m_firstPass = new Shader("shaders/deferredVertex.glsl", "shaders/deferredFrag.glsl");
 
 	// Create the second pass shader for this
-	m_secondLight = new Shader("shaders/defSecondV", "shaders/defSecondFrag");
+	m_secondLight = new Shader("shaders/defSecondV.glsl", "shaders/defSecondFrag.glsl");
 
 #pragma region Creating first pass buffer
 
@@ -51,7 +51,7 @@ void Renderer::Init(bool a_isDeferred)
 
 	// Setting up the position buffer (x, y, z for RGB)
 	glGenTextures(1, &m_posBufferID);
-	glBindTexture (GL_TEXTURE, m_posBufferID);
+	glBindTexture(GL_TEXTURE_2D, m_posBufferID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -59,7 +59,7 @@ void Renderer::Init(bool a_isDeferred)
 
 	// Setting up the normal buffer (x, y, z for RGB)
 	glGenTextures(1, &m_normBuffer);
-	glBindTexture(GL_TEXTURE, m_normBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_normBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -67,14 +67,30 @@ void Renderer::Init(bool a_isDeferred)
 
 	// Setting up the colour buffer with the specular as addition (r, g, b is colour. a is spec)
 	glGenTextures(1, &m_colandSpecID);
-	glBindTexture(GL_TEXTURE, m_colandSpecID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glBindTexture(GL_TEXTURE_2D, m_colandSpecID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_colandSpecID, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_colandSpecID, 0);
 
-	unsigned int attachments[3] = { m_posBufferID, m_normBuffer, m_colandSpecID };
+	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, attachments);
+
+	glGenRenderbuffers(1, &m_depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+	// finally check if framebuffer is complete
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		CL_CORE_ERROR("Framebuffer not complete.");
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	m_secondLight->Bind();
+	m_secondLight->SetInt("gPosition", 0);
+	m_secondLight->SetInt("gNormal", 1);
+	m_secondLight->SetInt("gAlbedoSpec", 2);
 
 #pragma endregion
 
@@ -125,17 +141,24 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	m_secondLight->Bind();
 
-	m_secondLight->SetVec3("viewPos", activeCam->GetCameraMatrix()[3]);
 	// Send all the lights with their appropiate data to the shader
 	std::vector<Light*> lights = a_sceneToRender->FindAllComponentsOfType<Light>();
-	for(Light* light : lights)
+	for(int i = 0; i < lights.size(); i++)
 	{
-		light->Draw(m_secondLight);
+		lights[i]->Draw(m_secondLight, i);
 	}
+	m_secondLight->SetVec3("viewPos", activeCam->GetCameraMatrix()[3]);
 
-	// RenderQuad???
+	m_defQuad.RenderPlane();
 
-	// Send depth to second pass
+	// Send depth to second pass, this is for blendables
+	//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_firstPassBuffer);
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//glBlitFramebuffer(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// Render blendables here
+
 
 
 
@@ -149,16 +172,6 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	// First pass deferred
 
-	for (auto &shader : m_shaders)
-	{
-		shader.second->Bind();
-		shader.second->SetFloat("Time", Utility::getTotalTime());
-		shader.second->SetMat4("ProjectionView", activeCam->GetProjectionView());
-		shader.second->SetMat4("ViewMatrix", activeCam->GetViewMatrix());
-		shader.second->SetVec4("cameraPosition", activeCam->GetCameraMatrix()[3]);
-		shader.second->SetVec4("lightDirection", glm::vec4(0, -0.5f, 1, 1));
-		shader.second->Draw();
-	}
 	glUseProgram(0);
 
 	// Draw the gizmos from this frame
@@ -167,7 +180,45 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 void Renderer::OnGUI()
 {
-	
+	ImGui::SetNextWindowPos(ImVec2(0, DEFAULT_SCREENHEIGHT - (DEFAULT_SCREENHEIGHT * 0.4f)));
+	ImGui::SetNextWindowSize(ImVec2(DEFAULT_SCREENWIDTH * 0.3f, DEFAULT_SCREENHEIGHT * 0.4f));
+	ImGui::Begin("Framebuffer");
+	ImGui::BeginTabBar("Framebuffer textures");
+
+	if (ImGui::BeginTabItem("Final Buffer"))
+	{
+		ImTextureID texID = (void*)(intptr_t)m_firstPassBuffer;
+		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+
+
+	if (ImGui::BeginTabItem("Normal Buffer"))
+	{
+		ImTextureID texID = (void*)(intptr_t)m_normBuffer;
+		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+
+
+	if (ImGui::BeginTabItem("Colour Buffer"))
+	{
+		ImTextureID texID = (void*)(intptr_t)m_colandSpecID;
+		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+
+
+	if (ImGui::BeginTabItem("Depth Buffer"))
+	{
+		ImTextureID texID = (void*)(intptr_t)m_depthBuffer;
+		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+
+	ImGui::EndTabBar();
+
+	ImGui::End();
 }
 
 Shader* Renderer::AddShader(const char* a_name, Shader* a_newShader)

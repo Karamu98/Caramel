@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 {
 	// explicitly control the creation of our application
 	MyApplication* app = new MyApplication();
-	app->run("S1608758:Callum_Haines", DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, false);
+	app->run("S1608758: Callum_Haines", DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, false);
 
 	// explicitly control the destruction of our application
 	delete app;
