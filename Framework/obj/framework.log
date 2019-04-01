@@ -1,8 +1,14 @@
-﻿  Application.cpp
-  framework.vcxproj -> D:\GameDev\Git\Caramel\Framework\/bin\framework.lib
-  D:\GameDev\Git\Caramel\Framework\scripts\..\bin\framework.lib
-  D:\GameDev\Git\Caramel\Framework\scripts\..\bin\framework.pdb
+﻿  imgui_impl_glfw.cpp
+  imgui_impl_opengl3.cpp
+  Application.cpp
+  Gizmos.cpp
+d:\git\caramel\framework\src\gizmos.cpp(17): warning C4189: 'success': local variable is initialized but not referenced
+  Utilities.cpp
+  Generating Code...
+  framework.vcxproj -> D:\Git\Caramel\Framework\/bin\framework.lib
+  D:\Git\Caramel\Framework\scripts\..\bin\framework.lib
+  D:\Git\Caramel\Framework\scripts\..\bin\framework.pdb
   2 File(s) copied
-  D:\GameDev\Git\Caramel\Framework\scripts\..\bin\framework.lib
-  D:\GameDev\Git\Caramel\Framework\scripts\..\bin\framework.pdb
+  D:\Git\Caramel\Framework\scripts\..\bin\framework.lib
+  D:\Git\Caramel\Framework\scripts\..\bin\framework.pdb
   2 File(s) copied
