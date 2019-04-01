@@ -105,8 +105,6 @@ void MeshFilter::Draw(Shader* a_shader)
 {
 	glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
 	a_shader->SetMat4("model", m4ModelMat);
-	a_shader->SetMat4("NormalMatrix", glm::transpose(glm::inverse(m4ModelMat)));
-
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i].Draw(a_shader);

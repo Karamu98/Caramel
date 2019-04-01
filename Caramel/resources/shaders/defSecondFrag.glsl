@@ -76,7 +76,7 @@ void main()
     // properties
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    vec3 result;
+    vec3 result = Diffuse;
     // == =====================================================
     // Our lighting is set up in 3 phases: directional, point lights and an optional flashlight
     // For each phase, a calculate function is defined that calculates the corresponding color
@@ -88,7 +88,6 @@ void main()
     {
       result += CalcDirLight(directionalLights[i], Normal, viewDir);
     }
-
 /*
     // phase 2: point lights
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
@@ -100,26 +99,16 @@ void main()
     {
       result += CalcSpotLight(spotLights[i], Normal, FragPos, viewDir);
     }
-    FragColor = vec4(result, 1.0);
+
     */
+    FragColor = vec4(result, 1.0);
 }
 
 // calculates the color when using a directional light.
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
   // Ambient calculation
-  vec3 ambient = light.ambient * Diffuse;
 
-  // Diffuse calculation
-  vec3 lightDir = normalize(-light.direction);
-  float diff = max(dot(Normal, lightDir), 0.0);
-  vec3 diffuse = light.diffuse * diff * Diffuse;
-
-  // Specular Calculation
-  vec3 reflectDir = reflect(-lightDir, Normal);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
-  vec3 specular = light.specular * spec * Specular;
-
-  return (ambient + diffuse + specular);
+  return vec3(0, 0, 0);
 
 }

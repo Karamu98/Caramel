@@ -65,10 +65,10 @@ bool MyApplication::onCreate()
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
 	ruinsEntity->SetName("Ruins");
-	ruinsEntity->GetTransform()->SetScale(glm::vec3(0.1, 0.1, 0.1));
+	ruinsEntity->GetTransform()->SetScale(glm::vec3(1, 1, 1));
 	ruinsEntity->GetTransform()->SetPosition(glm::vec3(0, 1, 0));
 	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
-	ruins->LoadModel("models/Jamie/soulspear.fbx"); // Load the model
+	ruins->LoadModel("models/nanosuit/nanosuit.obj"); // Load the model
 
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
@@ -95,7 +95,7 @@ void MyApplication::Update(float a_deltaTime)
 	Gizmos::clear();
 
 	// add a 20x20 grid on the XZ-plane
-	for (int i = 0; i < 21; ++i)
+	for (int i = 0; i < 21; ++i)	
 	{
 		Gizmos::addLine(glm::vec3(-10 + i, 0, 10), glm::vec3(-10 + i, 0, -10),
 			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));

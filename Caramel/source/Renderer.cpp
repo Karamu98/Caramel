@@ -32,7 +32,7 @@ Renderer::~Renderer()
 void Renderer::Init(bool a_isDeferred)
 {
 	// Set the clear colour and enable depth testing and backface culling
-	glClearColor(0.25f, 0.25f, 0.25f, 1.f);
+	glClearColor(0.0, 0.0, 0.0, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
@@ -118,7 +118,6 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	m_firstPass->Bind(); // Bind the first pass shader and pass uniforms
 	m_firstPass->SetMat4("projectionView", activeCam->GetProjectionView());
 	m_firstPass->SetMat4("viewMatrix", activeCam->GetViewMatrix());
-	m_firstPass->SetVec4("camPos", activeCam->GetCameraMatrix()[3]);
 	
 	std::vector<MeshFilter*> meshes = a_sceneToRender->FindAllComponentsOfType<MeshFilter>();
 
@@ -131,15 +130,15 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind the default frame buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
 
+	m_secondLight->Bind();
+
 	// Bind the textures for the shader
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE, m_posBufferID);
+	glBindTexture(GL_TEXTURE_2D, m_posBufferID);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE, m_normBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_normBuffer);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE, m_colandSpecID);
-
-	m_secondLight->Bind();
+	glBindTexture(GL_TEXTURE_2D, m_colandSpecID);
 
 	// Send all the lights with their appropiate data to the shader
 	std::vector<Light*> lights = a_sceneToRender->FindAllComponentsOfType<Light>();
@@ -193,9 +192,9 @@ void Renderer::OnGUI()
 	}
 
 
-	if (ImGui::BeginTabItem("Normal Buffer"))
+	if (ImGui::BeginTabItem("Position Buffer"))
 	{
-		ImTextureID texID = (void*)(intptr_t)m_normBuffer;
+		ImTextureID texID = (void*)(intptr_t)m_posBufferID;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}
@@ -204,6 +203,13 @@ void Renderer::OnGUI()
 	if (ImGui::BeginTabItem("Colour Buffer"))
 	{
 		ImTextureID texID = (void*)(intptr_t)m_colandSpecID;
+		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Normal Buffer"))
+	{
+		ImTextureID texID = (void*)(intptr_t)m_normBuffer;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}

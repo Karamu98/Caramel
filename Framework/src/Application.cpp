@@ -47,11 +47,11 @@ bool Application::create(const char* a_name, int a_width, int a_height, bool a_b
 	}
 
 	
-	glfwSetWindowSizeCallback(m_window, [](GLFWwindow*, int w, int h)
-	{
-		glViewport(0, 0, w, h);
+	//glfwSetWindowSizeCallback(m_window, [](GLFWwindow*, int w, int h)
+	//{
+	//	glViewport(0, 0, w, h);
 
-	});
+	//});
 
 	//Set Up IMGUI
 	//Setup Dear ImGui context
@@ -62,7 +62,7 @@ bool Application::create(const char* a_name, int a_width, int a_height, bool a_b
 	ImGui::StyleColorsDark();
 	const char* glsl_version = "#version 330";
 	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(m_window, false);
+	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 

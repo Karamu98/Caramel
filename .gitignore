@@ -76,3 +76,10 @@ Framework/obj/Application.obj
 *.lastbuildstate
 *.pdb
 *.log
+Framework/obj/framework.tlog/CL.write.1.tlog
+Framework/obj/framework.tlog/CL.read.1.tlog
+Framework/obj/framework.tlog/CL.command.1.tlog
+Framework/obj/framework.pdb
+Framework/obj/framework.log
+Framework/obj/framework.idb
+Framework/obj/Application.obj
