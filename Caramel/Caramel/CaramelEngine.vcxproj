@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_GLAD;CL_DEBUG;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)../Framework/deps/glad/include;$(SolutionDir)../Framework/deps/imgui/examples;$(SolutionDir)../Framework/deps/imgui/include;$(SolutionDir)vendor\assimp\include;$(SolutionDir)deps/glew/include;$(SolutionDir)deps/glfw/include;$(SolutionDir)deps/stb;$(SolutionDir)deps/glm;$(SolutionDir)vendor\spdlog\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor/spdlog/include;$(SolutionDir)vendor/assimp/include;$(SolutionDir)../Framework/deps/glfw/include;$(SolutionDir)../Framework/deps/glad/include;$(SolutionDir)../Framework/deps/imgui/examples;$(SolutionDir)../Framework/deps/imgui/include;$(SolutionDir)../Framework/deps/glm</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
