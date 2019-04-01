@@ -1,7 +1,7 @@
 #version 330 core
 layout (location = 0) in vec4 aPos;
 layout (location = 1) in vec4 aNormal;
-layout (location = 2) in vec2 aTexCoords;
+layout (location = 4) in vec2 aTexCoords;
 
 out vec3 fragPos;
 out vec2 fragUV;
@@ -19,5 +19,5 @@ void main()
 
     fragNorm = aNormal.xyz;
 
-    gl_Position = projectionView * viewMatrix * worldPos;
+    gl_Position = projectionView * worldPos;
 }
