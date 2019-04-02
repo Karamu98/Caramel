@@ -98,7 +98,7 @@ void main()
     }
 
     */
-    FragColor = vec4(Diffuse * result, 1.0);
+    FragColor = vec4(Diffuse * result + 0.1, 1.0);
 }
 
 // calculates the color when using a directional light.

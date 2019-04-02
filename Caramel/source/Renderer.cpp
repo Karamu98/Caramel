@@ -27,6 +27,9 @@ Renderer::~Renderer()
 	{
 		delete shader.second;
 	}
+
+	delete m_defGeo;
+	delete m_defLight;
 }
 
 void Renderer::Init(bool a_isDeferred)

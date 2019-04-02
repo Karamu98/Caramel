@@ -37,7 +37,7 @@ bool MyApplication::onCreate()
 	ImGuiIO& io = ImGui::GetIO();
 	const char* glsl_version = "#version 330";
 	ImGui_ImplOpenGL3_Init(glsl_version);
-	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+	ImGui_ImplGlfw_InitForOpenGL(m_window, false);
 	ImGui::StyleColorsDark();
 
 	// Initialise logging system
