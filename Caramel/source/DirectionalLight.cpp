@@ -4,7 +4,7 @@
 
 
 DirectionalLight::DirectionalLight(Entity * a_pOwner) : Light(a_pOwner),
-m_direction(glm::vec3(0, 0.5f, 0.5f))
+m_direction(glm::vec3(1.0f, 1.0f, 1.0))
 {
 }
 
@@ -28,4 +28,5 @@ void DirectionalLight::OnGUI()
 	Light::OnGUI();
 
 	// Expose direction here
+	ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
 }

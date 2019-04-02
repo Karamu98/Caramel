@@ -37,7 +37,7 @@ bool MyApplication::onCreate()
 	ImGuiIO& io = ImGui::GetIO();
 	const char* glsl_version = "#version 330";
 	ImGui_ImplOpenGL3_Init(glsl_version);
-	ImGui_ImplGlfw_InitForOpenGL(m_window, false);
+	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
 	ImGui::StyleColorsDark();
 
 	// Initialise logging system
@@ -68,7 +68,7 @@ bool MyApplication::onCreate()
 	ruinsEntity->GetTransform()->SetScale(glm::vec3(1, 1, 1));
 	ruinsEntity->GetTransform()->SetPosition(glm::vec3(0, 1, 0));
 	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
-	ruins->LoadModel("models/nanosuit/nanosuit.obj"); // Load the model
+	ruins->LoadModel("models/Jamie/soulspear.fbx"); // Load the model
 
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity

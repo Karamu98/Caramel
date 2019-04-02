@@ -55,12 +55,12 @@ uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 
 vec3 FragPos;
-vec3 Normal;
+vec3 FragNorm;
 vec3 Diffuse;
 float Specular;
 
 // function prototypes
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
@@ -69,46 +69,52 @@ void main()
 
     // Getting the data from the first pass
     FragPos = texture(gPosition, TexCoords).rgb;
-    Normal = texture(gNormal, TexCoords).rgb;
-    Diffuse = texture(gAlbedoSpec, TexCoords).rgb;
-    Specular = texture(gAlbedoSpec, TexCoords).a;
+    FragNorm = texture(gNormal, TexCoords).rgb * 2.0 - 1.0;
+    vec4 albedoSpec = texture(gAlbedoSpec, TexCoords);
+    Diffuse = albedoSpec.rgb;
+    Specular = albedoSpec.a;
 
     // properties
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    vec3 result = Diffuse;
-    // == =====================================================
-    // Our lighting is set up in 3 phases: directional, point lights and an optional flashlight
-    // For each phase, a calculate function is defined that calculates the corresponding color
-    // per lamp. In the main() function we take all the calculated colors and sum them up for
-    // this fragment's final color.
-    // == =====================================================
-    // phase 1: directional lighting
+    vec3 result = vec3(0,0,0);
+
+    // Directional lighting
     for(int i = 0; i< NR_DIR_LIGHTS; i++)
     {
-      result += CalcDirLight(directionalLights[i], Normal, viewDir);
+      result += CalcDirLight(directionalLights[i], FragNorm, viewDir, Specular);
     }
 /*
-    // phase 2: point lights
+    // Point lighting
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
     {
-      result += CalcPointLight(pointLights[i], Normal, FragPos, viewDir);
+      result += CalcPointLight(pointLights[i], FragNorm, FragPos, viewDir);
     }
-    // phase 3: spot light
+
+    // Spot lighting
     for(int i = 0; i < NR_SPOT_LIGHTS; i++)
     {
-      result += CalcSpotLight(spotLights[i], Normal, FragPos, viewDir);
+      result += CalcSpotLight(spotLights[i], FragNorm, FragPos, viewDir);
     }
 
     */
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(Diffuse * result, 1.0);
 }
 
 // calculates the color when using a directional light.
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
 {
   // Ambient calculation
+  float NdotL = max( 0, dot( normal, -light.direction));
+  vec3 diffuse = light.diffuse * NdotL;
 
-  return vec3(0, 0, 0);
+  //specular light value
+  vec3 R = reflect(light.direction, normal);
+  vec3 E = viewDir;
+  float specTerm = pow(min(0.0, dot(R,E)), 32.0);
+  vec3 spec = light.specular * specTerm * specularVal;
+
+
+  return diffuse + spec;
 
 }
