@@ -38,16 +38,16 @@ void Renderer::Init(bool a_isDeferred)
 
 
 	// Create the default deferred rendering shaders
-	m_firstPass = new Shader("shaders/deferredVertex.glsl", "shaders/deferredFrag.glsl");
+	m_defGeo = new Shader("shaders/deferredVertex.glsl", "shaders/deferredFrag.glsl");
 
 	// Create the second pass shader for this
-	m_secondLight = new Shader("shaders/defSecondV.glsl", "shaders/defSecondFrag.glsl");
+	m_defLight = new Shader("shaders/defSecondV.glsl", "shaders/defSecondFrag.glsl");
 
 #pragma region Creating first pass buffer
 
 	// Creating the buffer
-	glGenFramebuffers(1, &m_firstPassBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_firstPassBuffer);
+	glGenFramebuffers(1, &m_defGeoBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer);
 
 	// Setting up the position buffer (x, y, z for RGB)
 	glGenTextures(1, &m_posBufferID);
@@ -89,10 +89,10 @@ void Renderer::Init(bool a_isDeferred)
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	m_secondLight->Bind();
-	m_secondLight->SetInt("gPosition", 0);
-	m_secondLight->SetInt("gNormal", 1);
-	m_secondLight->SetInt("gAlbedoSpec", 2);
+	m_defLight->Bind();
+	m_defLight->SetInt("gPosition", 0);
+	m_defLight->SetInt("gNormal", 1);
+	m_defLight->SetInt("gAlbedoSpec", 2);
 
 #pragma endregion
 
@@ -114,25 +114,25 @@ void Renderer::Draw(Scene* a_sceneToRender)
 #pragma region Deferred
 
 	/// First pass
-	glBindFramebuffer(GL_FRAMEBUFFER, m_firstPassBuffer); // Bind the framebuffer for deferred
+	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer); // Bind the framebuffer for deferred
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
 
-	m_firstPass->Bind(); // Bind the first pass shader and pass uniforms
-	m_firstPass->SetMat4("projectionView", activeCam->GetProjectionView());
-	m_firstPass->SetMat4("viewMatrix", activeCam->GetViewMatrix());
+	m_defGeo->Bind(); // Bind the first pass shader and pass uniforms
+	m_defGeo->SetMat4("projectionView", activeCam->GetProjectionView());
+	m_defGeo->SetMat4("viewMatrix", activeCam->GetViewMatrix());
 	
 	std::vector<MeshFilter*> meshes = a_sceneToRender->FindAllComponentsOfType<MeshFilter>();
 
 	for (MeshFilter* mesh : meshes)
 	{
-		mesh->Draw(m_firstPass);
+		mesh->Draw(m_defGeo);
 	}
 
 	/// Second light pass
 	glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bind the default frame buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
 
-	m_secondLight->Bind();
+	m_defLight->Bind();
 
 	// Bind the textures for the shader
 	glActiveTexture(GL_TEXTURE0);
@@ -146,14 +146,14 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	std::vector<Light*> lights = a_sceneToRender->FindAllComponentsOfType<Light>();
 	for(int i = 0; i < lights.size(); i++)
 	{
-		lights[i]->Draw(m_secondLight, i);
+		lights[i]->Draw(m_defLight, i);
 	}
-	m_secondLight->SetVec3("viewPos", activeCam->GetCameraMatrix()[3]);
+	m_defLight->SetVec3("viewPos", activeCam->GetCameraMatrix()[3]);
 
 	m_defQuad.RenderPlane();
 
 	// Send depth to second pass, this is for blendables
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_firstPassBuffer);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_defGeoBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBlitFramebuffer(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -188,7 +188,7 @@ void Renderer::OnGUI()
 
 	if (ImGui::BeginTabItem("Final Buffer"))
 	{
-		ImTextureID texID = (void*)(intptr_t)m_firstPassBuffer;
+		ImTextureID texID = (void*)(intptr_t)m_defGeoBuffer;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}
