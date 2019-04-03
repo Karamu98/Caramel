@@ -20,6 +20,11 @@ Light::~Light()
 
 void Light::OnGUI()
 {
+	ImGui::Text("Light Component");
+	ImGui::NewLine();
+	ImGui::InputFloat3("Ambient Colour", glm::value_ptr(m_ambientColour));
+	ImGui::InputFloat3("Diffuse Colour", glm::value_ptr(m_diffuseColour));
+	ImGui::InputFloat3("Specular Colour", glm::value_ptr(m_specularColour));
 }
 
 bool Light::OnDelete()
