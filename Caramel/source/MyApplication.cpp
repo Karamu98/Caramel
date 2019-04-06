@@ -15,6 +15,7 @@
 #include "Entity.h"
 #include "Renderer.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
 
 
 MyApplication::MyApplication()
@@ -58,9 +59,14 @@ bool MyApplication::onCreate()
 	/// Adding Scene entities
 
 
-	// Add a directional light
+	// Add a directional light and point light
 	Entity* lightHolder = new Entity(&m_scene);
+	lightHolder->SetName("Directional");
 	DirectionalLight* sceneLight = new DirectionalLight(lightHolder);
+	Entity* pointHolder = new Entity(&m_scene);
+	pointHolder->SetName("Point");
+	PointLight* pointLight = new PointLight(pointHolder);
+	pointHolder->GetTransform()->SetPosition(glm::vec3(2, 2, 2));
 
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity

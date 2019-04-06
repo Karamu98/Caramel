@@ -15,7 +15,6 @@ DirectionalLight::~DirectionalLight()
 void DirectionalLight::Draw(Shader* a_shader, int a_number)
 {
 	// Pass base here
-	a_shader->SetVec3("directionalLights[" + std::to_string(a_number) + "].ambient", m_ambientColour);
 	a_shader->SetVec3("directionalLights[" + std::to_string(a_number) + "].diffuse", m_diffuseColour);
 	a_shader->SetVec3("directionalLights[" + std::to_string(a_number) + "].specular", m_specularColour);
 

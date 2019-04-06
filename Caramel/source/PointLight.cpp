@@ -5,7 +5,7 @@
 
 PointLight::PointLight(Entity * a_pOwner) : Light(a_pOwner),
 m_constant(1.0f),
-m_linear(0.7f),
+m_linear(0.1f),
 m_quadratic(1.8f)
 {
 }
@@ -17,7 +17,6 @@ PointLight::~PointLight()
 void PointLight::Draw(Shader * a_shader, int a_number)
 {
 	// Pass base here
-	a_shader->SetVec3("pointLights[" + std::to_string(a_number) + "].ambient", m_ambientColour);
 	a_shader->SetVec3("pointLights[" + std::to_string(a_number) + "].diffuse", m_diffuseColour);
 	a_shader->SetVec3("pointLights[" + std::to_string(a_number) + "].specular", m_specularColour);
 

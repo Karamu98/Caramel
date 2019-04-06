@@ -35,7 +35,7 @@ Renderer::~Renderer()
 void Renderer::Init(bool a_isDeferred)
 {
 	// Set the clear colour and enable depth testing and backface culling
-	glClearColor(0.5, 0.5, 0.5, 1.f);
+	glClearColor(0.0, 0.0, 0.0, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 

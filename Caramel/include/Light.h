@@ -22,7 +22,6 @@ public:
 
 protected:
 
-	glm::vec3 m_ambientColour;
 	glm::vec3 m_diffuseColour;
 	glm::vec3 m_specularColour;
 
