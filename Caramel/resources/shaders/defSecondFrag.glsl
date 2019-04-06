@@ -104,17 +104,20 @@ void main()
 // calculates the color when using a directional light.
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
 {
-  // Ambient calculation
+  // Ambient lighting
+  vec3 ambient = 0.05f * Diffuse;
+
+  // Diffuse calculation
   float NdotL = max( 0, dot( normal, -light.direction));
-  vec3 diffuse = light.diffuse * NdotL;
+  vec3 diffuse = Diffuse * NdotL;
 
   //specular light value
-  vec3 R = reflect(light.direction, normal);
-  vec3 E = viewDir;
-  float specTerm = pow(min(0.0, dot(R,E)), 32.0);
-  vec3 spec = light.specular * specTerm * specularVal;
+  vec3 reflectDir = reflect(-light.direction, normal);
+  vec3 halfwayDir = normalize(light.direction + viewDir);
+  float specTerm = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
+  vec3 spec = light.specular * specTerm;
 
 
-  return diffuse + spec;
+  return ambient + diffuse + spec;
 
 }
