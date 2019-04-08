@@ -38,6 +38,7 @@ void Renderer::Init(bool a_isDeferred)
 	glClearColor(0.0, 0.0, 0.0, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 
 	// Create the default deferred rendering shaders
@@ -79,12 +80,11 @@ void Renderer::Init(bool a_isDeferred)
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, attachments);
 
-	glGenTextures(1, &m_depthBuffer);
-	glBindTexture(GL_TEXTURE_2D, m_depthBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_depthBuffer, 0);
+	// Renderbuffer for depth to pass to default buffer
+	glGenRenderbuffers(1, &m_rboDepth);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_rboDepth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_rboDepth);
 	// finally check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -137,7 +137,7 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	m_defLight->Bind();
 
-	// Bind the textures for the shader
+	// Bind the textures for the shader that we populated by the first pass
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_posBufferID);
 	glActiveTexture(GL_TEXTURE1);
@@ -155,7 +155,7 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	m_defQuad.RenderPlane();
 
-	// Send depth to second pass, this is for blendables
+	// Send depth to second pass, this is for blendables (transparents, unlit)
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_defGeoBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBlitFramebuffer(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
@@ -215,14 +215,6 @@ void Renderer::OnGUI()
 	if (ImGui::BeginTabItem("Normal Buffer"))
 	{
 		ImTextureID texID = (void*)(intptr_t)m_normBuffer;
-		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::EndTabItem();
-	}
-
-
-	if (ImGui::BeginTabItem("Depth Buffer"))
-	{
-		ImTextureID texID = (void*)(intptr_t)m_depthBuffer;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}

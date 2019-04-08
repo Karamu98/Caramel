@@ -82,13 +82,13 @@ void main()
       result += CalcDirLight(directionalLights[i], FragNorm, viewDir, Specular);
     }
 
-
+/*
     // Point lighting
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
     {
       result += CalcPointLight(pointLights[i], FragNorm, FragPos, viewDir);
     }
-/*
+
     // Spot lighting
     for(int i = 0; i < NR_SPOT_LIGHTS; i++)
     {

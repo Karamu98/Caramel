@@ -27,7 +27,7 @@ private:
 	// For deferred rendering
 	Shader* m_defGeo;
 	Shader* m_defLight;
-	unsigned int m_defGeoBuffer, m_posBufferID, m_normBuffer, m_colandSpecID, m_depthBuffer;
+	unsigned int m_defGeoBuffer, m_posBufferID, m_normBuffer, m_colandSpecID, m_rboDepth;
 	Plane m_defQuad;
 
 	std::map<std::string, Shader*> m_shaders;

@@ -104,10 +104,10 @@ void MyApplication::Update(float a_deltaTime)
 	for (int i = 0; i < 21; ++i)	
 	{
 		Gizmos::addLine(glm::vec3(-10 + i, 0, 10), glm::vec3(-10 + i, 0, -10),
-			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));
+			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0.2, 0.2, 0.2, 1));
 
 		Gizmos::addLine(glm::vec3(10, 0, -10 + i), glm::vec3(-10, 0, -10 + i),
-			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0, 0, 0, 1));
+			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0.2, 0.2, 0.2, 1));
 	}
 
 	m_renderer.OnGUI();
