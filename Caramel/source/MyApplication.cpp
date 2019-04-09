@@ -46,7 +46,7 @@ bool MyApplication::onCreate()
 	CL_CORE_INFO("Initialised.");
 
 	// Initialise Renderer
-	m_renderer.Init(false);
+	m_renderer.Init(RenderingMode::DEFERRED);
 
 	// Add the default entity.
 	Entity* newEditor = new Entity(&m_scene);

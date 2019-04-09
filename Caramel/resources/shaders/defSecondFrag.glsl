@@ -36,16 +36,16 @@ struct SpotLight
     vec3 specular;
 };
 
-#define NR_POINT_LIGHTS 1
-#define NR_DIR_LIGHTS 1
-#define NR_SPOT_LIGHTS 4
+#define MAX_POINT_LIGHTS 64
+#define MAX_DIR_LIGHTS 4
+#define MAX_SPOT_LIGHTS 64
 
 in vec2 TexCoords;
 
 uniform vec3 viewPos;
-uniform DirLight directionalLights[NR_DIR_LIGHTS];
-uniform PointLight pointLights[NR_POINT_LIGHTS];
-uniform SpotLight spotLights[NR_SPOT_LIGHTS];
+uniform DirLight directionalLights[MAX_DIR_LIGHTS];
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
@@ -77,20 +77,20 @@ void main()
     vec3 result = vec3(0,0,0);
 
     // Directional lighting
-    for(int i = 0; i < NR_DIR_LIGHTS; i++)
+    for(int i = 0; i < MAX_DIR_LIGHTS; i++)
     {
       result += CalcDirLight(directionalLights[i], FragNorm, viewDir, Specular);
     }
 
 /*
     // Point lighting
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
+    for(int i = 0; i < MAX_POINT_LIGHTS; i++)
     {
       result += CalcPointLight(pointLights[i], FragNorm, FragPos, viewDir);
     }
 
     // Spot lighting
-    for(int i = 0; i < NR_SPOT_LIGHTS; i++)
+    for(int i = 0; i < MAX_SPOT_LIGHTS; i++)
     {
       result += CalcSpotLight(spotLights[i], FragNorm, FragPos, viewDir);
     }

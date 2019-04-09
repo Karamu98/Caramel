@@ -6,6 +6,8 @@ class Plane
 {
 public:
 
+	Plane();
+	~Plane();
 	void RenderPlane();
 
 
