@@ -5,8 +5,8 @@
 
 PointLight::PointLight(Entity * a_pOwner) : Light(a_pOwner),
 m_constant(1.0f),
-m_linear(0.1f),
-m_quadratic(1.8f)
+m_linear(0.14f),
+m_quadratic(0.07f)
 {
 }
 

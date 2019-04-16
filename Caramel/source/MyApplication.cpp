@@ -48,16 +48,13 @@ bool MyApplication::onCreate()
 	// Initialise Renderer
 	m_renderer.Init(RenderingMode::DEFERRED);
 
+#pragma region Adding scene entities
+
 	// Add the default entity.
 	Entity* newEditor = new Entity(&m_scene);
 	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
 	newEditor->GetTransform()->SetPosition(glm::vec3(0, -3, 0));
-
-	// Create the shaders and add them to the renderer
-
-	/// Adding Scene entities
-
 
 	// Add a directional light and point light
 	Entity* lightHolder = new Entity(&m_scene);
@@ -83,10 +80,7 @@ bool MyApplication::onCreate()
 	MeshFilter* waves = new MeshFilter(wavesEntity); // Create its mesh filter
 	//waves->LoadModel("models/Sea/Sea.obj"); // Load the model
 
-	// Track renderables in their shaders
-	//modShader->RegisterRenderable(ruins);
-	//waveShader->RegisterRenderable(waves);
-
+#pragma endregion
 
 	return true;
 }

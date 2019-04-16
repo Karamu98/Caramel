@@ -43,6 +43,9 @@ struct SpotLight
 in vec2 TexCoords;
 
 uniform vec3 viewPos;
+uniform int dirLightCount;
+uniform int pointLightCount;
+uniform int spotLightCount;
 uniform DirLight directionalLights[MAX_DIR_LIGHTS];
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -77,24 +80,23 @@ void main()
     vec3 result = vec3(0,0,0);
 
     // Directional lighting
-    for(int i = 0; i < MAX_DIR_LIGHTS; i++)
+    for(int i = 0; i < dirLightCount; i++)
     {
       result += CalcDirLight(directionalLights[i], FragNorm, viewDir, Specular);
     }
 
-/*
     // Point lighting
-    for(int i = 0; i < MAX_POINT_LIGHTS; i++)
+    for(int i = 0; i < pointLightCount; i++)
     {
       result += CalcPointLight(pointLights[i], FragNorm, FragPos, viewDir);
     }
-
+/*
     // Spot lighting
-    for(int i = 0; i < MAX_SPOT_LIGHTS; i++)
+    for(int i = 0; i < spotLightCount; i++)
     {
       result += CalcSpotLight(spotLights[i], FragNorm, FragPos, viewDir);
-    }
-    */
+    }*/
+
 
     FragColor = vec4(Diffuse * result, 1.0);
 }
@@ -111,8 +113,8 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
 
   // Specular calculation
   vec3 reflectDir = reflect(-light.direction, normal);
-  vec3 halfwayDir = normalize(-light.direction + viewDir);
-  float specTerm = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
+  vec3 halfwayDir = normalize(light.direction + viewDir);
+  float specTerm = pow(max(dot(viewDir, halfwayDir), 0.0), 16.0);
   vec3 spec = light.specular * specTerm;
 
 
@@ -130,8 +132,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
   float diff = max(dot(normal, lightDir), 0.0);
 
   // Specular calculation
-  vec3 reflectDir = reflect(-lightDir, normal);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+  vec3 halfwayDir = normalize(lightDir + viewDir);
+  float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 16.0);
 
   // Attenuation
   float fDistance = length(light.position - fragPos);

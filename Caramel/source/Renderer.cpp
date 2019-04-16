@@ -11,6 +11,8 @@
 #include "Utilities.h"
 #include "Defines.h"
 #include "PointLight.h"
+#include "SpotLight.h"
+#include "DirectionalLight.h"
 #include "glad/glad.h"
 
 
@@ -408,11 +410,27 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, m_colandSpecID);
 
-	// Send all the lights with their appropiate data to the shader
-	std::vector<Light*> lights = a_scene->FindAllComponentsOfType<Light>();
-	for (int i = 0; i < lights.size(); i++)
+	// For each of each type of light, pass them to the shader
+	std::vector<DirectionalLight*> dirLights = a_scene->FindAllComponentsOfType<DirectionalLight>();
+	std::vector<PointLight*> pointLights = a_scene->FindAllComponentsOfType<PointLight>();
+	std::vector<SpotLight*> spotLights = a_scene->FindAllComponentsOfType<SpotLight>();
+
+	m_defLight->SetInt("dirLightCount", dirLights.size());
+	for (int i = 0; i < dirLights.size(); i++)
 	{
-		lights[i]->Draw(m_defLight, i);
+		dirLights[i]->Draw(m_defLight, i);
+	}
+
+	m_defLight->SetInt("pointLightCount", pointLights.size());
+	for (int i = 0; i < pointLights.size(); i++)
+	{
+		pointLights[i]->Draw(m_defLight, i);
+	}
+
+	m_defLight->SetInt("spotLightCount", spotLights.size());
+	for (int i = 0; i < spotLights.size(); i++)
+	{
+		spotLights[i]->Draw(m_defLight, i);
 	}
 	m_defLight->SetVec3("viewPos", a_activeCam->GetCameraMatrix()[3]);
 
