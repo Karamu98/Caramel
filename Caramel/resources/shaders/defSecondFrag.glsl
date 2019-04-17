@@ -101,65 +101,82 @@ void main()
     FragColor = vec4(Diffuse * result, 1.0);
 }
 
-// calculates the color when using a directional light.
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
 {
   vec3 lightDir = normalize(-light.direction);
-  // diffuse shading
+
+  // Diffuse shading
   float diff = max(dot(normal, lightDir), 0.0);
-  // specular shading
+
+  // Specular shading
   vec3 reflectDir = reflect(-lightDir, normal);
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
-  // combine results
+
+  // Combine results
   vec3 ambient = light.diffuse * 0.05f;
   vec3 diffuse = light.diffuse * diff;
   vec3 specular = light.specular * spec;
-  return (ambient + diffuse + specular);
 
+  return (ambient + diffuse + specular);
 }
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
   vec3 lightDir = normalize(light.position - fragPos);
-  // diffuse shading
+
+  // Diffuse shading
   float diff = max(dot(normal, lightDir), 0.0);
-  // specular shading
+
+  // Specular shading
   vec3 reflectDir = reflect(-lightDir, normal);
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
-  // attenuation
-  float distance = length(light.position - fragPos);
-  float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-  // combine results
-  vec3 ambient = light.diffuse * 0.05f;
+
+  // Attenuation calculation
+  float fDistance = length(light.position - fragPos);
+  float attenuation = 1.0 / (light.constant + light.linear * fDistance + light.quadratic * (fDistance * fDistance));
+
+  // Combine results
+  vec3 ambient = light.diffuse * 0.05f; // Light diffuse to allow for complete darkness
   vec3 diffuse = light.diffuse * diff;
   vec3 specular = light.specular * spec;
+
+  // Attenuate
   ambient *= attenuation;
   diffuse *= attenuation;
   specular *= attenuation;
+
   return (ambient + diffuse + specular);
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
   vec3 lightDir = normalize(light.position - fragPos);
-  // diffuse shading
+
+  // Diffuse shading
   float diff = max(dot(normal, lightDir), 0.0);
-  // specular shading
+
+  // Specular shading
   vec3 reflectDir = reflect(-lightDir, normal);
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
-  // attenuation
-  float distance = length(light.position - fragPos);
-  float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-  // spotlight intensity
+
+  // Attenuation calculation
+  float fDistance = length(light.position - fragPos);
+  float attenuation = 1.0 / (light.constant + light.linear * fDistance + light.quadratic * (fDistance * fDistance));
+
+  // Spotlight intensity, is the fragment in range of the spot light? Change its intensity based on that
   float theta = dot(lightDir, normalize(-light.direction));
   float epsilon = light.cutOff - light.outerCutOff;
   float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-  // combine results
+
+  // Combine results
   vec3 ambient = light.diffuse * 0.05f;
   vec3 diffuse = light.diffuse * diff;
   vec3 specular = light.specular * spec;
+
+  // Attenuate
   ambient *= attenuation * intensity;
   diffuse *= attenuation * intensity;
   specular *= attenuation * intensity;
+
   return (ambient + diffuse + specular);
 }
