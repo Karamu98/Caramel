@@ -16,6 +16,7 @@
 #include "Renderer.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 
 
 MyApplication::MyApplication()
@@ -54,7 +55,9 @@ bool MyApplication::onCreate()
 	Entity* newEditor = new Entity(&m_scene);
 	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
+	m_scene.m_activeCamera = newCam;
 	newEditor->GetTransform()->SetPosition(glm::vec3(0, -3, 0));
+	SpotLight* camFlash = new SpotLight(newEditor);
 
 	// Add a directional light and point light
 	Entity* lightHolder = new Entity(&m_scene);
@@ -71,7 +74,7 @@ bool MyApplication::onCreate()
 	ruinsEntity->GetTransform()->SetScale(glm::vec3(1, 1, 1));
 	ruinsEntity->GetTransform()->SetPosition(glm::vec3(0, 1, 0));
 	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
-	ruins->LoadModel("models/Jamie/soulspear.fbx"); // Load the model
+	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
 
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
@@ -93,6 +96,8 @@ void MyApplication::Update(float a_deltaTime)
 
 	// clear all gizmos from last frame
 	Gizmos::clear();
+
+	m_scene.FindAllComponentsOfType<SpotLight>()[0]->SetDirection(-m_scene.m_activeCamera->GetOwnerEntity()->GetTransform()->GetForward());
 
 	// add a 20x20 grid on the XZ-plane
 	for (int i = 0; i < 21; ++i)	

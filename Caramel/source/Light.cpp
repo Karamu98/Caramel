@@ -8,8 +8,8 @@
 typedef Component PARENT;
 
 Light::Light(Entity * a_pOwner) : PARENT(a_pOwner),
-m_diffuseColour(glm::vec3(0.2f, 0.2f, 0.2f)),
-m_specularColour(glm::vec3(0.2f, 0.2f, 0.2f))
+m_diffuseColour(glm::vec3(0.8f, 0.8f, 0.8f)),
+m_specularColour(glm::vec3(1.0f, 1.0f, 1.0f))
 {
 }
 

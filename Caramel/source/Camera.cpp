@@ -14,7 +14,7 @@ m_bIsPossesed(true)
 {
 	m_localPosition = glm::vec4(0, 5, 0, 1); // Set the camera just above root	
 
-	glm::vec3 pos = GetOwnerEntity()->GetTransform()->GetPosition();
+	glm::vec3 pos = GetOwnerEntity()->GetTransform()->GetPosition() + glm::vec3(m_localPosition);
 
 	m_cameraMatrix = glm::inverse(glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 	m_projectionMatrix = glm::perspective(glm::radians(m_fov * 0.5f), DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 5000.0f); // Create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
@@ -40,7 +40,7 @@ void Camera::Update(float a_fDeltaTime)
 		
 		// Update the local offset
 		m_cameraMatrix = *rootTransform;
-		m_cameraMatrix[3] = m_cameraMatrix[3] + m_localPosition;
+		m_cameraMatrix[3] = glm::vec4(glm::vec3(m_cameraMatrix[3] + m_localPosition), 1);
 	}
 }
 

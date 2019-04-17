@@ -4,8 +4,9 @@
 
 
 DirectionalLight::DirectionalLight(Entity * a_pOwner) : Light(a_pOwner),
-m_direction(glm::vec3(1.0f, 1.0f, 1.0))
+m_direction(glm::vec3(1.0f, -0.5f, 1.0))
 {
+	
 }
 
 DirectionalLight::~DirectionalLight()
