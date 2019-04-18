@@ -20,6 +20,8 @@ void Mesh::Draw(Shader* a_shader)
 	/// https://learnopengl.com system for drawing models
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
+	unsigned int normalNr = 1;
+	unsigned int heightNr = 1;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
@@ -32,6 +34,14 @@ void Mesh::Draw(Shader* a_shader)
 		else if (name == "texture_specular")
 		{
 			number = std::to_string(specularNr++);
+		}
+		else if (name == "texture_normal")
+		{
+			number = std::to_string(normalNr++);
+		}
+		else if (name == "texture_height")
+		{
+			number = std::to_string(heightNr++);
 		}
 
 		a_shader->SetInt((name + number).c_str(), i);

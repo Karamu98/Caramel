@@ -109,8 +109,8 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
   float diff = max(dot(normal, lightDir), 0.0);
 
   // Specular shading
-  vec3 reflectDir = reflect(-lightDir, normal);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+  vec3 halfwayDir = normalize(lightDir + viewDir);
+  float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
 
   // Combine results
   vec3 ambient = light.diffuse * 0.05f;
@@ -128,8 +128,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
   float diff = max(dot(normal, lightDir), 0.0);
 
   // Specular shading
-  vec3 reflectDir = reflect(-lightDir, normal);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
+  vec3 halfwayDir = normalize(lightDir + viewDir);
+  float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
 
   // Attenuation calculation
   float fDistance = length(light.position - fragPos);
@@ -156,8 +156,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
   float diff = max(dot(normal, lightDir), 0.0);
 
   // Specular shading
-  vec3 reflectDir = reflect(-lightDir, normal);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
+  vec3 halfwayDir = normalize(lightDir + viewDir);
+  float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
 
   // Attenuation calculation
   float fDistance = length(light.position - fragPos);
