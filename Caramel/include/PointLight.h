@@ -11,12 +11,13 @@ public:
 	PointLight(Entity* a_pOwner);
 	~PointLight();
 
-	virtual void Update(float a_fDeltaTime) {};
+	virtual void Update(float a_fDeltaTime);
 	virtual void Draw(Shader* a_shader, int a_number);
 	virtual void OnGUI();
 
 private:
 
+	float m_attenuation;
 	float m_constant;
 	float m_linear;
 	float m_quadratic;

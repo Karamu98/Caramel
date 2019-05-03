@@ -60,7 +60,7 @@ void Entity::OnGUI()
 	ImGui::Text("Name: ");
 	ImGui::SameLine(50);
 	ImGui::InputText("", (char*)GetName()->c_str(), 10);
-	ImGui::InputFloat3("Position", *values);
+	ImGui::DragFloat3("Position", *values, 0.1f);
 	if (ImGui::Button("Reset"))
 	{
 		m_Transform.Reset();

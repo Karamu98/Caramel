@@ -66,7 +66,7 @@ bool MyApplication::onCreate()
 	Entity* pointHolder = new Entity(&m_scene);
 	pointHolder->SetName("Point");
 	PointLight* pointLight = new PointLight(pointHolder);
-	pointHolder->GetTransform()->SetPosition(glm::vec3(2, 2, 2));
+	pointHolder->GetTransform()->SetPosition(glm::vec3(5, 5, 5));
 
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
