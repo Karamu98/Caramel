@@ -40,6 +40,8 @@ void SpotLight::OnGUI()
 	Light::OnGUI();
 
 	// Expose variables here
+	ImGui::DragFloat("Inner Cutoff", &m_cutoff, 0.1f, 0.0f, m_outerCutoff);
+	ImGui::DragFloat("Outter Cutoff", &m_outerCutoff, 0.1f, m_cutoff, 180.0f);
 	ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
 }
 
