@@ -57,6 +57,8 @@ private:
 	Plane* m_defQuad;
 
 	std::map<std::string, Shader*> m_shaders;
+
+	bool m_renderWireframe;
 };
 
 

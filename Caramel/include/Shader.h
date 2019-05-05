@@ -18,9 +18,10 @@ public :
 	/// </summary>
 	/// <param name='a_vertexPath'>The file path to a valid vertex shader.</param>
 	/// <param name='a_fragPath'>The file path to a valid fragment shader.</param>
-	/// <param name='a_geometryShader'>The file path to a valid geometry shader. (Optional)</param>
-	/// <param name='a_tessalationShader'>The file path to a valid tessalation shader. (Optional)</param>
-	Shader(const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader = nullptr, const char* a_tessalationShader = nullptr);
+	/// <param name='a_geometryPath'>The file path to a valid geometry shader. (Optional)</param>
+	/// <param name='a_tessCtrlPath'>The file path to a valid tessalation control shader. (Optional)</param>
+	/// <param name='a_tessEvalPath'>The file path to a valid tessalation evaluation shader. (Optional)</param>
+	Shader(const char* a_vertexPath, const char* a_fragPath, const char* a_geometryPath = nullptr, const char* a_tessCtrlPath = nullptr, const char* a_tessEvalPath = nullptr);
 	~Shader();
 
 	/// <summary>

@@ -43,18 +43,20 @@ unsigned char* FileToBuffer(const char* a_sPath)
 
 
 
-Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * a_geometryPath, const char * a_tessPath)
+Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * a_geometryPath, const char * a_tessCtrlPath, const char* a_tessEvalPath)
 {
 	// These will hold the source of our files if we specify them
 	unsigned char* vertSource;
 	unsigned char* fragSource;
 	unsigned char* geoSource = nullptr;
-	unsigned char* tessSource = nullptr;
+	unsigned char* tessCtrlSrc = nullptr;
+	unsigned char* tessEvalSrc = nullptr;
 
 	unsigned int vertexShader;
 	unsigned int fragmentShader;
 	unsigned int geometryShader = 0;
-	unsigned int tessalationShader = 0;
+	unsigned int tessCtrlShader = 0;
+	unsigned int tessEvalShader = 0;
 
 	bool bValidGeo = false;
 	bool bValidTess = false;
@@ -112,17 +114,31 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		}
 	}
 
-	if (a_tessPath != nullptr)
+	if (a_tessCtrlPath != nullptr)
 	{
-		tessSource = FileToBuffer(a_tessPath);
-		if (tessSource == nullptr)
+		tessCtrlSrc = FileToBuffer(a_tessCtrlPath);
+		if (tessCtrlSrc == nullptr)
 		{
-			CL_CORE_ERROR("A tessalation shader could not be loaded at " + std::string(a_tessPath));
+			CL_CORE_ERROR("A tessalation control shader could not be loaded at " + std::string(a_tessCtrlPath));
 			return;
 		}
 		else
 		{
-			CL_CORE_INFO("Tessalation shader loaded at " + std::string(a_tessPath));
+			CL_CORE_INFO("Tessalation control shader loaded at " + std::string(a_tessCtrlPath));
+		}
+	}
+
+	if (a_tessEvalPath != nullptr)
+	{
+		tessEvalSrc = FileToBuffer(a_tessCtrlPath);
+		if (tessEvalSrc == nullptr)
+		{
+			CL_CORE_ERROR("A tessalation evaluation shader could not be loaded at " + std::string(a_tessEvalPath));
+			return;
+		}
+		else
+		{
+			CL_CORE_INFO("Tessalation evaluation shader loaded at " + std::string(a_tessEvalPath));
 		}
 	}
 
@@ -165,15 +181,33 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		}
 	}
 
-	// Tessalation shader setup
-	if (tessSource != nullptr)
+	// Tessalation control shader setup
+	if (tessCtrlSrc != nullptr)
 	{
-		geometryShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
-		glShaderSource(tessalationShader, 1, (const char**)&tessSource, NULL);
-		glCompileShader(tessalationShader);
-		if (!VerifyShader(tessalationShader, a_tessPath))
+		tessCtrlShader = glCreateShader(GL_TESS_CONTROL_SHADER);
+		glShaderSource(tessCtrlShader, 1, (const char**)&tessCtrlSrc, NULL);
+		glCompileShader(tessCtrlShader);
+		if (!VerifyShader(tessCtrlShader, a_tessCtrlPath))
 		{
 			// Cleanup
+			return;
+		}
+		else
+		{
+			bValidTess = true;
+		}
+	}
+
+	// Tessalation evaluation shader setup
+	if (tessEvalSrc != nullptr && bValidTess == true)
+	{
+		tessEvalShader = glCreateShader(GL_TESS_EVALUATION_SHADER);
+		glShaderSource(tessEvalShader, 1, (const char**)&tessEvalSrc, NULL);
+		glCompileShader(tessEvalShader);
+		if (!VerifyShader(tessCtrlShader, a_tessEvalPath))
+		{
+			// Cleanup
+			bValidTess = false;
 			return;
 		}
 		else
@@ -192,7 +226,8 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 	}
 	if (bValidTess)
 	{
-		glAttachShader(m_shaderProgram, tessalationShader);
+		glAttachShader(m_shaderProgram, tessCtrlShader);
+		glAttachShader(m_shaderProgram, tessEvalShader);
 	}
 	glAttachShader(m_shaderProgram, fragmentShader);
 
@@ -225,7 +260,8 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 
 	if (bValidTess)
 	{
-		DeleteShader(tessalationShader);
+		DeleteShader(tessCtrlShader);
+		DeleteShader(tessEvalShader);
 	}
 
 }

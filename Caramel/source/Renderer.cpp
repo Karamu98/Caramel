@@ -18,7 +18,8 @@
 
 
 
-Renderer::Renderer()
+Renderer::Renderer():
+m_renderWireframe(false)
 {
 }
 
@@ -120,6 +121,15 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	// clear the backbuffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	if (m_renderWireframe) // TODO:: Allow for wireframe to be displayed on main window
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT, GL_FILL);
+	}
+
 	Camera* activeCam = a_sceneToRender->GetActiveCamera();
 
 	if (activeCam == nullptr)
@@ -174,6 +184,7 @@ void Renderer::OnGUI()
 	ImGui::SetNextWindowPos(ImVec2(0, DEFAULT_SCREENHEIGHT - (DEFAULT_SCREENHEIGHT * 0.4f)));
 	ImGui::SetNextWindowSize(ImVec2(DEFAULT_SCREENWIDTH * 0.3f, DEFAULT_SCREENHEIGHT * 0.4f));
 	ImGui::Begin("Framebuffer");
+	ImGui::Checkbox("Render wireframe", &m_renderWireframe);
 	ImGui::BeginTabBar("Framebuffer textures");
 
 	if (ImGui::BeginTabItem("Final Buffer"))
