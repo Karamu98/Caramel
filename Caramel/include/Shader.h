@@ -35,23 +35,6 @@ public :
 	void Unbind();
 
 	/// <summary>
-	/// Registers a mesh to be rendered to the shader
-	/// </summary>
-	/// <param name='a_other'>A pointer to a mesh to render.</param>
-	void RegisterRenderable(MeshFilter* a_other);
-
-	/// <summary>
-	/// Draws each tracked renderable.
-	/// </summary>
-	void Draw();
-
-	/// <summary>
-	/// Unregisters a mesh to be rendered to the shader
-	/// </summary>
-	/// <param name='a_other'>A pointer to a mesh to render.</param>
-	void UnregisterRenderable(MeshFilter* a_other);
-
-	/// <summary>
 	/// Sets a boolean uniform value by name.
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
@@ -102,7 +85,6 @@ private:
 	bool VerifyShader(unsigned int& a_shaderHandle, std::string a_path);
 
 	unsigned int m_shaderProgram;
-	std::vector<MeshFilter*> m_toRender;
 };
 
 

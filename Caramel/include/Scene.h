@@ -36,6 +36,11 @@ std::vector<T*> Scene::FindAllComponentsOfType()
 	{
 		std::vector<T*> entityComps = entity->FindComponentsOfType<T>();
 
+		if (entityComps.size() == 0)
+		{
+			continue;
+		}
+
 		// Add it
 		compList.insert(compList.end(), entityComps.begin(), entityComps.end());
 	}

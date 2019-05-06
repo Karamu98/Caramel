@@ -14,6 +14,7 @@ public:
 
 	inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
 	inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+	static void GetOpenGLErrors(const char* a_file, int a_line);
 
 private:
 	static std::shared_ptr<spdlog::logger> s_CoreLogger;
@@ -33,3 +34,5 @@ private:
 #define CL_INFO(...) ::Log::GetClientLogger()->info(__VA_ARGS__)
 #define CL_TRACE(...) ::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define CL_FATAL(...) ::Log::GetClientLogger()->critical(__VA_ARGS__)
+
+#define CL_GETGL_ERRORS ::Log::GetOpenGLErrors(__FILE__, __LINE__)

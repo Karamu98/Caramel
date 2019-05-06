@@ -264,6 +264,8 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 		DeleteShader(tessEvalShader);
 	}
 
+	CL_GETGL_ERRORS;
+
 }
 
 
@@ -280,27 +282,6 @@ void Shader::Bind()
 void Shader::Unbind()
 {
 	glUseProgram(0);
-}
-
-void Shader::RegisterRenderable(MeshFilter* a_other)
-{
-	a_other->m_owningShader = this;
-	m_toRender.push_back(a_other);
-}
-
-void Shader::Draw()
-{
-	for (MeshFilter* mesh : m_toRender)
-	{
-		mesh->Draw(this);
-	}
-}
-
-void Shader::UnregisterRenderable(MeshFilter* a_other)
-{
-	ptrdiff_t old = std::find(m_toRender.begin(), m_toRender.end(), a_other) - m_toRender.begin();
-
-	m_toRender.erase(m_toRender.begin() + old);
 }
 
 void Shader::SetBool(const std::string& a_name, bool a_value)

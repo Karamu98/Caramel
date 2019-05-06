@@ -52,11 +52,12 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
-uniform sampler2D gAlbedoSpec;
+uniform sampler2D gAlbedo;
+uniform sampler1D gSpec;
 
 vec3 FragPos;
 vec3 FragNorm;
-vec3 Diffuse;
+vec4 Diffuse;
 float Specular;
 
 // function prototypes
@@ -70,9 +71,14 @@ void main()
     // Getting the data from the first pass
     FragPos = texture(gPosition, TexCoords).rgb;
     FragNorm = normalize(texture(gNormal, TexCoords).rgb);
-    vec4 albedoSpec = texture(gAlbedoSpec, TexCoords);
-    Diffuse = albedoSpec.rgb;
-    Specular = albedoSpec.a;
+    vec4 albedoSpec = texture(gAlbedo, TexCoords);
+    Diffuse = texture(gAlbedo, TexCoords);
+    Specular = texture(gSpec, 0).r; // Change TODO
+
+    if(Diffuse.a < 0.1f)
+    {
+      discard;
+    }
 
     // properties
     vec3 viewDir = normalize(viewPos - FragPos);
@@ -98,7 +104,7 @@ void main()
     }
 
 
-    FragColor = vec4(Diffuse * result, 1.0);
+    FragColor = vec4(Diffuse.rgb * result, 1.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)

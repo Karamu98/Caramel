@@ -8,7 +8,8 @@
 
 typedef Component PARENT;
 
-MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
+MeshFilter::MeshFilter(Entity * a_pOwner, MeshType a_type) : PARENT(a_pOwner)
+, m_meshType(a_type)
 {
 }
 
@@ -25,13 +26,6 @@ void MeshFilter::OnGUI()
 	{
 		LoadModel();
 	}
-	ImGui::InputText("Shader name", m_shaderTextbuff, IM_ARRAYSIZE(m_shaderTextbuff));
-	if (ImGui::Button("Attach to Shader"))
-	{
-		
-	}
-
-
 	ImGui::NewLine();
 
 }
@@ -41,7 +35,6 @@ bool MeshFilter::OnDelete()
 	ImGui::PushID(GetOwnerEntity() + GetModelNumber());
 	if (ImGui::Button("Mesh"))
 	{
-		m_owningShader->UnregisterRenderable(this);
 		GetOwnerEntity()->DeleteComponent(this);
 		ImGui::PopID();
 		return true;
@@ -110,6 +103,11 @@ void MeshFilter::Draw(Shader* a_shader)
 		meshes[i].Draw(a_shader);
 	}
 
+}
+
+MeshType MeshFilter::GetType()
+{
+	return m_meshType;
 }
 
 void MeshFilter::ProcessNode(aiNode * a_node, const aiScene * a_scene)

@@ -50,17 +50,16 @@ void Entity::OnGUI()
 {
 	Gizmos::addTransform(*m_Transform.GetMatrix(), 1);
 
-
-	auto positionRow = &((*m_Transform.GetMatrix())[3]);
-
-	float* values[3] = { &((*positionRow)[0]), &((*positionRow)[1]) , &((*positionRow)[2]) };
+	glm::mat4* matrix = m_Transform.GetMatrix();
+	auto positionRow = &((*matrix)[3]);
 
 	// List Transfrom Component
 	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Transform Component");
 	ImGui::Text("Name: ");
 	ImGui::SameLine(50);
 	ImGui::InputText("", (char*)GetName()->c_str(), 10);
-	ImGui::DragFloat3("Position", *values, 0.1f);
+	ImGui::DragFloat3("Position", glm::value_ptr(*positionRow), 0.1f);
+
 	if (ImGui::Button("Reset"))
 	{
 		m_Transform.Reset();

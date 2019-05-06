@@ -71,17 +71,17 @@ bool MyApplication::onCreate()
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
 	ruinsEntity->SetName("Ruins");
-	ruinsEntity->GetTransform()->SetScale(glm::vec3(1, 1, 1));
+	ruinsEntity->GetTransform()->SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
 	ruinsEntity->GetTransform()->SetPosition(glm::vec3(0, 1, 0));
-	MeshFilter* ruins = new MeshFilter(ruinsEntity); // Create its mesh filter
+	MeshFilter* ruins = new MeshFilter(ruinsEntity, MeshType::SOLID); // Create its mesh filter
 	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
 
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
 	wavesEntity->SetName("Waves");
 	wavesEntity->GetTransform()->SetScale(glm::vec3(3, 1, 3));
-	MeshFilter* waves = new MeshFilter(wavesEntity); // Create its mesh filter
-	//waves->LoadModel("models/Sea/Sea.obj"); // Load the model
+	MeshFilter* waves = new MeshFilter(wavesEntity, MeshType::ANIMATINGSOLID); // Create its mesh filter
+	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
 
 #pragma endregion
 
@@ -176,8 +176,9 @@ void MyApplication::Update(float a_deltaTime)
 
 			if (ImGui::Button("Mesh Filter"))
 			{
-				MeshFilter* newComp = new MeshFilter(m_scene.selectedEntity);
-				bComponentTool = false;
+				//MeshFilter* newComp = new MeshFilter(m_scene.selectedEntity);
+				//bComponentTool = false;
+				CL_INFO("Not implemented.");
 			}
 
 

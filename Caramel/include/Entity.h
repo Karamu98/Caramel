@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 #include "Transform.h"
-
+#include <string>
 
 
 class Component;
@@ -99,7 +99,7 @@ std::vector<T*> Entity::FindComponentsOfType() const
 		}
 	}
 
-	return allComps;
+	return allComps;	
 }
 
 #endif // _ENTITY_H

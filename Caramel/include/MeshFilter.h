@@ -18,11 +18,19 @@ class Shader;
 
 /// Ian Hudson helped a lot with helping me understand the model loading and data management.
 
+enum MeshType
+{
+	SOLID,
+	TRANSPARENTS,
+	ANIMATINGSOLID,
+	ANIMATINGTRANSPARENT
+};
+
 class MeshFilter : public Component
 {
 public:
 
-	MeshFilter(Entity* a_pOwner);
+	MeshFilter(Entity* a_pOwner, MeshType a_type);
 	~MeshFilter();
 
 	virtual void Update(float a_fDeltaTime) {};
@@ -33,8 +41,7 @@ public:
 	void LoadModel(std::string a_path);
 	void Draw(Shader* a_shader);
 
-	Shader* m_owningShader;
-
+	MeshType GetType();
 
 private:
 
@@ -50,6 +57,8 @@ private:
 	std::vector<Mesh> meshes;
 
 	std::string m_dir;
+
+	MeshType m_meshType;
 
 
 	char m_modelTextbuff[128]; // For ImGui

@@ -14,8 +14,7 @@
 #include "SpotLight.h"
 #include "DirectionalLight.h"
 #include "glad/glad.h"
-
-
+#include <string>
 
 
 Renderer::Renderer():
@@ -26,11 +25,6 @@ m_renderWireframe(false)
 
 Renderer::~Renderer()
 {
-	for (auto &shader : m_shaders)
-	{
-		delete shader.second;
-	}
-
 	// Disable our rendering mode
 	switch (m_currentMode)
 	{
@@ -52,6 +46,9 @@ Renderer::~Renderer()
 	default:
 		break;
 	}
+
+	// Remove shaders if present
+
 }
 
 void Renderer::Init(RenderingMode a_renderMode)
@@ -74,7 +71,9 @@ void Renderer::Init(RenderingMode a_renderMode)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_finalColour, 0);
 
-	glDrawBuffers(1, &m_finalColour);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
+	CL_GETGL_ERRORS;
 
 	// Depth render buffer
 	glGenRenderbuffers(1, &m_finalDepth);
@@ -86,7 +85,6 @@ void Renderer::Init(RenderingMode a_renderMode)
 	{
 		CL_CORE_ERROR("Framebuffer not complete.");
 	}
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
 
@@ -197,7 +195,7 @@ void Renderer::OnGUI()
 
 	if (ImGui::BeginTabItem("Position Buffer"))
 	{
-		ImTextureID texID = (void*)(intptr_t)m_posBufferID;
+		ImTextureID texID = (void*)(intptr_t)m_posBuffer;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}
@@ -205,7 +203,7 @@ void Renderer::OnGUI()
 
 	if (ImGui::BeginTabItem("Colour Buffer"))
 	{
-		ImTextureID texID = (void*)(intptr_t)m_colandSpecID;
+		ImTextureID texID = (void*)(intptr_t)m_albedoBuffer;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}
@@ -220,25 +218,6 @@ void Renderer::OnGUI()
 	ImGui::EndTabBar();
 
 	ImGui::End();
-}
-
-Shader* Renderer::AddShader(const char* a_name, Shader* a_newShader)
-{
-	m_shaders[a_name] = a_newShader;
-
-	return m_shaders[a_name];
-}
-
-Shader* Renderer::CreateShader(const char* a_name, const char* a_vertexPath, const char* a_fragPath, const char* a_geometryShader, const char* a_tessalationShader)
-{
-	m_shaders[a_name] = new Shader(a_vertexPath, a_fragPath, a_geometryShader, a_tessalationShader);
-
-	return m_shaders[a_name];
-}
-
-Shader* Renderer::GetShader(const char* a_name)
-{
-	return m_shaders[a_name];
 }
 
 void Renderer::ChangeRenderMode(RenderingMode a_newMode)
@@ -304,8 +283,17 @@ void Renderer::InitForwardRendering()
 
 void Renderer::InitDeferredRendering()
 {
-	// Create the default deferred rendering shaders
+	// Create the solids shader
 	m_defGeo = new Shader("shaders/deferredVertex.glsl", "shaders/deferredFrag.glsl");
+
+	// Create the transparents shader
+	m_defGeoTransp = new Shader("shaders/defTranspVertex.glsl", "shaders/defTranspFrag.glsl");
+
+	// Create the animated solids shader
+	m_defGeoAnim = new Shader("shaders/defAnimVertex.glsl", "shaders/deferredFrag.glsl");
+
+	// Create the animated transparents shader
+	m_defGeoTranspAnim = new Shader("shaders/defAnimTranspVertex.glsl", "shaders/defAnimTranspFrag.glsl");
 
 	// Create the second pass shader for this
 	m_defLight = new Shader("shaders/defSecondV.glsl", "shaders/defSecondFrag.glsl");
@@ -315,12 +303,12 @@ void Renderer::InitDeferredRendering()
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer);
 
 	// Setting up the position buffer (x, y, z for RGB)
-	glGenTextures(1, &m_posBufferID);
-	glBindTexture(GL_TEXTURE_2D, m_posBufferID);
+	glGenTextures(1, &m_posBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_posBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_posBufferID, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_posBuffer, 0);
 
 	// Setting up the normal buffer (x, y, z for RGB)
 	glGenTextures(1, &m_normBuffer);
@@ -330,16 +318,24 @@ void Renderer::InitDeferredRendering()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_normBuffer, 0);
 
-	// Setting up the colour buffer with the specular as addition (r, g, b is colour. a is spec)
-	glGenTextures(1, &m_colandSpecID);
-	glBindTexture(GL_TEXTURE_2D, m_colandSpecID);
+	// Setting up the colour buffer
+	glGenTextures(1, &m_albedoBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_colandSpecID, 0);
-
-	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, attachments);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_albedoBuffer, 0);
+	
+	// Setting up the specular buffer
+	glGenTextures(1, &m_specBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_specBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_specBuffer, 0);
+	
+	unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(4, attachments);
 
 	// Renderbuffer for depth to pass to default buffer
 	glGenRenderbuffers(1, &m_rboDepth);
@@ -356,9 +352,12 @@ void Renderer::InitDeferredRendering()
 	m_defLight->Bind();
 	m_defLight->SetInt("gPosition", 0);
 	m_defLight->SetInt("gNormal", 1);
-	m_defLight->SetInt("gAlbedoSpec", 2);
+	m_defLight->SetInt("gAlbedo", 2);
+	m_defLight->SetInt("gSpec", 3);
 
-	m_defQuad = new Plane();
+	m_defQuad = new Plane();	
+
+	CL_GETGL_ERRORS;
 }
 
 void Renderer::InitForwardPlusRendering()
@@ -375,9 +374,10 @@ void Renderer::DisableDeferred()
 	delete m_defLight;
 	delete m_defQuad;
 
-	glDeleteTextures(1, &m_posBufferID);
+	glDeleteTextures(1, &m_posBuffer);
 	glDeleteTextures(1, &m_normBuffer);
-	glDeleteTextures(1, &m_colandSpecID);
+	glDeleteTextures(1, &m_albedoBuffer);
+	glDeleteTextures(1, &m_specBuffer);
 	glDeleteRenderbuffers(1, &m_rboDepth);
 	glDeleteFramebuffers(1, &m_defGeoBuffer);
 }
@@ -402,10 +402,96 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	std::vector<MeshFilter*> meshes = a_scene->FindAllComponentsOfType<MeshFilter>();
 
+	std::vector<MeshFilter*>::iterator xIter = meshes.begin();
+
+#pragma region Solids
+	/// Solid pass
 	for (MeshFilter* mesh : meshes)
 	{
-		mesh->Draw(m_defGeo);
+		if (mesh->GetType() == MeshType::SOLID)
+		{
+			mesh->Draw(m_defGeo);
+			meshes.erase(xIter);
+		}
+		if (meshes.size() > 1)
+		{
+			xIter++;
+		}
 	}
+
+	/// Simple animating solid pass
+	m_defGeoAnim->Bind();
+	Utility::tickTimer();
+	float time = Utility::getTotalTime();
+	m_defGeoAnim->SetMat4("projectionView", a_activeCam->GetProjectionView());
+	m_defGeoAnim->SetMat4("viewMatrix", a_activeCam->GetViewMatrix());
+	m_defGeoAnim->SetFloat("Time", time);
+	xIter = meshes.begin();
+	for (MeshFilter* mesh : meshes)
+	{
+		if (mesh->GetType() == MeshType::ANIMATINGSOLID)
+		{
+			mesh->Draw(m_defGeoAnim);
+			meshes.erase(xIter);
+		}
+		if (meshes.size() > 1)
+		{
+			xIter++;
+		}
+	}
+
+#pragma endregion
+
+#pragma region Transparents
+
+	/// Transparent pass
+	// Grab and sort all transparents by distance
+	std::map<float, MeshFilter*> sortedTranspMeshes;
+	for (MeshFilter* mesh : meshes)
+	{
+		if (mesh->GetType() == MeshType::TRANSPARENTS)
+		{
+			float distance = glm::length(glm::vec3(a_activeCam->GetCameraMatrix()[3]) - mesh->GetOwnerEntity()->GetTransform()->GetPosition());
+			sortedTranspMeshes[distance] = mesh;
+			meshes.erase(xIter);
+		}
+		if (meshes.size() > 1)
+		{
+			xIter++;
+		}
+	}
+
+	// Draw them
+	for (std::map<float, MeshFilter*>::reverse_iterator xIter = sortedTranspMeshes.rbegin(); xIter != sortedTranspMeshes.rend(); xIter++)
+	{
+		xIter->second->Draw(m_defGeoTransp);
+	}
+
+	/// Transparent animating pass
+	// Grab and sort all transparents animating meshes into "sorteedSolidAnimMeshes"
+	std::map<float, MeshFilter*> sortedTranspAnimMeshes;
+	for (MeshFilter* mesh : meshes)
+	{
+		if (mesh->GetType() == MeshType::ANIMATINGTRANSPARENT)
+		{
+			float distance = glm::length(glm::vec3(a_activeCam->GetCameraMatrix()[3]) - mesh->GetOwnerEntity()->GetTransform()->GetPosition());
+			sortedTranspAnimMeshes[distance] = mesh;
+			meshes.erase(xIter);
+		}
+		if (meshes.size() > 1)
+		{
+			xIter++;
+		}
+	}
+
+	// Draw them
+	for (std::map<float, MeshFilter*>::reverse_iterator xIter = sortedTranspAnimMeshes.rbegin(); xIter != sortedTranspAnimMeshes.rend(); xIter++)
+	{
+		xIter->second->Draw(m_defGeoTranspAnim);
+	}
+
+#pragma endregion
+
 
 	/// Second light pass
 	glBindFramebuffer(GL_FRAMEBUFFER, m_finalFramebuffer); // Bind the output frame buffer
@@ -415,11 +501,14 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	// Bind the textures for the shader that we populated by the first pass
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_posBufferID);
+	glBindTexture(GL_TEXTURE_2D, m_posBuffer);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_normBuffer);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, m_colandSpecID);
+	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_1D, m_specBuffer);
+
 
 	// For each of each type of light, pass them to the shader
 	std::vector<DirectionalLight*> dirLights = a_scene->FindAllComponentsOfType<DirectionalLight>();
