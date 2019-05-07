@@ -60,6 +60,11 @@ private:
 
 	MeshType m_meshType;
 
+	int m_innerTess;
+	int m_outerTess;
+
+	bool m_isTessActive;
+	int m_tessScale;
 
 	char m_modelTextbuff[128]; // For ImGui
 	char m_shaderTextbuff[128]; // For ImGui

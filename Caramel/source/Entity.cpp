@@ -59,7 +59,6 @@ void Entity::OnGUI()
 	ImGui::SameLine(50);
 	ImGui::InputText("", (char*)GetName()->c_str(), 10);
 	ImGui::DragFloat3("Position", glm::value_ptr(*positionRow), 0.1f);
-
 	if (ImGui::Button("Reset"))
 	{
 		m_Transform.Reset();

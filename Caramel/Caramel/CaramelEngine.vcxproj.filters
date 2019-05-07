@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Primitives">
       <UniqueIdentifier>{644ce891-9d8d-4b1c-8c42-e50f3dbde8ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{b2612494-fc28-48e5-9674-25a699a1f14a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\MyApplication.cpp">
@@ -147,6 +150,33 @@
     </None>
     <None Include="..\resources\shaders\modelVertex.glsl">
       <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\defAnimVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\deferredFrag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\deferredVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\defSecondFrag.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\defSecondV.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\fragment_shadow.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\tessCTRL.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\tessEVAL.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaders\vertex_shadow.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

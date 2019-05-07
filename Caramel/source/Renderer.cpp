@@ -284,18 +284,18 @@ void Renderer::InitForwardRendering()
 void Renderer::InitDeferredRendering()
 {
 	// Create the solids shader
-	m_defGeo = new Shader("shaders/deferredVertex.glsl", "shaders/deferredFrag.glsl");
+	m_defGeo = new Shader("shaders/deferredVertex.glsl", "shaders/deferredFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
 
 	// Create the transparents shader
-	m_defGeoTransp = new Shader("shaders/defTranspVertex.glsl", "shaders/defTranspFrag.glsl");
+	m_defGeoTransp = new Shader("shaders/defTranspVertex.glsl", "shaders/defTranspFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
 
 	// Create the animated solids shader
-	m_defGeoAnim = new Shader("shaders/defAnimVertex.glsl", "shaders/deferredFrag.glsl");
+	m_defGeoAnim = new Shader("shaders/defAnimVertex.glsl", "shaders/deferredFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
 
 	// Create the animated transparents shader
-	m_defGeoTranspAnim = new Shader("shaders/defAnimTranspVertex.glsl", "shaders/defAnimTranspFrag.glsl");
+	m_defGeoTranspAnim = new Shader("shaders/defAnimTranspVertex.glsl", "shaders/defAnimTranspFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
 
-	// Create the second pass shader for this
+	// Create the second pass shader for lighting
 	m_defLight = new Shader("shaders/defSecondV.glsl", "shaders/defSecondFrag.glsl");
 
 	// Creating the buffer

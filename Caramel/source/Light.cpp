@@ -19,8 +19,6 @@ Light::~Light()
 
 void Light::OnGUI()
 {
-	ImGui::Text("Light Component");
-	ImGui::NewLine();
 	ImGui::ColorEdit3("Diffuse", glm::value_ptr(m_diffuseColour));
 	ImGui::ColorEdit3("Specular", glm::value_ptr(m_specularColour));
 }

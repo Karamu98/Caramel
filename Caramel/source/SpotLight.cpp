@@ -37,12 +37,17 @@ void SpotLight::Draw(Shader * a_shader, int a_number)
 
 void SpotLight::OnGUI()
 {
-	Light::OnGUI();
+	if (ImGui::TreeNode("Light Component"))
+	{
+		ImGui::Unindent();
+		Light::OnGUI();
 
-	// Expose variables here
-	ImGui::DragFloat("Inner Cutoff", &m_cutoff, 0.1f, 0.0f, m_outerCutoff);
-	ImGui::DragFloat("Outter Cutoff", &m_outerCutoff, 0.1f, m_cutoff, 180.0f);
-	ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
+		// Expose variables here
+		ImGui::DragFloat("Inner Cutoff", &m_cutoff, 0.1f, 0.0f, m_outerCutoff);
+		ImGui::DragFloat("Outter Cutoff", &m_outerCutoff, 0.1f, m_cutoff, 180.0f);
+		ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
+		ImGui::TreePop();
+	}
 }
 
 void SpotLight::SetDirection(glm::vec3 a_newDir)

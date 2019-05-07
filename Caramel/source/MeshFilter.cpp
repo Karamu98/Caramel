@@ -10,6 +10,7 @@ typedef Component PARENT;
 
 MeshFilter::MeshFilter(Entity * a_pOwner, MeshType a_type) : PARENT(a_pOwner)
 , m_meshType(a_type)
+, m_outerTess(1)
 {
 }
 
@@ -20,13 +21,22 @@ MeshFilter::~MeshFilter()
 void MeshFilter::OnGUI()
 {
 	// List Transfrom Component
-	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Model Component");
-	ImGui::InputText("Model Path", m_modelTextbuff, IM_ARRAYSIZE(m_modelTextbuff));
-	if (ImGui::Button("Load path"))
+	if (ImGui::TreeNode("Model Component"))
 	{
-		LoadModel();
+		ImGui::Unindent();
+		ImGui::InputText("Model Path", m_modelTextbuff, IM_ARRAYSIZE(m_modelTextbuff));
+		if (ImGui::Button("Load path"))
+		{
+			LoadModel();
+		}
+
+		ImGui::Checkbox("Tessalation", &m_isTessActive);
+		ImGui::SliderInt("Inner", &m_innerTess, 0, 7);
+		ImGui::SliderInt("Outer", &m_outerTess, 1, 7);
+		ImGui::SliderInt("Displacement scale", &m_tessScale, 0, 100);
+		ImGui::TreePop();
 	}
-	ImGui::NewLine();
+
 
 }
 
@@ -96,6 +106,21 @@ void MeshFilter::LoadModel(std::string a_path)
 
 void MeshFilter::Draw(Shader* a_shader)
 {
+	if (m_isTessActive)
+	{
+		// Calculate tessalation with distance
+		a_shader->SetInt("innerEdge", m_innerTess);
+		a_shader->SetInt("outerEdge", m_outerTess);
+		a_shader->SetInt("displacementScale", m_tessScale);
+	}
+	else
+	{
+		a_shader->SetInt("innerEdge", 0);
+		a_shader->SetInt("outerEdge", 1);
+		a_shader->SetInt("displacementScale", -1);
+	}
+	
+
 	glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
 	a_shader->SetMat4("model", m4ModelMat);
 	for (unsigned int i = 0; i < meshes.size(); i++)

@@ -66,7 +66,7 @@ bool MyApplication::onCreate()
 	Entity* pointHolder = new Entity(&m_scene);
 	pointHolder->SetName("Point");
 	PointLight* pointLight = new PointLight(pointHolder);
-	pointHolder->GetTransform()->SetPosition(glm::vec3(5, 5, 5));
+	pointHolder->GetTransform()->SetPosition(glm::vec3(3, 3, 5));
 
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
@@ -90,10 +90,6 @@ bool MyApplication::onCreate()
 
 void MyApplication::Update(float a_deltaTime)
 {
-	// Needs to be called first
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-
 	// clear all gizmos from last frame
 	Gizmos::clear();
 

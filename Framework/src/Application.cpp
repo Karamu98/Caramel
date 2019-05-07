@@ -58,9 +58,20 @@ bool Application::create(const char* a_name, int a_width, int a_height, bool a_b
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
+
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-	const char* glsl_version = "#version 330";
+	const char* glsl_version = "#version 400";
 	// Setup Platform/Renderer bindings
 	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
@@ -98,6 +109,16 @@ void Application::run(const char* a_name, int a_width, int a_height, bool a_bFul
 			Draw();
 
 			ImGui::Render();
+
+			ImGuiIO& io = ImGui::GetIO();
+
+			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+			{
+				GLFWwindow* backup_current_context = glfwGetCurrentContext();
+				ImGui::UpdatePlatformWindows();
+				ImGui::RenderPlatformWindowsDefault();
+				glfwMakeContextCurrent(backup_current_context);
+			}
 
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

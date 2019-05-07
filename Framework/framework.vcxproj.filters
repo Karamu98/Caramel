@@ -19,6 +19,12 @@
     <Filter Include="Dear Imgui">
       <UniqueIdentifier>{27e0e285-9988-4fa2-b534-a8491f919623}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dear Imgui\include">
+      <UniqueIdentifier>{c65f4347-7fe9-4491-86da-253812045b15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dear Imgui\source">
+      <UniqueIdentifier>{89143fb8-b21a-4d35-a420-37c3afed8124}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Application.h">
@@ -33,11 +39,29 @@
     <ClInclude Include="deps\glad\include\glad\glad.h">
       <Filter>GL_Includes</Filter>
     </ClInclude>
-    <ClInclude Include="deps\imgui\examples\imgui_impl_glfw.h">
-      <Filter>Dear Imgui</Filter>
+    <ClInclude Include="deps\imgui\include\imstb_truetype.h">
+      <Filter>Dear Imgui\include</Filter>
     </ClInclude>
-    <ClInclude Include="deps\imgui\examples\imgui_impl_opengl3.h">
-      <Filter>Dear Imgui</Filter>
+    <ClInclude Include="deps\imgui\include\imconfig.h">
+      <Filter>Dear Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imgui\include\imgui.h">
+      <Filter>Dear Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imgui\include\imgui_impl_glfw.h">
+      <Filter>Dear Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imgui\include\imgui_impl_opengl3.h">
+      <Filter>Dear Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imgui\include\imgui_internal.h">
+      <Filter>Dear Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imgui\include\imstb_rectpack.h">
+      <Filter>Dear Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imgui\include\imstb_textedit.h">
+      <Filter>Dear Imgui\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,11 +77,20 @@
     <ClCompile Include="deps\glad\src\glad.c">
       <Filter>GL_Includes</Filter>
     </ClCompile>
-    <ClCompile Include="deps\imgui\examples\imgui_impl_glfw.cpp">
-      <Filter>Dear Imgui</Filter>
+    <ClCompile Include="deps\imgui\imgui.cpp">
+      <Filter>Dear Imgui\source</Filter>
     </ClCompile>
-    <ClCompile Include="deps\imgui\examples\imgui_impl_opengl3.cpp">
-      <Filter>Dear Imgui</Filter>
+    <ClCompile Include="deps\imgui\imgui_draw.cpp">
+      <Filter>Dear Imgui\source</Filter>
+    </ClCompile>
+    <ClCompile Include="deps\imgui\imgui_impl_glfw.cpp">
+      <Filter>Dear Imgui\source</Filter>
+    </ClCompile>
+    <ClCompile Include="deps\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Dear Imgui\source</Filter>
+    </ClCompile>
+    <ClCompile Include="deps\imgui\imgui_widgets.cpp">
+      <Filter>Dear Imgui\source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

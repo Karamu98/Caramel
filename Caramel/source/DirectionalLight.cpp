@@ -25,8 +25,15 @@ void DirectionalLight::Draw(Shader* a_shader, int a_number)
 
 void DirectionalLight::OnGUI()
 {
-	Light::OnGUI();
+	if (ImGui::TreeNode("Light Component"))
+	{
+		ImGui::Unindent();
+		Light::OnGUI();
 
-	// Expose direction here
-	ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
+		// Expose direction here
+		ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
+		ImGui::TreePop();
+	}
+
+
 }
