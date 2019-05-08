@@ -12,12 +12,10 @@
 
 Texture::Texture()
 {
-	m_textBuffer = new char[64]; /// :::OPTIMISE:::
 }
 
 Texture::~Texture()
 {
-
 }
 
 /// <summary>
@@ -135,6 +133,7 @@ void Texture::LoadFromMeta(const char * a_filePathToMeta)
 		}
 
 		m_filePath = tempFilePath;
+		delete tempFilePath;
 	}
 	else
 	{
@@ -156,16 +155,6 @@ unsigned int Texture::GetTextureID()
 
 void Texture::OnGUI(std::string a_name)
 {
-	std::string id = "Texture" + a_name;
-	ImGui::PushID(id.c_str());
-	ImGui::InputText("Image Path", m_textBuffer, sizeof(char) * 64);
-
-	if (ImGui::Button("Load"))
-	{
-		
-	}
-
-	ImGui::PopID();
 }
 
 void Texture::Unload()

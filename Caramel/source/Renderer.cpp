@@ -298,6 +298,11 @@ void Renderer::InitDeferredRendering()
 	// Create the second pass shader for lighting
 	m_defLight = new Shader("shaders/defSecondV.glsl", "shaders/defSecondFrag.glsl");
 
+	// Create the light Shader storage buffer object
+	glGenBuffers(1, &m_lightStorageBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_lightStorageBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
 	// Creating the buffer
 	glGenFramebuffers(1, &m_defGeoBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer);

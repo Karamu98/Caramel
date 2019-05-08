@@ -263,6 +263,13 @@ Shader::Shader(const char * a_vertexPath, const char * a_fragPath, const char * 
 
 	CL_GETGL_ERRORS;
 
+
+	delete vertSource;
+	delete fragSource;
+	delete geoSource;
+	delete tessCtrlSrc;
+	delete tessEvalSrc;
+
 }
 
 

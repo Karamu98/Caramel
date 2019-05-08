@@ -52,6 +52,8 @@ private:
 	unsigned int m_defGeoBuffer, m_posBuffer, m_normBuffer, m_albedoBuffer, m_specBuffer, m_rboDepth;
 	Plane* m_defQuad;
 
+	unsigned int m_lightStorageBuffer;
+
 	bool m_renderWireframe;
 };
 

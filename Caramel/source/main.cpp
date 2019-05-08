@@ -1,4 +1,5 @@
 #include "MyApplication.h"
+#include <vld.h>
 
 #define DEFAULT_SCREENWIDTH 1280
 #define DEFAULT_SCREENHEIGHT 720

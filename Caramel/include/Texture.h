@@ -21,11 +21,6 @@ public:
 	const char* m_filePath; // Stores the original file location
 	unsigned int m_textureID; // This stores the ID of the texture for later reference
 
-private:
-
-	// ImGui
-	char* m_textBuffer;
-
 };
 
 #endif // !_TEXTURE_H__
