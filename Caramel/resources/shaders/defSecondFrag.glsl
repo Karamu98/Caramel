@@ -53,7 +53,7 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
-uniform sampler1D gSpec;
+uniform sampler2D gSpec;
 
 vec3 FragPos;
 vec3 FragNorm;
@@ -62,8 +62,8 @@ float Specular;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal);
 
 void main()
 {
@@ -73,7 +73,8 @@ void main()
     FragNorm = normalize(texture(gNormal, TexCoords).rgb);
     vec4 albedoSpec = texture(gAlbedo, TexCoords);
     Diffuse = texture(gAlbedo, TexCoords);
-    Specular = texture(gSpec, 0).r; // Change TODO
+    //Specular = texture(gSpec, TexCoords).r; // Change TODO
+    Specular = 16.0;
 
     if(Diffuse.a < 0.1f)
     {
@@ -94,20 +95,20 @@ void main()
     // Point lighting
     for(int i = 0; i < pointLightCount; i++)
     {
-      result += CalcPointLight(pointLights[i], FragNorm, FragPos, viewDir);
+      result += CalcPointLight(pointLights[i], FragNorm, FragPos, viewDir, Specular);
     }
 
     // Spot lighting
     for(int i = 0; i < spotLightCount; i++)
     {
-      result += CalcSpotLight(spotLights[i], FragNorm, FragPos, viewDir);
+      result += CalcSpotLight(spotLights[i], FragNorm, FragPos, viewDir, Specular);
     }
 
 
     FragColor = vec4(Diffuse.rgb * result, 1.0);
 }
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal)
 {
   vec3 lightDir = normalize(-light.direction);
 
@@ -116,7 +117,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
 
   // Specular shading
   vec3 halfwayDir = normalize(lightDir + viewDir);
-  float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
+  float spec = pow(max(dot(normal, halfwayDir), 0.0), specVal);
 
   // Combine results
   vec3 ambient = light.diffuse * 0.05f;
@@ -126,7 +127,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specularVal)
   return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal)
 {
   vec3 lightDir = normalize(light.position - fragPos);
 
@@ -135,7 +136,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
   // Specular shading
   vec3 halfwayDir = normalize(lightDir + viewDir);
-  float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
+  float spec = pow(max(dot(normal, halfwayDir), 0.0), specVal);
 
   // Attenuation calculation
   float fDistance = length(light.position - fragPos);
@@ -154,7 +155,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
   return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal)
 {
   vec3 lightDir = normalize(light.position - fragPos);
 
@@ -163,7 +164,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
   // Specular shading
   vec3 halfwayDir = normalize(lightDir + viewDir);
-  float spec = pow(max(dot(viewDir, halfwayDir), 0.0), 32.0);
+  float spec = pow(max(dot(normal, halfwayDir), 0.0), specVal);
 
   // Attenuation calculation
   float fDistance = length(light.position - fragPos);

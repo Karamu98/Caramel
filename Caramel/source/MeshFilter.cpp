@@ -10,7 +10,8 @@ typedef Component PARENT;
 
 MeshFilter::MeshFilter(Entity * a_pOwner, MeshType a_type) : PARENT(a_pOwner)
 , m_meshType(a_type)
-, m_outerTess(1)
+, m_outerTess(1),
+m_specularity(16)
 {
 }
 
@@ -29,6 +30,8 @@ void MeshFilter::OnGUI()
 		{
 			LoadModel();
 		}
+
+		ImGui::SliderFloat("Specularity", &m_specularity, 0, 100);
 
 		ImGui::Checkbox("Tessalation", &m_isTessActive);
 		ImGui::SliderInt("Inner", &m_innerTess, 0, 7);
@@ -123,6 +126,7 @@ void MeshFilter::Draw(Shader* a_shader)
 
 	glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
 	a_shader->SetMat4("model", m4ModelMat);
+	a_shader->SetFloat("meshSpecular", m_specularity);
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
 		meshes[i].Draw(a_shader);

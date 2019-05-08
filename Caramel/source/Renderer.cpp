@@ -512,7 +512,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_1D, m_specBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_specBuffer);
 
 
 	// For each of each type of light, pass them to the shader

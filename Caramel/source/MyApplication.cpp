@@ -37,7 +37,7 @@ bool MyApplication::onCreate()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	const char* glsl_version = "#version 330";
+	const char* glsl_version = "#version 400";
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	ImGui_ImplGlfw_InitForOpenGL(m_window, false);
 	ImGui::StyleColorsDark();

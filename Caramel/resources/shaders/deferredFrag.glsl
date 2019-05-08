@@ -12,7 +12,8 @@ in TessEval
 } frag;
 
 uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_specular1;
+//uniform sampler2D texture_specular1;
+uniform float meshSpecular;
 
 void main()
 {
@@ -23,5 +24,6 @@ void main()
     // and the diffuse per-fragment color with alpha for blending later
     gAlbedo = texture(texture_diffuse1, frag.uv);
     // Store spec
-    gSpec = texture(texture_specular1, frag.uv).r;
+    //gSpec = texture(texture_specular1, frag.uv).r;
+    gSpec = meshSpecular;
 }

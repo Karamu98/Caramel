@@ -31,7 +31,7 @@ void DirectionalLight::OnGUI()
 		Light::OnGUI();
 
 		// Expose direction here
-		ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
+		ImGui::DragFloat3("Direction", glm::value_ptr(m_direction), 0.05f, -1.0f, 1.0f);
 		ImGui::TreePop();
 	}
 

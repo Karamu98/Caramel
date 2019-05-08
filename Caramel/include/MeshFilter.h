@@ -66,6 +66,8 @@ private:
 	bool m_isTessActive;
 	int m_tessScale;
 
+	float m_specularity;
+
 	char m_modelTextbuff[128]; // For ImGui
 	char m_shaderTextbuff[128]; // For ImGui
 };
