@@ -376,6 +376,9 @@ void Renderer::DisableForward()
 void Renderer::DisableDeferred()
 {
 	delete m_defGeo;
+	delete m_defGeoTranspAnim;
+	delete m_defGeoTransp;
+	delete m_defGeoAnim;
 	delete m_defLight;
 	delete m_defQuad;
 
