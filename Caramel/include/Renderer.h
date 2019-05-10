@@ -29,30 +29,41 @@ public:
 
 private:
 
-	void InitForwardRendering();
+	void InitForwardRendering() {};
 	void InitDeferredRendering();
-	void InitForwardPlusRendering();
+	void InitForwardPlusRendering() {};
 
-	void DisableForward();
+	void DisableForward() {};
 	void DisableDeferred();
-	void DisableForwardPlus();
+	void DisableForwardPlus() {};
 
-	void ForwardPass(Scene* a_scene, Camera* a_activeCam);
+	void ForwardPass(Scene* a_scene, Camera* a_activeCam) {};
 	void DeferredPass(Scene* a_scene, Camera* a_activeCam);
-	void ForwardPlusPass(Scene* a_scene, Camera* a_activeCam);
+	void ForwardPlusPass(Scene* a_scene, Camera* a_activeCam) {};
 
 
-	RenderingMode m_currentMode;
+	RenderingMode m_currentMode; // To switch render modes ::Incomplete::
 
+	// Final buffers for FX
 	unsigned int m_finalFramebuffer, m_finalColour, m_finalDepth;
 
 	// For deferred rendering
-	Shader* m_defGeo, *m_defGeoTransp, *m_defGeoAnim, *m_defGeoTranspAnim;
-	Shader* m_defLight;
-	unsigned int m_defGeoBuffer, m_posBuffer, m_normBuffer, m_albedoBuffer, m_specBuffer, m_rboDepth;
-	Plane* m_defQuad;
+	Shader* m_defGeo, *m_defGeoTransp, *m_defGeoAnim, *m_defGeoTranspAnim; // Geometry shaders
+	Shader* m_dirPrePass, *m_spotPrePass, *m_pointPrePass; // Light pre-pass shaders
+	Shader* m_defLight; // Light shaders
 
-	unsigned int m_lightStorageBuffer;
+	unsigned int m_defGeoBuffer, m_posBuffer, m_normBuffer, m_albedoBuffer, m_specBuffer, m_rboDepth; // Deferred buffers
+	Plane* m_defQuad; // Fullscreen render quad
+
+	// SSBOs
+	unsigned int m_dirSSBO, m_pointSSBO, m_spotSSBO;
+
+	// Shadows
+	unsigned int m_shadowFBO;
+	unsigned int m_shadowDepthTex;
+	unsigned int m_shadowBufSize; // The current total w/h of the buffer
+	unsigned int m_shadTexRes; // The resolution of each shadow map
+
 
 	bool m_renderWireframe;
 };

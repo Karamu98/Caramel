@@ -7,7 +7,7 @@ in fragment
 	vec3 pos;
     vec3 normal;
 	vec2 UV;
-  
+
 }frag[];
 
 uniform int innerEdge;

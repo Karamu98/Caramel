@@ -39,7 +39,7 @@ public:
 
 	void LoadModel();
 	void LoadModel(std::string a_path);
-	void Draw(Shader* a_shader);
+	void Draw(Shader* a_shader, bool a_tessalation);
 
 	MeshType GetType();
 

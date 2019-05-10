@@ -14,11 +14,14 @@
 #include "SpotLight.h"
 #include "DirectionalLight.h"
 #include "glad/glad.h"
+#include <math.h>
 #include <string>
 
 
-Renderer::Renderer():
-m_renderWireframe(false)
+Renderer::Renderer() :
+	m_renderWireframe(false),
+	m_shadTexRes(512),
+	m_shadowBufSize(0)
 {
 }
 
@@ -179,19 +182,9 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 void Renderer::OnGUI()
 {
-	ImGui::SetNextWindowPos(ImVec2(0, DEFAULT_SCREENHEIGHT - (DEFAULT_SCREENHEIGHT * 0.4f)));
-	ImGui::SetNextWindowSize(ImVec2(DEFAULT_SCREENWIDTH * 0.3f, DEFAULT_SCREENHEIGHT * 0.4f));
-	ImGui::Begin("Framebuffer");
+	ImGui::Begin("Renderer");
 	ImGui::Checkbox("Render wireframe", &m_renderWireframe);
 	ImGui::BeginTabBar("Framebuffer textures");
-
-	if (ImGui::BeginTabItem("Final Buffer"))
-	{
-		ImTextureID texID = (void*)(intptr_t)m_defGeoBuffer;
-		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::EndTabItem();
-	}
-
 
 	if (ImGui::BeginTabItem("Position Buffer"))
 	{
@@ -211,6 +204,13 @@ void Renderer::OnGUI()
 	if (ImGui::BeginTabItem("Normal Buffer"))
 	{
 		ImTextureID texID = (void*)(intptr_t)m_normBuffer;
+		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Shadow Atlas"))
+	{
+		ImTextureID texID = (void*)(intptr_t)m_shadowDepthTex;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}
@@ -276,11 +276,6 @@ void Renderer::ChangeRenderMode(RenderingMode a_newMode)
 	m_currentMode = a_newMode;
 }
 
-void Renderer::InitForwardRendering()
-{
-
-}
-
 void Renderer::InitDeferredRendering()
 {
 	// Create the solids shader
@@ -295,15 +290,54 @@ void Renderer::InitDeferredRendering()
 	// Create the animated transparents shader
 	m_defGeoTranspAnim = new Shader("shaders/defAnimTranspVertex.glsl", "shaders/defAnimTranspFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
 
+	// Create the pre-pass lighting shaders
+	m_dirPrePass = new Shader("shaders/dirPrePassVert.glsl", "shaders/dirPrePassFrag.glsl");
+	m_spotPrePass = new Shader("shaders/spotPrePassVert.glsl", "shaders/spotPrePassFrag.glsl");
+	m_pointPrePass = new Shader("shaders/pointPrePassVert.glsl", "shaders/pointPrePassFrag.glsl");
+
 	// Create the second pass shader for lighting
 	m_defLight = new Shader("shaders/defSecondV.glsl", "shaders/defSecondFrag.glsl");
 
-	// Create the light Shader storage buffer object
-	glGenBuffers(1, &m_lightStorageBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_lightStorageBuffer);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	//// Create the light Shader storage buffer object
+	//glGenBuffers(1, &m_lightStorageBuffer);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_lightStorageBuffer);
+	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	// Creating the buffer
+#pragma region Shadow framebuffer
+
+	// Generate the shadow FBO
+	glGenFramebuffers(1, &m_shadowFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFBO);
+
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+
+	// Create the depth component for the FBO
+	glGenTextures(1, &m_shadowDepthTex);
+	glBindTexture(GL_TEXTURE_2D, m_shadowDepthTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_shadTexRes * 3, m_shadTexRes * 3, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	// Attach depth texture as FBO's depth buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadowDepthTex, 0);
+
+	// Check if framebuffer is complete
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		CL_CORE_ERROR("Framebuffer not complete.");
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+#pragma endregion
+
+#pragma region Geometry framebuffer
+	// Creating the geometry buffer
 	glGenFramebuffers(1, &m_defGeoBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer);
 
@@ -334,7 +368,7 @@ void Renderer::InitDeferredRendering()
 	// Setting up the specular buffer
 	glGenTextures(1, &m_specBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_specBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RED, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_specBuffer, 0);
@@ -354,6 +388,9 @@ void Renderer::InitDeferredRendering()
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+#pragma endregion
+
+	// Light shader set-up, setting the texture positions (layout)
 	m_defLight->Bind();
 	m_defLight->SetInt("gPosition", 0);
 	m_defLight->SetInt("gNormal", 1);
@@ -365,14 +402,6 @@ void Renderer::InitDeferredRendering()
 	CL_GETGL_ERRORS;
 }
 
-void Renderer::InitForwardPlusRendering()
-{
-}
-
-void Renderer::DisableForward()
-{
-}
-
 void Renderer::DisableDeferred()
 {
 	delete m_defGeo;
@@ -381,34 +410,110 @@ void Renderer::DisableDeferred()
 	delete m_defGeoAnim;
 	delete m_defLight;
 	delete m_defQuad;
+	delete m_dirPrePass;
+	delete m_spotPrePass;
+	delete m_pointPrePass;
 
 	glDeleteTextures(1, &m_posBuffer);
 	glDeleteTextures(1, &m_normBuffer);
 	glDeleteTextures(1, &m_albedoBuffer);
 	glDeleteTextures(1, &m_specBuffer);
+	glDeleteTextures(1, &m_shadowDepthTex);
 	glDeleteRenderbuffers(1, &m_rboDepth);
 	glDeleteFramebuffers(1, &m_defGeoBuffer);
-}
-
-void Renderer::DisableForwardPlus()
-{
-}
-
-void Renderer::ForwardPass(Scene * a_scene, Camera * a_activeCam)
-{
+	glDeleteFramebuffers(1, &m_shadowFBO);
 }
 
 void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 {
-	/// First pass
+	std::vector<MeshFilter*> meshes = a_scene->FindAllComponentsOfType<MeshFilter>();
+
+	/// Shadow pass	
+	std::vector<DirectionalLight*> dirLights = a_scene->FindAllComponentsOfType<DirectionalLight>();
+	std::vector<PointLight*> pointLights = a_scene->FindAllComponentsOfType<PointLight>();
+	std::vector<SpotLight*> spotLights = a_scene->FindAllComponentsOfType<SpotLight>();
+
+	// Get all of our lights, point lights require a cubemap
+	int shadowTileCount = dirLights.size() + spotLights.size() + (pointLights.size() * 6);
+
+	// Square root of the count of tiles we need rounded up is the scalar for our tex size
+	int requiredSize = ceil(sqrt(shadowTileCount));
+
+	// If our shadow map either doesnt exist or is too small for the amount of lights
+	if (requiredSize > m_shadowBufSize)
+	{
+		//// Set size
+		//m_shadowBufSize = requiredSize;
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFBO); // Bind the framebuffer for deferred
+	glClear(GL_DEPTH_BUFFER_BIT); // Clear it
+
+	glCullFace(GL_FRONT); // Cull front face to stop "peter-panning" where shadows seem to be detached from their caster
+
+
+	int x = 0; // Where in our buffer we draw
+	int y = 0;
+	// Render the entire scene foreach light to create shadow maps
+	m_dirPrePass->Bind();
+
+	for (DirectionalLight* light : dirLights)
+	{
+		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes * 3, m_shadTexRes * 3);
+		light->PrePass(m_dirPrePass, a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition(), 0);
+
+		for (MeshFilter* mesh : meshes)
+		{
+			mesh->Draw(m_dirPrePass, false);
+		}
+
+		// Iterate to the next positon
+		x++;
+		if (x > requiredSize)
+		{
+			x = 0;
+			y++;
+		}
+	}
+
+	//for (SpotLight* light : spotLights)
+	//{
+	//	glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
+	//	light->PrePass(m_spotPrePass, 0);
+	//	mesh->Draw(m_spotPrePass);
+
+	//	// Iterate to the next positon
+	//	x++;
+	//	if (x > requiredSize)
+	//	{
+	//		x = 0;
+	//		y++;
+	//	}
+	//}
+
+	//for (PointLight* light : pointLights)
+	//{
+	//	glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
+	//	light->PrePass(m_pointPrePass, 0);
+	//	mesh->Draw(m_pointPrePass);
+
+	//	// Iterate to the next positon
+	//	x++;
+	//	if (x > requiredSize)
+	//	{
+	//		x = 0;
+	//		y++;
+	//	}
+	//}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer); // Bind the framebuffer for deferred
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
+	glViewport(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT);
+	glCullFace(GL_BACK);
 
+	/// First pass
 	m_defGeo->Bind(); // Bind the first pass shader and pass uniforms
 	m_defGeo->SetMat4("projectionView", a_activeCam->GetProjectionView());
-	m_defGeo->SetMat4("viewMatrix", a_activeCam->GetViewMatrix());
-
-	std::vector<MeshFilter*> meshes = a_scene->FindAllComponentsOfType<MeshFilter>();
 
 	std::vector<MeshFilter*>::iterator xIter = meshes.begin();
 
@@ -418,7 +523,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	{
 		if (mesh->GetType() == MeshType::SOLID)
 		{
-			mesh->Draw(m_defGeo);
+			mesh->Draw(m_defGeo, true);
 			meshes.erase(xIter);
 		}
 		if (meshes.size() > 1)
@@ -439,7 +544,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	{
 		if (mesh->GetType() == MeshType::ANIMATINGSOLID)
 		{
-			mesh->Draw(m_defGeoAnim);
+			mesh->Draw(m_defGeoAnim, true);
 			meshes.erase(xIter);
 		}
 		if (meshes.size() > 1)
@@ -472,7 +577,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	// Draw them
 	for (std::map<float, MeshFilter*>::reverse_iterator xIter = sortedTranspMeshes.rbegin(); xIter != sortedTranspMeshes.rend(); xIter++)
 	{
-		xIter->second->Draw(m_defGeoTransp);
+		xIter->second->Draw(m_defGeoTransp, true);
 	}
 
 	/// Transparent animating pass
@@ -495,19 +600,19 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	// Draw them
 	for (std::map<float, MeshFilter*>::reverse_iterator xIter = sortedTranspAnimMeshes.rbegin(); xIter != sortedTranspAnimMeshes.rend(); xIter++)
 	{
-		xIter->second->Draw(m_defGeoTranspAnim);
+		xIter->second->Draw(m_defGeoTranspAnim, true);
 	}
 
 #pragma endregion
 
-
 	/// Second light pass
+
 	glBindFramebuffer(GL_FRAMEBUFFER, m_finalFramebuffer); // Bind the output frame buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
 
 	m_defLight->Bind();
 
-	// Bind the textures for the shader that we populated by the first pass
+	// Bind the textures for lighting pass
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_posBuffer);
 	glActiveTexture(GL_TEXTURE1);
@@ -519,10 +624,6 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 
 	// For each of each type of light, pass them to the shader
-	std::vector<DirectionalLight*> dirLights = a_scene->FindAllComponentsOfType<DirectionalLight>();
-	std::vector<PointLight*> pointLights = a_scene->FindAllComponentsOfType<PointLight>();
-	std::vector<SpotLight*> spotLights = a_scene->FindAllComponentsOfType<SpotLight>();
-
 	m_defLight->SetInt("dirLightCount", dirLights.size());
 	for (int i = 0; i < dirLights.size(); i++)
 	{
@@ -549,8 +650,4 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_finalFramebuffer);
 	glBlitFramebuffer(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void Renderer::ForwardPlusPass(Scene * a_scene, Camera * a_activeCam)
-{
 }

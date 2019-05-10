@@ -39,42 +39,48 @@ public :
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
 	/// <param name='a_value'>The new value we want the variable to have.</param>
-	void SetBool(const std::string& a_name, bool a_value);
+	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
+	void SetBool(const std::string& a_name, bool a_value, bool a_logErrors = false);
 
 	/// <summary>
 	/// Sets a integral uniform value by name.
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
 	/// <param name='a_value'>The new value we want the variable to have.</param>
-	void SetInt(const std::string& a_name, int a_value);
+	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
+	void SetInt(const std::string& a_name, int a_value, bool a_logErrors = false);
 
 	/// <summary>
 	/// Sets a floating point uniform value by name.
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
 	/// <param name='a_value'>The new value we want the variable to have.</param>
-	void SetFloat(const std::string& a_name, float a_value);
+	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
+	void SetFloat(const std::string& a_name, float a_value, bool a_logErrors = false);
 
 	/// <summary>
 	/// Sets a vector4 unifrom value by name.
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
 	/// <param name='a_value'>The new value we want the variable to have.</param>
-	void SetVec4(const std::string& a_name, glm::vec4 a_value);
+	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
+	void SetVec4(const std::string& a_name, glm::vec4 a_value, bool a_logErrors = false);
 
 	/// <summary>
 	/// Sets a vector3 unifrom value by name.
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
 	/// <param name='a_value'>The new value we want the variable to have.</param>
-	void SetVec3(const std::string& a_name, glm::vec3 a_value);
+	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
+	void SetVec3(const std::string& a_name, glm::vec3 a_value, bool a_logErrors = false);
 
 	/// <summary>
 	/// Sets a Matrix4x4 unifrom value by name.
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
 	/// <param name='a_value'>The new value we want the variable to have.</param>
-	void SetMat4(const std::string& a_name, glm::mat4 a_value);
+	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
+	void SetMat4(const std::string& a_name, glm::mat4 a_value, bool a_logErrors = false);
 
 private:
 

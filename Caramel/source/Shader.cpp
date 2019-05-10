@@ -288,36 +288,83 @@ void Shader::Unbind()
 	glUseProgram(0);
 }
 
-void Shader::SetBool(const std::string& a_name, bool a_value)
-{
-	glUniform1i(glGetUniformLocation(m_shaderProgram, a_name.c_str()), (int)a_value);
-}
-
-void Shader::SetInt(const std::string& a_name, int a_value)
-{
-	glUniform1i(glGetUniformLocation(m_shaderProgram, a_name.c_str()), a_value);
-}
-
-void Shader::SetFloat(const std::string& a_name, float a_value)
-{
-	glUniform1f(glGetUniformLocation(m_shaderProgram, a_name.c_str()), a_value);
-}
-
-void Shader::SetVec4(const std::string & a_name, glm::vec4 a_value)
-{
-	float* valArray = glm::value_ptr(a_value);
-	glUniform4f(glGetUniformLocation(m_shaderProgram, a_name.c_str()),valArray[0], valArray[1], valArray[2], valArray[3]);
-}
-
-void Shader::SetVec3(const std::string & a_name, glm::vec3 a_value)
-{
-	float* valArray = glm::value_ptr(a_value);
-	glUniform3f(glGetUniformLocation(m_shaderProgram, a_name.c_str()), valArray[0], valArray[1], valArray[2]);
-}
-
-void Shader::SetMat4(const std::string & a_name, glm::mat4 a_value)
+void Shader::SetBool(const std::string& a_name, bool a_value, bool a_logErrors)
 {
 	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	if (loc == -1 && a_logErrors)
+	{
+		CL_CORE_WARN("Could not find location of " + a_name + " in shader.");
+		return;
+	}
+
+	glUniform1i(loc, (int)a_value);
+}
+
+void Shader::SetInt(const std::string& a_name, int a_value, bool a_logErrors)
+{
+	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	if (loc == -1 && a_logErrors)
+	{
+		CL_CORE_WARN("Could not find location of " + a_name + " in shader.");
+		return;
+	}
+
+	glUniform1i(loc, a_value);
+}
+
+void Shader::SetFloat(const std::string& a_name, float a_value, bool a_logErrors)
+{
+	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	if (loc == -1 && a_logErrors)
+	{
+		CL_CORE_WARN("Could not find location of " + a_name + " in shader.");
+		return;
+	}
+
+	glUniform1f(loc, a_value);
+}
+
+void Shader::SetVec4(const std::string & a_name, glm::vec4 a_value, bool a_logErrors)
+{	
+	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	if (loc == -1 && a_logErrors)
+	{
+		CL_CORE_WARN("Could not find location of " + a_name + " in shader.");
+		return;
+	}
+
+	float* valArray = glm::value_ptr(a_value);
+
+	glUniform4f(loc,valArray[0], valArray[1], valArray[2], valArray[3]);
+}
+
+void Shader::SetVec3(const std::string & a_name, glm::vec3 a_value, bool a_logErrors)
+{
+	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	if (loc == -1 && a_logErrors)
+	{
+		CL_CORE_WARN("Could not find location of " + a_name + " in shader.");
+		return;
+	}
+
+	float* valArray = glm::value_ptr(a_value);
+	glUniform3f(loc, valArray[0], valArray[1], valArray[2]);
+}
+
+void Shader::SetMat4(const std::string & a_name, glm::mat4 a_value, bool a_logErrors)
+{
+	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	if (loc == -1 && a_logErrors)
+	{
+		CL_CORE_WARN("Could not find location of " + a_name + " in shader.");
+		return;
+	}
 
 	glUniformMatrix4fv(loc, 1, false, glm::value_ptr(a_value));
 }

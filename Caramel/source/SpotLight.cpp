@@ -50,6 +50,11 @@ void SpotLight::OnGUI()
 	}
 }
 
+void SpotLight::PrePass(Shader* a_shader, int a_number)
+{
+
+}
+
 void SpotLight::SetDirection(glm::vec3 a_newDir)
 {
 	m_direction = a_newDir;

@@ -14,9 +14,14 @@ public:
 	virtual void Draw(Shader* a_shader, int a_number);
 	virtual void OnGUI();
 
+	void PrePass(Shader* a_shader, glm::vec3 a_center, int a_number);
+
 private:
 
 	glm::vec3 m_direction;
+	glm::mat4 m_lightProjection;
+
+	glm::mat4 m_cacheLightSpaceMat;
 };
 
 #endif

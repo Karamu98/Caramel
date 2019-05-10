@@ -14,6 +14,8 @@ public:
 	virtual void Draw(Shader* a_shader, int a_number);
 	virtual void OnGUI();
 
+	virtual void PrePass(Shader* a_shader, int a_number);
+
 	void SetDirection(glm::vec3 a_newDir);
 
 private:

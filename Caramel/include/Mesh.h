@@ -22,7 +22,7 @@ class Mesh
 public:
 	Mesh(std::vector<Vertex> a_verts, std::vector<unsigned int> a_indices, std::vector<Texture> a_textures);
 
-	void Draw(Shader* a_shader);
+	void Draw(Shader* a_shader, bool a_tessalation);
 	void Unload();
 
 private:

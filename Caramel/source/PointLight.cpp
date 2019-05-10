@@ -44,3 +44,7 @@ void PointLight::OnGUI()
 		ImGui::TreePop();
 	}
 }
+
+void PointLight::PrePass(Shader* a_shader, int a_number)
+{
+}

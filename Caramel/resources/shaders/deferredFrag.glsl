@@ -12,7 +12,7 @@ in TessEval
 } frag;
 
 uniform sampler2D texture_diffuse1;
-//uniform sampler2D texture_specular1;
+uniform sampler2D texture_specular1;
 uniform float meshSpecular;
 
 void main()
@@ -22,8 +22,26 @@ void main()
     // Also store the per-fragment fragNorms into the gbuffer
     gNormal = frag.normal;
     // and the diffuse per-fragment color with alpha for blending later
-    gAlbedo = texture(texture_diffuse1, frag.uv);
+    vec4 albedo = texture(texture_diffuse1, frag.uv);
+    if(length(albedo) > 0)
+    {
+      gAlbedo = albedo;
+    }
+    else
+    {
+      gAlbedo = vec4(1, 1, 1, 1);
+    }
+
+// Store spec and height?? r = spec, b = height
     // Store spec
-    //gSpec = texture(texture_specular1, frag.uv).r;
-    gSpec = meshSpecular;
+    float spec = texture(texture_specular1, frag.uv).r;
+
+    if(spec > 0.0f)
+    {
+      gSpec = spec;
+    }
+    else
+    {
+      gSpec = meshSpecular;
+    }
 }

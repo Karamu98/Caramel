@@ -15,7 +15,7 @@ Mesh::Mesh(std::vector<Vertex> a_verts, std::vector<unsigned int> a_indices, std
 	Setup();
 }
 
-void Mesh::Draw(Shader* a_shader)
+void Mesh::Draw(Shader* a_shader, bool a_tessalation)
 {
 	/// https://learnopengl.com system for drawing models
 	unsigned int diffuseNr = 1;
@@ -51,7 +51,15 @@ void Mesh::Draw(Shader* a_shader)
 
 	// Draw mesh
 	glBindVertexArray(m_vArrayObject);
-	glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
+	if (a_tessalation)
+	{
+		glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
+	}
+	else
+	{
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	}
+	
 	glBindVertexArray(0);
 }
 
@@ -79,10 +87,10 @@ void Mesh::Setup()
 	glBindVertexArray(m_vArrayObject);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vBufferObject);
 
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_DYNAMIC_DRAW); // Copy all of the vertices into our buffer
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW); // Copy all of the vertices into our buffer
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_DYNAMIC_DRAW); // Copy all of the indices into our buffer
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW); // Copy all of the indices into our buffer
 
 	// Vertex positions
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);

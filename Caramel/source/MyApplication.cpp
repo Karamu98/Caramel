@@ -53,6 +53,7 @@ bool MyApplication::onCreate()
 	// Add a directional light and point light
 	Entity* lightHolder = new Entity(&m_scene);
 	lightHolder->SetName("Directional");
+	lightHolder->GetTransform()->SetPosition(glm::vec3(5, 5, 5));
 	DirectionalLight* sceneLight = new DirectionalLight(lightHolder);
 	Entity* pointHolder = new Entity(&m_scene);
 	pointHolder->SetName("Point");
@@ -84,7 +85,15 @@ void MyApplication::Update(float a_deltaTime)
 	// clear all gizmos from last frame
 	Gizmos::clear();
 
-	m_scene.FindAllComponentsOfType<SpotLight>()[0]->SetDirection(-m_scene.m_activeCamera->GetOwnerEntity()->GetTransform()->GetForward());
+	std::vector<SpotLight*> spots = m_scene.FindAllComponentsOfType<SpotLight>();
+
+	if (spots.size() > 0)
+	{
+		if (spots[0] != nullptr && m_scene.m_activeCamera != nullptr)
+		{
+			spots[0]->SetDirection(-m_scene.m_activeCamera->GetOwnerEntity()->GetTransform()->GetForward());
+		}
+	}
 
 	// add a 20x20 grid on the XZ-plane
 	for (int i = 0; i < 21; ++i)	
@@ -108,7 +117,6 @@ void MyApplication::Update(float a_deltaTime)
 		if (ImGui::MenuItem("Create", "Ctrl+N"))
 		{
 			Entity* newEntity = new Entity(&m_scene);
-			m_scene.Add(newEntity);
 		}
 
 		if (ImGui::MenuItem("Delete"))

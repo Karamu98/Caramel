@@ -32,7 +32,7 @@ void main()
 	tessEval.uv = tessCS[0].uv * p.x + tessCS[1].uv * p.y + tessCS[2].uv * p.z;
 
 	float disp = 0;
-	
+
 	if (displacementScale > 0)
 	{
 		disp = texture(texture_height1, tessEval.uv).r;
