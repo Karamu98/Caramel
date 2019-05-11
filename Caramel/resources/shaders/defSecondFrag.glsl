@@ -36,6 +36,8 @@ struct SpotLight
 
     vec3 diffuse;
     vec3 specular;
+
+    //mat4 lightSpaceMatrix;
 };
 
 #define MAX_POINT_LIGHTS 64
@@ -111,21 +113,21 @@ void main()
 
 float CalcShadow(mat4 a_lightSpaceMatrix)
 {
-  vec4 fragPosLightSpace = a_lightSpaceMatrix * vec4(FragPos.xyz, 1.0);
-  vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+  vec4 fragPosLightSpace = vec4(FragPos.xyz, 1.0) * a_lightSpaceMatrix; // Get the fragment in the lights space
+  //vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 
-  projCoords = projCoords * 0.5 + 0.5;
+  vec3 projCoords = (fragPosLightSpace.xyz * 0.5) + 0.5; // Get the value between 0 and 1
 
   if(projCoords.z > 1.0)
   {
     return 0.0;
   }
 
-  float closestDepth = texture(gShadow, projCoords.xy).r;
+  float shadowMapDepth = texture(gShadow, projCoords.xy).r;
 
   float currentDepth = projCoords.z;
 
-  return currentDepth > closestDepth ? 1.0 : 0.0;
+  return step(currentDepth, shadowMapDepth);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal)
@@ -203,10 +205,12 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, flo
   vec3 diffuse = light.diffuse * diff;
   vec3 specular = light.specular * spec;
 
+  float shad = 0;//CalcShadow(light.lightSpaceMatrix);
+
   // Attenuate
   ambient *= attenuation * intensity;
   diffuse *= attenuation * intensity;
   specular *= attenuation * intensity;
 
-  return (ambient + diffuse + specular);
+  return (ambient + (1.0 - shad) * (diffuse + specular));
 }

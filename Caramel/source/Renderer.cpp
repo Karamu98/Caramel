@@ -57,7 +57,7 @@ Renderer::~Renderer()
 void Renderer::Init(RenderingMode a_renderMode)
 {
 	// Set the clear colour and enable depth testing and backface culling
-	glClearColor(0.0, 0.0, 0.0, 1.f);
+	glClearColor(1.0, 1.0, 1.0, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -184,6 +184,9 @@ void Renderer::OnGUI()
 {
 	ImGui::Begin("Renderer");
 	ImGui::Checkbox("Render wireframe", &m_renderWireframe);
+	static float clearColour[4] = { 1, 1, 1, 1 };
+	ImGui::ColorEdit4("Clear colour", clearColour);
+	glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
 	ImGui::BeginTabBar("Framebuffer textures");
 
 	if (ImGui::BeginTabItem("Position Buffer"))
@@ -292,7 +295,7 @@ void Renderer::InitDeferredRendering()
 
 	// Create the pre-pass lighting shaders
 	m_dirPrePass = new Shader("shaders/dirPrePassVert.glsl", "shaders/dirPrePassFrag.glsl");
-	m_spotPrePass = new Shader("shaders/spotPrePassVert.glsl", "shaders/spotPrePassFrag.glsl");
+	m_spotPrePass = new Shader("shaders/dirPrePassVert.glsl", "shaders/spotPrePassFrag.glsl");
 	m_pointPrePass = new Shader("shaders/pointPrePassVert.glsl", "shaders/pointPrePassFrag.glsl");
 
 	// Create the second pass shader for lighting
@@ -459,7 +462,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	for (DirectionalLight* light : dirLights)
 	{
-		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes * 3, m_shadTexRes * 3);
+		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
 		light->PrePass(m_dirPrePass, a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition(), 0);
 
 		for (MeshFilter* mesh : meshes)
@@ -476,20 +479,26 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 		}
 	}
 
-	//for (SpotLight* light : spotLights)
-	//{
-	//	glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
-	//	light->PrePass(m_spotPrePass, 0);
-	//	mesh->Draw(m_spotPrePass);
+	m_spotPrePass->Bind();
 
-	//	// Iterate to the next positon
-	//	x++;
-	//	if (x > requiredSize)
-	//	{
-	//		x = 0;
-	//		y++;
-	//	}
-	//}
+	for (SpotLight* light : spotLights)
+	{
+		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
+		light->PrePass(m_spotPrePass, 0);
+
+		for (MeshFilter* mesh : meshes)
+		{
+			mesh->Draw(m_spotPrePass, false);
+		}
+
+		// Iterate to the next positon
+		x++;
+		if (x > requiredSize)
+		{
+			x = 0;
+			y++;
+		}
+	}
 
 	//for (PointLight* light : pointLights)
 	//{

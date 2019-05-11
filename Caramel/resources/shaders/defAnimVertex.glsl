@@ -17,10 +17,10 @@ uniform float Time;
 
 void main()
 {
-  float diffY = ((model * aPos).x + ((model * aPos).z * 0.2));
+  float diffY = ((model * vec4(aPos, 1.0)).x + ((model * vec4(aPos, 1.0)).z * 0.2));
   float yOffset = sin((Time * 2.5) + diffY);
 
-  vec4 worldPos = model * (aPos + vec4(0, yOffset, 0, 0));
+  vec4 worldPos = model * (vec4(aPos, 1.0) + vec4(0, yOffset, 0, 0));
   frag.pos = worldPos.xyz;
   frag.UV = aTexCoords;
 

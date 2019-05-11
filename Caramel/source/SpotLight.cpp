@@ -11,7 +11,8 @@ m_outerCutoff(15.0f),
 m_constant(1.0f),
 m_linear(0.09f),
 m_quadratic(0.032f),
-m_direction(glm::vec3(0, 0, 1))
+m_direction(glm::vec3(0, 0, 1)),
+m_lightProjection(glm::perspective(glm::radians(m_outerCutoff * 0.5f), 1.0f, 0.1f, 150.0f))
 {
 }
 
@@ -33,6 +34,7 @@ void SpotLight::Draw(Shader * a_shader, int a_number)
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].constant", m_constant);
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].linear", m_linear);
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].quadratic", m_quadratic);
+	a_shader->SetMat4("spotLights[" + std::to_string(a_number) + "].lightSpaceMatrix", m_cacheLightSpaceMat);
 }
 
 void SpotLight::OnGUI()
@@ -52,7 +54,12 @@ void SpotLight::OnGUI()
 
 void SpotLight::PrePass(Shader* a_shader, int a_number)
 {
+	// Pass light uniform
+	glm::vec3 pos = GetOwnerEntity()->GetTransform()->GetPosition();
 
+	glm::mat4 lightView = glm::lookAt(pos, pos + m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
+	m_cacheLightSpaceMat = m_lightProjection * lightView;
+	a_shader->SetMat4("lightSpaceMatrix", m_cacheLightSpaceMat);
 }
 
 void SpotLight::SetDirection(glm::vec3 a_newDir)
