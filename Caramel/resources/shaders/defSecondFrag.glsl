@@ -66,7 +66,7 @@ float Specular;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal);
-float CalcShadow(mat4 a_lightSpaceMatrix);
+float CalcShadow(mat4 a_lightSpaceMatrix, float a_bias);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal);
 
@@ -108,18 +108,13 @@ void main()
     FragColor = vec4(Diffuse.rgb * result, 1.0);
 }
 
-float CalcShadow(mat4 a_lightProjView)
+float CalcShadow(mat4 a_lightProjView, float a_bias)
 {
   // Get the fragment in the lights projection view matrix
   vec4 fragPosLightSpace = a_lightProjView * vec4(FragPos.xyz, 1.0);
 
   // Perspective division and convert to 0 to 1 range
   vec3 projCoords = (fragPosLightSpace.xyz / fragPosLightSpace.w) * vec3(0.5) + vec3(0.5);
-
-  if(projCoords.z > 1.0)
-  {
-    return 0.0;
-  }
 
   // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
   float shadowMapDepth = texture(gShadow, projCoords.xy).r;
@@ -128,8 +123,26 @@ float CalcShadow(mat4 a_lightProjView)
   float currentDepth = projCoords.z;
 
   // Check whether the current fragpos is shadowed
+  float shadow = 0.0;
+
+  vec2 texelSize = 1.0 / textureSize(gShadow, 0);
+  for(int x = -3; x <= 3; ++x)
+  {
+      for(int y = -3; y <= 3; ++y)
+      {
+          float pcfDepth = texture(gShadow, projCoords.xy + vec2(x, y) * texelSize).r;
+          shadow += step(pcfDepth, currentDepth);
+      }
+  }
+  shadow /= 49.0;
+
+  if(projCoords.z > 1.0)
+  {
+    return 0.0;
+  }
+
+  return shadow;
   //return step(shadowMapDepth, currentDepth);
-  return currentDepth > shadowMapDepth  ? 1.0 : 0.0;
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal)
@@ -148,7 +161,8 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal)
   vec3 diffuse = light.diffuse * diff;
   vec3 specular = light.specular * spec;
 
-  float shad = CalcShadow(light.projViewMatrix);
+  float bias = max(0.05 * (1.0 - dot(normal, -lightDir)), 0.005);
+  float shad = CalcShadow(light.projViewMatrix, bias);
 
   //return (ambient + diffuse + specular);
   return (ambient + (1.0 - shad) * (diffuse + specular));
