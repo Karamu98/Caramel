@@ -100,9 +100,6 @@ void Application::run(const char* a_name, int a_width, int a_height, bool a_bFul
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			//ImGui Set up Framerate window
-			/*showFrameData(false);*/
-
 			Update(deltaTime);
 
 			

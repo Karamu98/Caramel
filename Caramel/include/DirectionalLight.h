@@ -20,8 +20,9 @@ private:
 
 	glm::vec3 m_direction;
 	glm::mat4 m_lightProjection;
+	glm::mat4 m_lightMatrix;
 
-	glm::mat4 m_cacheLightSpaceMat;
+	glm::mat4 m_lightProjView;
 };
 
 #endif

@@ -48,7 +48,7 @@ private:
 	unsigned int m_finalFramebuffer, m_finalColour, m_finalDepth;
 
 	// For deferred rendering
-	Shader* m_defGeo, *m_defGeoTransp, *m_defGeoAnim, *m_defGeoTranspAnim; // Geometry shaders
+	Shader* m_defGeo, *m_defGeoAnim; // Geometry shaders
 	Shader* m_dirPrePass, *m_spotPrePass, *m_pointPrePass; // Light pre-pass shaders
 	Shader* m_defLight; // Light shaders
 

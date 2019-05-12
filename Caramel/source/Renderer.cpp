@@ -66,7 +66,7 @@ void Renderer::Init(RenderingMode a_renderMode)
 	glGenFramebuffers(1, &m_finalFramebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_finalFramebuffer);
 
-	// Our final colour texture
+	// Our final colour texture ::TODO:: Allow unclamped lighting values for bloom
 	glGenTextures(1, &m_finalColour);
 	glBindTexture(GL_TEXTURE_2D, m_finalColour);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -220,6 +220,8 @@ void Renderer::OnGUI()
 
 	ImGui::EndTabBar();
 
+	ImGui::Text("Application Average: %.3f ms/frame (%.1f FPS)", 1000.f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
 	ImGui::End();
 }
 
@@ -284,14 +286,8 @@ void Renderer::InitDeferredRendering()
 	// Create the solids shader
 	m_defGeo = new Shader("shaders/deferredVertex.glsl", "shaders/deferredFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
 
-	// Create the transparents shader
-	m_defGeoTransp = new Shader("shaders/defTranspVertex.glsl", "shaders/defTranspFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
-
 	// Create the animated solids shader
 	m_defGeoAnim = new Shader("shaders/defAnimVertex.glsl", "shaders/deferredFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
-
-	// Create the animated transparents shader
-	m_defGeoTranspAnim = new Shader("shaders/defAnimTranspVertex.glsl", "shaders/defAnimTranspFrag.glsl", nullptr, "shaders/tessCTRL.glsl", "shaders/tessEVAL.glsl");
 
 	// Create the pre-pass lighting shaders
 	m_dirPrePass = new Shader("shaders/dirPrePassVert.glsl", "shaders/dirPrePassFrag.glsl");
@@ -341,7 +337,7 @@ void Renderer::InitDeferredRendering()
 
 #pragma region Geometry framebuffer
 	// Creating the geometry buffer
-	glGenFramebuffers(1, &m_defGeoBuffer);
+	glGenFramebuffers(1, &m_defGeoBuffer); 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer);
 
 	// Setting up the position buffer (x, y, z for RGB)
@@ -399,6 +395,7 @@ void Renderer::InitDeferredRendering()
 	m_defLight->SetInt("gNormal", 1);
 	m_defLight->SetInt("gAlbedo", 2);
 	m_defLight->SetInt("gSpec", 3);
+	m_defLight->SetInt("gShadow", 4);
 
 	m_defQuad = new Plane();	
 
@@ -408,8 +405,6 @@ void Renderer::InitDeferredRendering()
 void Renderer::DisableDeferred()
 {
 	delete m_defGeo;
-	delete m_defGeoTranspAnim;
-	delete m_defGeoTransp;
 	delete m_defGeoAnim;
 	delete m_defLight;
 	delete m_defQuad;
@@ -462,7 +457,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	for (DirectionalLight* light : dirLights)
 	{
-		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
+		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes * 3, m_shadTexRes * 3);
 		light->PrePass(m_dirPrePass, a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition(), 0);
 
 		for (MeshFilter* mesh : meshes)
@@ -479,26 +474,26 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 		}
 	}
 
-	m_spotPrePass->Bind();
+	//m_spotPrePass->Bind();
 
-	for (SpotLight* light : spotLights)
-	{
-		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
-		light->PrePass(m_spotPrePass, 0);
+	//for (SpotLight* light : spotLights)
+	//{
+	//	glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
+	//	light->PrePass(m_spotPrePass, 0);
 
-		for (MeshFilter* mesh : meshes)
-		{
-			mesh->Draw(m_spotPrePass, false);
-		}
+	//	for (MeshFilter* mesh : meshes)
+	//	{
+	//		mesh->Draw(m_spotPrePass, false);
+	//	}
 
-		// Iterate to the next positon
-		x++;
-		if (x > requiredSize)
-		{
-			x = 0;
-			y++;
-		}
-	}
+	//	// Iterate to the next positon
+	//	x++;
+	//	if (x > requiredSize)
+	//	{
+	//		x = 0;
+	//		y++;
+	//	}
+	//}
 
 	//for (PointLight* light : pointLights)
 	//{
@@ -546,7 +541,6 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	Utility::tickTimer();
 	float time = Utility::getTotalTime();
 	m_defGeoAnim->SetMat4("projectionView", a_activeCam->GetProjectionView());
-	m_defGeoAnim->SetMat4("viewMatrix", a_activeCam->GetViewMatrix());
 	m_defGeoAnim->SetFloat("Time", time);
 	xIter = meshes.begin();
 	for (MeshFilter* mesh : meshes)
@@ -560,56 +554,6 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 		{
 			xIter++;
 		}
-	}
-
-#pragma endregion
-
-#pragma region Transparents
-
-	/// Transparent pass
-	// Grab and sort all transparents by distance
-	std::map<float, MeshFilter*> sortedTranspMeshes;
-	for (MeshFilter* mesh : meshes)
-	{
-		if (mesh->GetType() == MeshType::TRANSPARENTS)
-		{
-			float distance = glm::length(glm::vec3(a_activeCam->GetCameraMatrix()[3]) - mesh->GetOwnerEntity()->GetTransform()->GetPosition());
-			sortedTranspMeshes[distance] = mesh;
-			meshes.erase(xIter);
-		}
-		if (meshes.size() > 1)
-		{
-			xIter++;
-		}
-	}
-
-	// Draw them
-	for (std::map<float, MeshFilter*>::reverse_iterator xIter = sortedTranspMeshes.rbegin(); xIter != sortedTranspMeshes.rend(); xIter++)
-	{
-		xIter->second->Draw(m_defGeoTransp, true);
-	}
-
-	/// Transparent animating pass
-	// Grab and sort all transparents animating meshes into "sorteedSolidAnimMeshes"
-	std::map<float, MeshFilter*> sortedTranspAnimMeshes;
-	for (MeshFilter* mesh : meshes)
-	{
-		if (mesh->GetType() == MeshType::ANIMATINGTRANSPARENT)
-		{
-			float distance = glm::length(glm::vec3(a_activeCam->GetCameraMatrix()[3]) - mesh->GetOwnerEntity()->GetTransform()->GetPosition());
-			sortedTranspAnimMeshes[distance] = mesh;
-			meshes.erase(xIter);
-		}
-		if (meshes.size() > 1)
-		{
-			xIter++;
-		}
-	}
-
-	// Draw them
-	for (std::map<float, MeshFilter*>::reverse_iterator xIter = sortedTranspAnimMeshes.rbegin(); xIter != sortedTranspAnimMeshes.rend(); xIter++)
-	{
-		xIter->second->Draw(m_defGeoTranspAnim, true);
 	}
 
 #pragma endregion
@@ -630,6 +574,8 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, m_specBuffer);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_shadowDepthTex);
 
 
 	// For each of each type of light, pass them to the shader

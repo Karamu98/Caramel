@@ -11,7 +11,6 @@ out fragment
 }frag;
 
 uniform mat4 model;
-uniform mat4 viewMatrix;
 uniform mat4 projectionView;
 uniform float Time;
 
