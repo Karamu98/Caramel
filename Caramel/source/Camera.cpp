@@ -17,7 +17,7 @@ m_bIsPossesed(true)
 	glm::vec3 pos = GetOwnerEntity()->GetTransform()->GetPosition() + glm::vec3(m_localPosition);
 
 	m_cameraMatrix = glm::inverse(glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
-	m_projectionMatrix = glm::perspective(glm::radians(m_fov * 0.5f), DEFAULT_SCREENWIDTH / (float)DEFAULT_SCREENHEIGHT, 0.1f, 5000.0f); // Create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
+	m_projectionMatrix = glm::perspective(glm::radians(m_fov * 0.5f), *g_ScreenWidth / (float)*g_ScreenHeight, 0.1f, 5000.0f); // Create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
 }
 
 Camera::~Camera()

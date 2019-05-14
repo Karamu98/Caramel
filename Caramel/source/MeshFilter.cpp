@@ -116,7 +116,7 @@ void MeshFilter::Draw(Shader* a_shader, bool a_tessalation)
 			// Calculate tessalation with distance
 			a_shader->SetInt("innerEdge", m_innerTess);
 			a_shader->SetInt("outerEdge", m_outerTess);
-			a_shader->SetInt("displacementScale", m_tessScale);
+			a_shader->SetInt("displacementScale", m_tessScale, true);
 		}
 		else
 		{
@@ -235,8 +235,8 @@ Mesh MeshFilter::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 
 	// Diffuse: texture_diffuseN
 	// Specular: texture_specularN
-	// Normal: texture_normalN (not used)
-	// Height: texture_heightN (not used)
+	// Normal: texture_normalN
+	// Height: texture_heightN
 
 	// 1. Diffuse maps
 	std::vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");

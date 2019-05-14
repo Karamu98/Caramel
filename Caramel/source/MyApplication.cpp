@@ -115,8 +115,7 @@ void MyApplication::Update(float a_deltaTime)
 			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0.2, 0.2, 0.2, 1));
 	}
 
-	if(m_showUI)
-		m_renderer.OnGUI();
+	m_renderer.OnGUI();
 	
 
 #pragma region ImGui
@@ -135,9 +134,19 @@ void MyApplication::Update(float a_deltaTime)
 			m_scene.Delete();
 		}
 
-		if (ImGui::MenuItem("Toggle UI"))
+		if (ImGui::MenuItem("Show Explorer", "", m_showUI))
 		{
 			m_showUI = !m_showUI;
+		}
+
+		if (ImGui::MenuItem("Show Renderer", "", m_renderer.showGUI))
+		{
+			m_renderer.showGUI = !m_renderer.showGUI;
+		}
+
+		if (ImGui::MenuItem("Quit"))
+		{
+			glfwSetWindowShouldClose(m_window, GL_TRUE);
 		}
 
 

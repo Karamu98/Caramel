@@ -23,7 +23,8 @@ Renderer::Renderer() :
 	m_shadTexRes(512),
 	m_shadowBufSize(0),
 	m_gammaCorrection(1.2f),
-	m_bloomMinimum(0.6f)
+	m_bloomMinimum(0.6f),
+	showGUI(true)
 {
 }
 
@@ -71,14 +72,14 @@ void Renderer::Init(RenderingMode a_renderMode)
 	// Our final colour texture ::TODO:: Allow unclamped lighting values for bloom
 	glGenTextures(1, &m_finalColour);
 	glBindTexture(GL_TEXTURE_2D, m_finalColour);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_finalColour, 0);
 
 	glGenTextures(1, &m_bloomColour);
 	glBindTexture(GL_TEXTURE_2D, m_bloomColour);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_bloomColour, 0);
@@ -91,7 +92,7 @@ void Renderer::Init(RenderingMode a_renderMode)
 	// Depth render buffer
 	glGenRenderbuffers(1, &m_finalDepth);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_finalDepth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, *g_ScreenWidth, *g_ScreenHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_finalDepth);
 	// finally check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -179,8 +180,8 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	// Send depth to second pass, this is for blendables (transparents, unlit)
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_finalFramebuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBlitFramebuffer(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
@@ -192,73 +193,78 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 void Renderer::OnGUI()
 {
-	ImGui::Begin("Renderer");
-	ImGui::Checkbox("Render wireframe", &m_renderWireframe);
-	static float clearColour[4] = { 1, 1, 1, 1 };
-	ImGui::ColorEdit4("Clear colour", clearColour);
-	glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
-	ImGui::DragFloat("Gamma Correction", &m_gammaCorrection, 0.1f, 0.0f, 50.0f);
-	ImGui::DragFloat("Bloom minimum", &m_bloomMinimum, 0.05f, 0.0f, 1.0f);
-
-	if (ImGui::TreeNode("Deferred, GBuffer"))
+	if (showGUI)
 	{
-		ImGui::Unindent();
-		ImGui::BeginTabBar("Framebuffer textures");
+		ImGui::SetNextWindowBgAlpha(0.3f);
+		ImGui::Begin("Renderer", &showGUI, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove);
 
-		if (ImGui::BeginTabItem("Position Buffer"))
+		ImGui::Checkbox("Render wireframe", &m_renderWireframe);
+		static float clearColour[4] = { 1, 1, 1, 1 };
+		ImGui::ColorEdit4("Clear colour", clearColour);
+		glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
+		ImGui::DragFloat("Gamma Correction", &m_gammaCorrection, 0.1f, 0.0f, 50.0f);
+		ImGui::DragFloat("Bloom minimum", &m_bloomMinimum, 0.05f, 0.0f, 1.0f);
+
+		if (ImGui::TreeNode("Deferred, GBuffer"))
 		{
-			ImTextureID texID = (void*)(intptr_t)m_posBuffer;
-			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::EndTabItem();
+			ImGui::Unindent();
+			ImGui::BeginTabBar("Framebuffer textures");
+
+			if (ImGui::BeginTabItem("Position Buffer"))
+			{
+				ImTextureID texID = (void*)(intptr_t)m_posBuffer;
+				ImGui::Image(texID, ImVec2(*g_ScreenWidth * 0.25f, *g_ScreenHeight * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::EndTabItem();
+			}
+
+
+			if (ImGui::BeginTabItem("Colour Buffer"))
+			{
+				ImTextureID texID = (void*)(intptr_t)m_albedoBuffer;
+				ImGui::Image(texID, ImVec2(*g_ScreenWidth * 0.25f, *g_ScreenHeight * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Normal Buffer"))
+			{
+				ImTextureID texID = (void*)(intptr_t)m_normBuffer;
+				ImGui::Image(texID, ImVec2(*g_ScreenWidth * 0.25f, *g_ScreenHeight * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::EndTabItem();
+			}
+
+			ImGui::EndTabBar();
+			ImGui::TreePop();
+			ImGui::Indent();
 		}
 
-
-		if (ImGui::BeginTabItem("Colour Buffer"))
+		if (ImGui::TreeNode("Other Buffers"))
 		{
-			ImTextureID texID = (void*)(intptr_t)m_albedoBuffer;
-			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::EndTabItem();
+			ImGui::Unindent();
+			ImGui::BeginTabBar("Other Buffers");
+
+			if (ImGui::BeginTabItem("Shadow Atlas"))
+			{
+				ImTextureID texID = (void*)(intptr_t)m_shadowDepthTex;
+				ImGui::Image(texID, ImVec2(*g_ScreenWidth * 0.25f, *g_ScreenHeight * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Bloom Buffer"))
+			{
+				ImTextureID texID = (void*)(intptr_t)m_bloomColour;
+				ImGui::Image(texID, ImVec2(*g_ScreenWidth * 0.25f, *g_ScreenHeight * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::EndTabItem();
+			}
+
+			ImGui::EndTabBar();
+			ImGui::TreePop();
+			ImGui::Indent();
 		}
 
-		if (ImGui::BeginTabItem("Normal Buffer"))
-		{
-			ImTextureID texID = (void*)(intptr_t)m_normBuffer;
-			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::EndTabItem();
-		}
+		ImGui::Text("Application Average: %.3f ms/frame (%.1f FPS)", 1000.f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-		ImGui::EndTabBar();
-		ImGui::TreePop();
-		ImGui::Indent();
+		ImGui::End();
 	}
-
-	if (ImGui::TreeNode("Other Buffers"))
-	{
-		ImGui::Unindent();
-		ImGui::BeginTabBar("Other Buffers");
-
-		if (ImGui::BeginTabItem("Shadow Atlas"))
-		{
-			ImTextureID texID = (void*)(intptr_t)m_shadowDepthTex;
-			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Bloom Buffer"))
-		{
-			ImTextureID texID = (void*)(intptr_t)m_bloomColour;
-			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::EndTabItem();
-		}
-
-		ImGui::EndTabBar();
-		ImGui::TreePop();
-		ImGui::Indent();
-	}
-
-	ImGui::Text("Application Average: %.3f ms/frame (%.1f FPS)", 1000.f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-	ImGui::End();
 }
 
 void Renderer::ChangeRenderMode(RenderingMode a_newMode)
@@ -379,7 +385,7 @@ void Renderer::InitDeferredRendering()
 	// Setting up the position buffer (x, y, z for RGB)
 	glGenTextures(1, &m_posBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_posBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_posBuffer, 0);
@@ -387,7 +393,7 @@ void Renderer::InitDeferredRendering()
 	// Setting up the normal buffer (x, y, z for RGB)
 	glGenTextures(1, &m_normBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_normBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_normBuffer, 0);
@@ -395,7 +401,7 @@ void Renderer::InitDeferredRendering()
 	// Setting up the colour buffer
 	glGenTextures(1, &m_albedoBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_albedoBuffer, 0);
@@ -403,7 +409,7 @@ void Renderer::InitDeferredRendering()
 	// Setting up the specular buffer
 	glGenTextures(1, &m_specBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_specBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RED, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RED, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_specBuffer, 0);
@@ -414,7 +420,7 @@ void Renderer::InitDeferredRendering()
 	// Renderbuffer for depth to pass to default buffer
 	glGenRenderbuffers(1, &m_rboDepth);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_rboDepth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, *g_ScreenWidth, *g_ScreenHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_rboDepth);
 	// finally check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -512,43 +518,9 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	m_spotPrePass->Bind();
 
-	//for (SpotLight* light : spotLights)
-	//{
-	//	glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
-	//	light->PrePass(m_spotPrePass, glm::vec2(x, y));
-
-	//	for (MeshFilter* mesh : meshes)
-	//	{
-	//		mesh->Draw(m_spotPrePass, false);
-	//	}
-
-	//	// Iterate to the next positon
-	//	x++;
-	//	if (x > requiredSize)
-	//	{
-	//		x = 0;
-	//		y++;
-	//	}
-	//}
-
-	//for (PointLight* light : pointLights)
-	//{
-	//	glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
-	//	light->PrePass(m_pointPrePass, 0);
-	//	mesh->Draw(m_pointPrePass);
-
-	//	// Iterate to the next positon
-	//	x++;
-	//	if (x > requiredSize)
-	//	{
-	//		x = 0;
-	//		y++;
-	//	}
-	//}
-
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer); // Bind the framebuffer for deferred
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
-	glViewport(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT);
+	glViewport(0, 0, *g_ScreenWidth, *g_ScreenHeight);
 	glCullFace(GL_BACK);
 
 	/// First pass
@@ -644,6 +616,10 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	// Send depth to final pass, this is for blendables (transparents, unlit)
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_defGeoBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_finalFramebuffer);
-	glBlitFramebuffer(0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, 0, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	if (m_renderWireframe)
+	{
+		glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

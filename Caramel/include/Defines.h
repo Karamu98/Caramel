@@ -1,8 +1,8 @@
 #ifndef _DEFINES_H__
 #define _DEFINES_H__
 
-#define DEFAULT_SCREENWIDTH 1280
-#define DEFAULT_SCREENHEIGHT 720
+extern int* g_ScreenWidth;
+extern int* g_ScreenHeight;
 
 namespace FileTag
 {
@@ -13,4 +13,4 @@ namespace FileTag
 
 
 
-#endif // !_DEFINES_H__
+#endif

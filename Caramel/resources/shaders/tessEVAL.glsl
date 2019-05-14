@@ -7,6 +7,7 @@ in TessCtrl
   vec3 pos;
   vec3 normal;
   vec2 uv;
+  float displacement;
 } tessCS[];
 
 out TessEval
@@ -16,8 +17,6 @@ out TessEval
   vec2 uv;
 } tessEval;
 
-uniform int hasTexture;
-uniform sampler2D texture_height1;
 uniform float displacementScale;
 
 void main()
@@ -30,15 +29,9 @@ void main()
 	tessEval.pos = tessCS[0].pos * p.x + tessCS[1].pos * p.y + tessCS[2].pos * p.z;
 	tessEval.normal = normalize(tessCS[0].normal * p.x + tessCS[1].normal * p.y + tessCS[2].normal * p.z);
 	tessEval.uv = tessCS[0].uv * p.x + tessCS[1].uv * p.y + tessCS[2].uv * p.z;
-
-	float disp = 0;
-
-	if (displacementScale > 0)
-	{
-		disp = texture(texture_height1, tessEval.uv).r;
-	}
+  float displacement = tessCS[0].displacement * p.x + tessCS[1].displacement * p.y + tessCS[2].displacement * p.z;
 
 	gl_Position =  p0 * p.x + p1 * p.y + p2 * p.z;
 	// Displace using height map
-
+  gl_Position.y = gl_Position.y + displacementScale;
 }

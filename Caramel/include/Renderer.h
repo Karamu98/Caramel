@@ -27,6 +27,8 @@ public:
 
 	void ChangeRenderMode(RenderingMode a_newMode);
 
+	bool showGUI;
+
 private:
 
 	void InitForwardRendering() {};
@@ -70,6 +72,7 @@ private:
 
 
 	bool m_renderWireframe;
+
 };
 
 

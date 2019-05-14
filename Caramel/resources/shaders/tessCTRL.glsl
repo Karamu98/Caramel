@@ -5,8 +5,9 @@ layout(vertices = 3) out;
 in fragment
 {
 	vec3 pos;
-    vec3 normal;
+  vec3 normal;
 	vec2 UV;
+	float displacement;
 
 }frag[];
 
@@ -18,6 +19,7 @@ out TessCtrl
 	vec3 pos;
 	vec3 normal;
 	vec2 uv;
+	float displacement;
 } tessCS[];
 
 void main()
@@ -26,6 +28,7 @@ void main()
 	tessCS[gl_InvocationID].pos = frag[gl_InvocationID].pos;
 	tessCS[gl_InvocationID].normal = frag[gl_InvocationID].normal;
 	tessCS[gl_InvocationID].uv = frag[gl_InvocationID].UV;
+	tessCS[gl_InvocationID].displacement = frag[gl_InvocationID].displacement;
 
 	gl_TessLevelOuter[0] = outerEdge;
 	gl_TessLevelOuter[1] = outerEdge;

@@ -17,6 +17,14 @@ Mesh::Mesh(std::vector<Vertex> a_verts, std::vector<unsigned int> a_indices, std
 
 void Mesh::Draw(Shader* a_shader, bool a_tessalation)
 {
+	if (a_tessalation == false)
+	{
+		glBindVertexArray(m_vArrayObject);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+		return;
+	}
+
 	/// I created this system for loading models with textures using this resource https://learnopengl.com
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
@@ -51,15 +59,7 @@ void Mesh::Draw(Shader* a_shader, bool a_tessalation)
 
 	// Draw mesh
 	glBindVertexArray(m_vArrayObject);
-	if (a_tessalation)
-	{
-		glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
-	}
-	else
-	{
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	}
-	
+	glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 

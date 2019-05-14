@@ -8,6 +8,7 @@ out fragment
 	vec3 pos;
 	vec3 normal;
 	vec2 UV;
+	float displacement;
 }frag;
 
 uniform mat4 model;
