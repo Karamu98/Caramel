@@ -69,6 +69,58 @@ void Utility::freeMovement(glm::mat4& a_transform, float a_deltaTime, float a_sp
 	glm::vec4 vUp = a_transform[1];
 	glm::vec4 vTranslation = a_transform[3];
 
+	// check for camera rotation
+	static bool sbMouseButtonDown = false;
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
+	{
+		static double siPrevMouseX = 0;
+		static double siPrevMouseY = 0;
+
+		if (sbMouseButtonDown == false)
+		{
+			sbMouseButtonDown = true;
+			glfwGetCursorPos(window, &siPrevMouseX, &siPrevMouseY);
+		}
+
+		double mouseX = 0, mouseY = 0;
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+
+		double iDeltaX = mouseX - siPrevMouseX;
+		double iDeltaY = mouseY - siPrevMouseY;
+
+		siPrevMouseX = mouseX;
+		siPrevMouseY = mouseY;
+
+		glm::mat4 mMat;
+
+		// pitch
+		if (iDeltaY != 0)
+		{
+			mMat = glm::axisAngleMatrix(vRight.xyz(), (float)-iDeltaY / 150.0f);
+			vRight = mMat * vRight;
+			vUp = mMat * vUp;
+			vForward = mMat * vForward;
+		}
+
+		// yaw
+		if (iDeltaX != 0)
+		{
+			mMat = glm::axisAngleMatrix(a_up, (float)-iDeltaX / 150.0f);
+			vRight = mMat * vRight;
+			vUp = mMat * vUp;
+			vForward = mMat * vForward;
+		}
+
+		a_transform[0] = vRight;
+		a_transform[1] = vUp;
+		a_transform[2] = vForward;
+	}
+	else
+	{
+		sbMouseButtonDown = false;
+		return;
+	}
+
 	float frameSpeed = glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? a_deltaTime * a_speed * 2 : a_deltaTime * a_speed;	
 
 	// Translate camera
@@ -99,54 +151,5 @@ void Utility::freeMovement(glm::mat4& a_transform, float a_deltaTime, float a_sp
 
 	a_transform[3] = vTranslation;
 
-	// check for camera rotation
-	static bool sbMouseButtonDown = false;
-	if (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
-	{
-		static double siPrevMouseX = 0;
-		static double siPrevMouseY = 0;
 
-		if (sbMouseButtonDown == false)
-		{
-			sbMouseButtonDown = true;
-			glfwGetCursorPos(window,&siPrevMouseX,&siPrevMouseY);
-		}
-
-		double mouseX = 0, mouseY = 0;
-		glfwGetCursorPos(window,&mouseX,&mouseY);
-
-		double iDeltaX = mouseX - siPrevMouseX;
-		double iDeltaY = mouseY - siPrevMouseY;
-
-		siPrevMouseX = mouseX;
-		siPrevMouseY = mouseY;
-
-		glm::mat4 mMat;
-		
-		// pitch
-		if (iDeltaY != 0)
-		{
-			mMat = glm::axisAngleMatrix( vRight.xyz(), (float)-iDeltaY / 150.0f );
-			vRight = mMat * vRight;
-			vUp = mMat * vUp;
-			vForward = mMat * vForward;
-		}
-
-		// yaw
-		if (iDeltaX != 0)
-		{
-			mMat = glm::axisAngleMatrix( a_up, (float)-iDeltaX / 150.0f );
-			vRight = mMat * vRight;
-			vUp = mMat * vUp;
-			vForward = mMat * vForward;
-		}
-
-		a_transform[0] = vRight;
-		a_transform[1] = vUp;
-		a_transform[2] = vForward;
-	}
-	else
-	{
-		sbMouseButtonDown = false;
-	}
 }

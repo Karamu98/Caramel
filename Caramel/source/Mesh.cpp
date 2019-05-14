@@ -17,7 +17,7 @@ Mesh::Mesh(std::vector<Vertex> a_verts, std::vector<unsigned int> a_indices, std
 
 void Mesh::Draw(Shader* a_shader, bool a_tessalation)
 {
-	/// https://learnopengl.com system for drawing models
+	/// I created this system for loading models with textures using this resource https://learnopengl.com
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;

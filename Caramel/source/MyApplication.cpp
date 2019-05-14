@@ -37,6 +37,8 @@ bool MyApplication::onCreate()
 	Log::Init();
 	CL_CORE_INFO("Initialised.");
 
+	CL_CORE_INFO("\n=====\nOpenGL Information:\nVendor: {0}\nRenderer: {1}\nVersion: {2}\n=====", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION));
+
 	// Initialise Renderer
 	m_renderer.Init(RenderingMode::DEFERRED);
 

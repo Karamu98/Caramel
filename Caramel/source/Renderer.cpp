@@ -199,45 +199,62 @@ void Renderer::OnGUI()
 	glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
 	ImGui::DragFloat("Gamma Correction", &m_gammaCorrection, 0.1f, 0.0f, 50.0f);
 	ImGui::DragFloat("Bloom minimum", &m_bloomMinimum, 0.05f, 0.0f, 1.0f);
-	ImGui::BeginTabBar("Framebuffer textures");
 
-	if (ImGui::BeginTabItem("Position Buffer"))
+	if (ImGui::TreeNode("Deferred, GBuffer"))
 	{
-		ImTextureID texID = (void*)(intptr_t)m_posBuffer;
-		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::EndTabItem();
+		ImGui::Unindent();
+		ImGui::BeginTabBar("Framebuffer textures");
+
+		if (ImGui::BeginTabItem("Position Buffer"))
+		{
+			ImTextureID texID = (void*)(intptr_t)m_posBuffer;
+			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::EndTabItem();
+		}
+
+
+		if (ImGui::BeginTabItem("Colour Buffer"))
+		{
+			ImTextureID texID = (void*)(intptr_t)m_albedoBuffer;
+			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Normal Buffer"))
+		{
+			ImTextureID texID = (void*)(intptr_t)m_normBuffer;
+			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+		ImGui::TreePop();
+		ImGui::Indent();
 	}
 
-
-	if (ImGui::BeginTabItem("Colour Buffer"))
+	if (ImGui::TreeNode("Other Buffers"))
 	{
-		ImTextureID texID = (void*)(intptr_t)m_albedoBuffer;
-		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::EndTabItem();
-	}
+		ImGui::Unindent();
+		ImGui::BeginTabBar("Other Buffers");
 
-	if (ImGui::BeginTabItem("Normal Buffer"))
-	{
-		ImTextureID texID = (void*)(intptr_t)m_normBuffer;
-		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::EndTabItem();
-	}
+		if (ImGui::BeginTabItem("Shadow Atlas"))
+		{
+			ImTextureID texID = (void*)(intptr_t)m_shadowDepthTex;
+			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::EndTabItem();
+		}
 
-	if (ImGui::BeginTabItem("Shadow Atlas"))
-	{
-		ImTextureID texID = (void*)(intptr_t)m_shadowDepthTex;
-		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::EndTabItem();
-	}
+		if (ImGui::BeginTabItem("Bloom Buffer"))
+		{
+			ImTextureID texID = (void*)(intptr_t)m_bloomColour;
+			ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::EndTabItem();
+		}
 
-	if (ImGui::BeginTabItem("Bloom Buffer"))
-	{
-		ImTextureID texID = (void*)(intptr_t)m_bloomColour;
-		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::EndTabItem();
+		ImGui::EndTabBar();
+		ImGui::TreePop();
+		ImGui::Indent();
 	}
-
-	ImGui::EndTabBar();
 
 	ImGui::Text("Application Average: %.3f ms/frame (%.1f FPS)", 1000.f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 

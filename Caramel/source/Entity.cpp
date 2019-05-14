@@ -55,9 +55,7 @@ void Entity::OnGUI()
 
 	// List Transfrom Component
 	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Transform Component");
-	ImGui::Text("Name: ");
-	ImGui::SameLine(50);
-	ImGui::InputText("", (char*)GetName()->c_str(), 10);
+	ImGui::InputText("Name", (char*)ssName.c_str(), 10);
 	ImGui::DragFloat3("Position", glm::value_ptr(*positionRow), 0.1f);
 	if (ImGui::Button("Reset"))
 	{

@@ -11,6 +11,7 @@ out fragment
 }frag;
 
 uniform mat4 model;
+uniform sampler2D texture_normal1;
 uniform mat4 projectionView;
 
 void main()
@@ -19,7 +20,6 @@ void main()
     frag.pos = worldPos.xyz;
     frag.UV = aTexCoords;
 
-    frag.normal = aNormal.xyz;
-
+		frag.normal = min(aNormal, texture(texture_normal1, aTexCoords)).xyz;
     gl_Position = projectionView * worldPos;
 }
