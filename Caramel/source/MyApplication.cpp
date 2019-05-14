@@ -19,7 +19,7 @@
 #include "SpotLight.h"
 
 
-MyApplication::MyApplication() : m_showUI(false)
+MyApplication::MyApplication() : m_showUI(true)
 {
 
 }

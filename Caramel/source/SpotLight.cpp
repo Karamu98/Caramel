@@ -11,6 +11,7 @@ m_outerCutoff(15.0f),
 m_linear(0.09f),
 m_quadratic(0.032f),
 m_direction(glm::vec3(0, 0, 1)),
+m_attenuation(1.0f),
 m_lightProjection(glm::perspective(glm::radians(90.0f), 1.0f, 1.0f, 150.0f))
 {
 }
@@ -22,8 +23,8 @@ SpotLight::~SpotLight()
 void SpotLight::Draw(Shader * a_shader, int a_number)
 {
 	// Pass base here
-	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].diffuse", m_diffuseColour);
-	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].specular", m_specularColour);
+	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].diffuse", m_diffuseColour * m_attenuation);
+	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].specular", m_specularColour * m_attenuation);
 	a_shader->SetVec2("spotLights[" + std::to_string(a_number) + "].atlasIndex", m_atlasIndex);
 
 	// Pass spotlight here
@@ -46,6 +47,7 @@ void SpotLight::OnGUI()
 		// Expose variables here
 		ImGui::DragFloat("Inner Cutoff", &m_cutoff, 0.1f, 0.0f, m_outerCutoff);
 		ImGui::DragFloat("Outter Cutoff", &m_outerCutoff, 0.1f, m_cutoff, 180.0f);
+		ImGui::DragFloat("Attenuation", &m_attenuation, 0.1f, 0);
 		ImGui::DragFloat3("Direction", glm::value_ptr(m_direction), 0.01f, -1.0f, 1.0f);
 		ImGui::TreePop();
 	}

@@ -21,7 +21,7 @@ public:
 private:
 
 	glm::vec3 m_direction;
-	float m_cutoff, m_outerCutoff, m_linear, m_quadratic;
+	float m_cutoff, m_outerCutoff, m_linear, m_quadratic, m_attenuation;
 	glm::vec2 m_atlasIndex;
 
 	glm::mat4 m_lightProjection;
