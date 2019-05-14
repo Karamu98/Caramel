@@ -45,7 +45,7 @@ private:
 	RenderingMode m_currentMode; // To switch render modes ::Incomplete::
 
 	// Final buffers for FX
-	unsigned int m_finalFramebuffer, m_finalColour, m_finalDepth;
+	unsigned int m_finalFramebuffer, m_finalColour, m_bloomColour, m_finalDepth;
 
 	// For deferred rendering
 	Shader* m_defGeo, *m_defGeoAnim; // Geometry shaders
@@ -63,6 +63,10 @@ private:
 	unsigned int m_shadowDepthTex;
 	unsigned int m_shadowBufSize; // The current total w/h of the buffer
 	unsigned int m_shadTexRes; // The resolution of each shadow map
+
+	// HDR & Bloom
+	float m_bloomMinimum;
+	float m_gammaCorrection;
 
 
 	bool m_renderWireframe;

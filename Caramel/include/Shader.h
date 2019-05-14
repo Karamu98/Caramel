@@ -75,12 +75,20 @@ public :
 	void SetVec3(const std::string& a_name, glm::vec3 a_value, bool a_logErrors = false);
 
 	/// <summary>
+	/// Sets a vector2 unifrom value by name.
+	/// </summary>
+	/// <param name='a_name'>The name of the variable we want to change.</param>
+	/// <param name='a_value'>The new value we want the variable to have.</param>
+	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
+	void SetVec2(const std::string& a_name, glm::vec2 a_value, bool a_logErrors = false);
+
+	/// <summary>
 	/// Sets a Matrix4x4 unifrom value by name.
 	/// </summary>
 	/// <param name='a_name'>The name of the variable we want to change.</param>
 	/// <param name='a_value'>The new value we want the variable to have.</param>
 	/// <param name='a_logErrors'>(Optional) If this should return an error if the uniform isn't found.</param>
-	void SetMat4(const std::string& a_name, glm::mat4 a_value, bool a_logErrors = false);
+	void SetMat4(const std::string& a_name, glm::mat4 a_value, bool a_logErrors = true);
 
 private:
 

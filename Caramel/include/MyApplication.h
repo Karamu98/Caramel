@@ -38,6 +38,7 @@ private:
 	// State Control
 	bool bComponentTool;
 	bool bComponentAdd;
+	bool m_showUI;
 };
 
 #endif // __Application_H_

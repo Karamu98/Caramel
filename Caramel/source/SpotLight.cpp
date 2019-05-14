@@ -8,11 +8,10 @@
 SpotLight::SpotLight(Entity * a_pOwner) : Light(a_pOwner),
 m_cutoff(10.0f),
 m_outerCutoff(15.0f),
-m_constant(1.0f),
 m_linear(0.09f),
 m_quadratic(0.032f),
 m_direction(glm::vec3(0, 0, 1)),
-m_lightProjection(glm::perspective(glm::radians(m_outerCutoff * 0.5f), 1.0f, 0.1f, 150.0f))
+m_lightProjection(glm::perspective(glm::radians(90.0f), 1.0f, 1.0f, 150.0f))
 {
 }
 
@@ -25,16 +24,16 @@ void SpotLight::Draw(Shader * a_shader, int a_number)
 	// Pass base here
 	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].diffuse", m_diffuseColour);
 	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].specular", m_specularColour);
+	a_shader->SetVec2("spotLights[" + std::to_string(a_number) + "].atlasIndex", m_atlasIndex);
 
 	// Pass spotlight here
-	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].position", glm::vec4(GetOwnerEntity()->GetComponentOfType<Camera>()->GetCameraMatrix()[3]));
+	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].position", GetOwnerEntity()->GetTransform()->GetPosition());
 	a_shader->SetVec3("spotLights[" + std::to_string(a_number) + "].direction", m_direction);
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].cutOff", glm::cos(glm::radians(m_cutoff)));
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].outerCutOff", glm::cos(glm::radians(m_outerCutoff)));
-	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].constant", m_constant);
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].linear", m_linear);
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].quadratic", m_quadratic);
-	//a_shader->SetMat4("spotLights[" + std::to_string(a_number) + "].lightSpaceMatrix", m_cacheLightSpaceMat);
+	a_shader->SetMat4("spotLights[" + std::to_string(a_number) + "].projViewMatrix", m_lightProjView);
 }
 
 void SpotLight::OnGUI()
@@ -47,19 +46,21 @@ void SpotLight::OnGUI()
 		// Expose variables here
 		ImGui::DragFloat("Inner Cutoff", &m_cutoff, 0.1f, 0.0f, m_outerCutoff);
 		ImGui::DragFloat("Outter Cutoff", &m_outerCutoff, 0.1f, m_cutoff, 180.0f);
-		ImGui::InputFloat3("Direction", glm::value_ptr(m_direction));
+		ImGui::DragFloat3("Direction", glm::value_ptr(m_direction), 0.01f, -1.0f, 1.0f);
 		ImGui::TreePop();
 	}
 }
 
-void SpotLight::PrePass(Shader* a_shader, int a_number)
+void SpotLight::PrePass(Shader* a_shader, glm::vec2 a_number)
 {
 	// Pass light uniform
 	glm::vec3 pos = GetOwnerEntity()->GetTransform()->GetPosition();
 
-	glm::mat4 lightView = glm::lookAt(pos, pos + m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
-	m_cacheLightSpaceMat = m_lightProjection * lightView;
-	//a_shader->SetMat4("lightSpaceMatrix", m_cacheLightSpaceMat);
+	m_lightMatrix = glm::lookAt(pos, pos + m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	m_lightProjView = m_lightProjection * m_lightMatrix;
+	a_shader->SetMat4("lightSpaceMatrix", m_lightProjView);
+	m_atlasIndex = a_number;
 }
 
 void SpotLight::SetDirection(glm::vec3 a_newDir)

@@ -21,7 +21,9 @@
 Renderer::Renderer() :
 	m_renderWireframe(false),
 	m_shadTexRes(512),
-	m_shadowBufSize(0)
+	m_shadowBufSize(0),
+	m_gammaCorrection(1.2f),
+	m_bloomMinimum(0.6f)
 {
 }
 
@@ -74,7 +76,15 @@ void Renderer::Init(RenderingMode a_renderMode)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_finalColour, 0);
 
-	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glGenTextures(1, &m_bloomColour);
+	glBindTexture(GL_TEXTURE_2D, m_bloomColour);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, DEFAULT_SCREENWIDTH, DEFAULT_SCREENHEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_bloomColour, 0);
+
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
 
 	CL_GETGL_ERRORS;
 
@@ -187,6 +197,8 @@ void Renderer::OnGUI()
 	static float clearColour[4] = { 1, 1, 1, 1 };
 	ImGui::ColorEdit4("Clear colour", clearColour);
 	glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
+	ImGui::DragFloat("Gamma Correction", &m_gammaCorrection, 0.1f, 0.0f, 50.0f);
+	ImGui::DragFloat("Bloom minimum", &m_bloomMinimum, 0.05f, 0.0f, 1.0f);
 	ImGui::BeginTabBar("Framebuffer textures");
 
 	if (ImGui::BeginTabItem("Position Buffer"))
@@ -214,6 +226,13 @@ void Renderer::OnGUI()
 	if (ImGui::BeginTabItem("Shadow Atlas"))
 	{
 		ImTextureID texID = (void*)(intptr_t)m_shadowDepthTex;
+		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Bloom Buffer"))
+	{
+		ImTextureID texID = (void*)(intptr_t)m_bloomColour;
 		ImGui::Image(texID, ImVec2(DEFAULT_SCREENWIDTH * 0.25f, DEFAULT_SCREENHEIGHT * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::EndTabItem();
 	}
@@ -432,7 +451,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	std::vector<SpotLight*> spotLights = a_scene->FindAllComponentsOfType<SpotLight>();
 
 	// Get all of our lights, point lights require a cubemap
-	int shadowTileCount = dirLights.size() + spotLights.size() + (pointLights.size() * 6);
+	int shadowTileCount = dirLights.size() + spotLights.size()/* + (pointLights.size() * 6)*/;
 
 	// Square root of the count of tiles we need rounded up is the scalar for our tex size
 	int requiredSize = ceil(sqrt(shadowTileCount));
@@ -441,7 +460,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	if (requiredSize > m_shadowBufSize)
 	{
 		//// Set size
-		//m_shadowBufSize = requiredSize;
+		m_shadowBufSize = requiredSize;
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowFBO); // Bind the framebuffer for deferred
@@ -457,8 +476,8 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	for (DirectionalLight* light : dirLights)
 	{
-		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes * 3, m_shadTexRes * 3);
-		light->PrePass(m_dirPrePass, a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition(), 0);
+		glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes * 3, m_shadTexRes * 3); // TODO:: Shadow Atlas
+		light->PrePass(m_dirPrePass, a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition(), glm::vec2(x, y));
 
 		for (MeshFilter* mesh : meshes)
 		{
@@ -474,12 +493,12 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 		}
 	}
 
-	//m_spotPrePass->Bind();
+	m_spotPrePass->Bind();
 
 	//for (SpotLight* light : spotLights)
 	//{
 	//	glViewport(m_shadTexRes * x, m_shadTexRes * y, m_shadTexRes, m_shadTexRes);
-	//	light->PrePass(m_spotPrePass, 0);
+	//	light->PrePass(m_spotPrePass, glm::vec2(x, y));
 
 	//	for (MeshFilter* mesh : meshes)
 	//	{
@@ -564,6 +583,11 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
 
 	m_defLight->Bind();
+
+	m_defLight->SetInt("shadowWH", m_shadowBufSize);
+	m_defLight->SetInt("shadowTexSize", m_shadTexRes);
+	m_defLight->SetFloat("hdrGamma", m_gammaCorrection);
+	m_defLight->SetFloat("bloomMin", m_bloomMinimum);
 
 	// Bind the textures for lighting pass
 	glActiveTexture(GL_TEXTURE0);

@@ -19,7 +19,7 @@
 #include "SpotLight.h"
 
 
-MyApplication::MyApplication()
+MyApplication::MyApplication() : m_showUI(false)
 {
 
 }
@@ -47,7 +47,7 @@ bool MyApplication::onCreate()
 	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
 	m_scene.m_activeCamera = newCam;
-	newEditor->GetTransform()->SetPosition(glm::vec3(0, -3, 0));
+	newEditor->GetTransform()->SetPosition(glm::vec3(0, 3, 0));
 	SpotLight* camFlash = new SpotLight(newEditor);
 
 	// Add a directional light and point light
@@ -74,6 +74,14 @@ bool MyApplication::onCreate()
 	wavesEntity->GetTransform()->SetScale(glm::vec3(3, 1, 3));
 	MeshFilter* waves = new MeshFilter(wavesEntity, MeshType::ANIMATINGSOLID); // Create its mesh filter
 	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
+
+	Entity* spotEntity = new Entity(&m_scene);
+	SpotLight* secondSpot = new SpotLight(spotEntity);
+	secondSpot->SetDirection(glm::vec3(1, 0, 1));
+
+	Entity* spotEntity2 = new Entity(&m_scene);
+	SpotLight* secondSpot2 = new SpotLight(spotEntity2);
+	secondSpot->SetDirection(glm::vec3(1, 0, 1));
 
 #pragma endregion
 
@@ -105,7 +113,8 @@ void MyApplication::Update(float a_deltaTime)
 			i == 10 ? glm::vec4(1, 1, 1, 1) : glm::vec4(0.2, 0.2, 0.2, 1));
 	}
 
-	m_renderer.OnGUI();
+	if(m_showUI)
+		m_renderer.OnGUI();
 	
 
 #pragma region ImGui
@@ -114,7 +123,7 @@ void MyApplication::Update(float a_deltaTime)
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("Create", "Ctrl+N"))
+		if (ImGui::MenuItem("Create"))
 		{
 			Entity* newEntity = new Entity(&m_scene);
 		}
@@ -124,13 +133,18 @@ void MyApplication::Update(float a_deltaTime)
 			m_scene.Delete();
 		}
 
+		if (ImGui::MenuItem("Toggle UI"))
+		{
+			m_showUI = !m_showUI;
+		}
+
 
 		ImGui::EndMenu();
 	}
 
 	if (ImGui::BeginMenu("Edit"))
 	{
-		if (ImGui::MenuItem("Add Component", "Ctrl+C"))
+		if (ImGui::MenuItem("Add Component"))
 		{
 			bComponentTool = true;
 			bComponentAdd = true;
@@ -139,17 +153,6 @@ void MyApplication::Update(float a_deltaTime)
 		{
 			bComponentTool = true;
 			bComponentAdd = false;
-		}
-
-		ImGui::EndMenu();
-	}
-
-	if (ImGui::BeginMenu("Settings"))
-	{
-		if (ImGui::MenuItem("Renderer"))
-		{
-			ImGui::OpenPopup("Renderer Settings");
-			CL_CORE_INFO("Not implemented.");
 		}
 
 		ImGui::EndMenu();
@@ -211,49 +214,55 @@ void MyApplication::Update(float a_deltaTime)
 
 #pragma region Inspector
 
-	ImGui::Begin("World Outliner", NULL, ImGuiWindowFlags_NoCollapse);
-
-	ImGui::TextColored(ImVec4(0, 170, 0, 1), "Entity List:");
-	ImGui::BeginChild("Scrolling");
-
-	if (m_scene.m_sceneEntities.capacity() > 0)
+	
+	if (m_showUI)
 	{
-		std::string id = "";
-		for (int i = 0; i < m_scene.m_sceneEntities.size(); i++)
+		ImGui::Begin("World Outliner", NULL, ImGuiWindowFlags_NoCollapse);
+
+		ImGui::TextColored(ImVec4(0, 170, 0, 1), "Entity List:");
+		ImGui::BeginChild("Scrolling");
+
+		if (m_scene.m_sceneEntities.capacity() > 0)
 		{
-			id = *m_scene.m_sceneEntities.at(i)->GetName();
-
-			ImGui::Text("%s", id.c_str());
-			ImGui::SameLine(ImGui::GetWindowWidth() - 80);
-
-			ImGui::PushID(i);
-			if (ImGui::Button("Select"))
+			std::string id = "";
+			for (int i = 0; i < m_scene.m_sceneEntities.size(); i++)
 			{
-				m_scene.selectedEntity = m_scene.m_sceneEntities.at(i);
+				id = *m_scene.m_sceneEntities.at(i)->GetName();
+
+				ImGui::Text("%s", id.c_str());
+				ImGui::SameLine(ImGui::GetWindowWidth() - 80);
+
+				ImGui::PushID(i);
+				if (ImGui::Button("Select"))
+				{
+					m_scene.selectedEntity = m_scene.m_sceneEntities.at(i);
+				}
+				ImGui::PopID();
 			}
-			ImGui::PopID();
+			ImGui::EndChild();
 		}
-		ImGui::EndChild();
+		else
+		{
+			ImGui::EndChild();
+		}
+
+
+		ImGui::End();
+
+
+		ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse);
+		ImGui::TextColored(ImVec4(170, 0, 0, 1), "Selected Entity:");
+
+		if (m_scene.selectedEntity != nullptr)
+		{
+			m_scene.selectedEntity->OnGUI();
+		}
+
+
+		ImGui::End();
+
 	}
-	else
-	{
-		ImGui::EndChild();
-	}
-	
 
-	ImGui::End();
-	
-
-	ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse);
-	ImGui::TextColored(ImVec4(170, 0, 0, 1), "Selected Entity:");
-
-	if (m_scene.selectedEntity != nullptr)
-	{
-		m_scene.selectedEntity->OnGUI();
-	}
-	
-
-	ImGui::End();
 
 #pragma endregion Inspector
 

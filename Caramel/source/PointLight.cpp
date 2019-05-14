@@ -5,7 +5,6 @@
 
 PointLight::PointLight(Entity * a_pOwner) : Light(a_pOwner),
 m_attenuation(1.0f),
-m_constant(1.0f),
 m_linear(0.09f),
 m_quadratic(0.032f)
 {
@@ -27,7 +26,6 @@ void PointLight::Draw(Shader * a_shader, int a_number)
 
 	// Pass pointlight here
 	a_shader->SetVec3("pointLights[" + std::to_string(a_number) + "].position", GetOwnerEntity()->GetTransform()->GetPosition());
-	a_shader->SetFloat("pointLights[" + std::to_string(a_number) + "].constant", m_constant);
 	a_shader->SetFloat("pointLights[" + std::to_string(a_number) + "].linear", m_linear);
 	a_shader->SetFloat("pointLights[" + std::to_string(a_number) + "].quadratic", m_quadratic);
 }
@@ -45,6 +43,7 @@ void PointLight::OnGUI()
 	}
 }
 
-void PointLight::PrePass(Shader* a_shader, int a_number)
+void PointLight::PrePass(Shader* a_shader, glm::vec2 a_number)
 {
+
 }

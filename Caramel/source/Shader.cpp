@@ -356,6 +356,20 @@ void Shader::SetVec3(const std::string & a_name, glm::vec3 a_value, bool a_logEr
 	glUniform3f(loc, valArray[0], valArray[1], valArray[2]);
 }
 
+void Shader::SetVec2(const std::string& a_name, glm::vec2 a_value, bool a_logErrors)
+{
+	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+
+	if (loc == -1 && a_logErrors)
+	{
+		CL_CORE_WARN("Could not find location of " + a_name + " in shader.");
+		return;
+	}
+
+	float* valArray = glm::value_ptr(a_value);
+	glUniform2f(loc, valArray[0], valArray[1]);
+}
+
 void Shader::SetMat4(const std::string & a_name, glm::mat4 a_value, bool a_logErrors)
 {
 	unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());

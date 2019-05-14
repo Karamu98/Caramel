@@ -40,7 +40,7 @@ void Camera::Update(float a_fDeltaTime)
 		
 		// Update the local offset
 		m_cameraMatrix = *rootTransform;
-		m_cameraMatrix[3] = glm::vec4(glm::vec3(m_cameraMatrix[3] + m_localPosition), 1);
+		//m_cameraMatrix[3] = glm::vec4(glm::vec3(m_cameraMatrix[3] + m_localPosition), 1);
 	}
 }
 

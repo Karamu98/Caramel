@@ -1,5 +1,6 @@
 #version 400
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColour;
+layout (location = 1) out vec4 BloomColour;
 
 struct DirLight
 {
@@ -9,13 +10,13 @@ struct DirLight
     vec3 specular;
 
     mat4 projViewMatrix;
+    vec2 atlasIndex;
 };
 
 struct PointLight
 {
     vec3 position;
 
-    float constant;
     float linear;
     float quadratic;
 
@@ -36,7 +37,8 @@ struct SpotLight
     vec3 diffuse;
     vec3 specular;
 
-    mat4 lightSpaceMatrix;
+    mat4 projViewMatrix;
+    vec2 atlasIndex;
 };
 
 #define MAX_POINT_LIGHTS 64
@@ -58,6 +60,11 @@ uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
 uniform sampler2D gSpec;
 uniform sampler2D gShadow;
+uniform int shadowTexSize;
+uniform int shadowWH;
+
+uniform float hdrGamma;
+uniform float bloomMin;
 
 vec3 FragPos;
 vec3 FragNorm;
@@ -66,7 +73,7 @@ float Specular;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal);
-float CalcShadow(mat4 a_lightSpaceMatrix, float a_bias);
+float CalcShadow(mat4 a_lightSpaceMatrix, vec2 a_shadowIndex);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float specVal);
 
@@ -105,10 +112,21 @@ void main()
     }
 
 
-    FragColor = vec4(Diffuse.rgb * result, 1.0);
+    /// Getting the final colour unclamped
+    vec3 hdrColour = Diffuse.rgb * result;
+
+    BloomColour = vec4(max(vec3(0.0), hdrColour - bloomMin), 1.0);
+
+    /// Reinhard tone mapping
+    vec3 mapped = hdrColour / (hdrColour + vec3(1.0));
+
+    // Gamma correction
+    mapped = pow(mapped, vec3(1.0 / hdrGamma));
+
+    FragColour = vec4(mapped, 1.0);
 }
 
-float CalcShadow(mat4 a_lightProjView, float a_bias)
+float CalcShadow(mat4 a_lightProjView, vec2 a_shadowIndex)
 {
   // Get the fragment in the lights projection view matrix
   vec4 fragPosLightSpace = a_lightProjView * vec4(FragPos.xyz, 1.0);
@@ -116,16 +134,16 @@ float CalcShadow(mat4 a_lightProjView, float a_bias)
   // Perspective division and convert to 0 to 1 range
   vec3 projCoords = (fragPosLightSpace.xyz / fragPosLightSpace.w) * vec3(0.5) + vec3(0.5);
 
-  // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-  float shadowMapDepth = texture(gShadow, projCoords.xy).r;
-
   // Get the depth of the current fragment from the lights perspective
   float currentDepth = projCoords.z;
+
+  //vec2 shadCoords = (projCoords.xy / shadowWH); // TODO:: Shadow Atlas
+  //shadCoords = shadCoords * a_shadowIndex;
 
   // Check whether the current fragpos is shadowed
   float shadow = 0.0;
 
-  vec2 texelSize = 1.0 / textureSize(gShadow, 0);
+  vec2 texelSize = 1.0 / textureSize(gShadow, 0);// / shadowWH;
   for(int x = -3; x <= 3; ++x)
   {
       for(int y = -3; y <= 3; ++y)
@@ -154,15 +172,14 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float specVal)
 
   // Specular shading
   vec3 halfwayDir = normalize(lightDir + viewDir);
-  float spec = pow(max(dot(normal, halfwayDir), 0.0), specVal);
+  float spec = pow(max(dot(normal, lightDir), 0.0), specVal);
 
   // Combine results
   vec3 ambient = light.diffuse * 0.05f;
   vec3 diffuse = light.diffuse * diff;
   vec3 specular = light.specular * spec;
 
-  float bias = max(0.05 * (1.0 - dot(normal, -lightDir)), 0.005);
-  float shad = CalcShadow(light.projViewMatrix, bias);
+  float shad = CalcShadow(light.projViewMatrix, light.atlasIndex);
 
   //return (ambient + diffuse + specular);
   return (ambient + (1.0 - shad) * (diffuse + specular));
@@ -181,7 +198,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, f
 
   // Attenuation calculation
   float fDistance = length(light.position - fragPos);
-  float attenuation = 1.0 / (light.constant + light.linear * fDistance + light.quadratic * (fDistance * fDistance));
+  float attenuation = 1.0 / (1.0 + light.linear * fDistance + light.quadratic * (fDistance * fDistance));
 
   // Combine results
   vec3 ambient = light.diffuse * 0.05f; // Light diffuse to allow for complete darkness
@@ -221,7 +238,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, flo
   vec3 diffuse = light.diffuse * diff;
   vec3 specular = light.specular * spec;
 
-  float shad = 0;//CalcShadow(light.lightSpaceMatrix);
+  float shad = CalcShadow(light.projViewMatrix, light.atlasIndex);
 
   // Attenuate
   ambient *= attenuation * intensity;

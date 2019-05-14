@@ -4,7 +4,7 @@
 #include "Entity.h"
 
 DirectionalLight::DirectionalLight(Entity * a_pOwner) : Light(a_pOwner),
-m_direction(glm::vec3(1.0f, -0.5f, 1.0)),
+m_direction(glm::vec3(1.0f, -1.0f, 1.0)),
 m_lightProjection(glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 1.0f, 125.0f))
 {
 	
@@ -20,6 +20,7 @@ void DirectionalLight::Draw(Shader* a_shader, int a_number)
 	a_shader->SetVec3("directionalLights[" + std::to_string(a_number) + "].diffuse", m_diffuseColour);
 	a_shader->SetVec3("directionalLights[" + std::to_string(a_number) + "].specular", m_specularColour);
 	a_shader->SetMat4("directionalLights[" + std::to_string(a_number) + "].projViewMatrix", m_lightProjView);
+	a_shader->SetVec2("directionalLights[" + std::to_string(a_number) + "].atlasIndex", m_atlasIndex);
 
 	// Pass directional here
 	a_shader->SetVec3("directionalLights[" + std::to_string(a_number) + "].direction", m_direction);
@@ -40,7 +41,7 @@ void DirectionalLight::OnGUI()
 
 }
 
-void DirectionalLight::PrePass(Shader* a_shader, glm::vec3 a_center, int a_number)
+void DirectionalLight::PrePass(Shader* a_shader, glm::vec3 a_center, glm::vec2 a_number)
 {
 	// Pass light uniform
 	glm::vec3 pos = glm::vec3(-m_direction.x * 50, -m_direction.y * 50, -m_direction.z * 50);// generate a position with direction
@@ -48,4 +49,6 @@ void DirectionalLight::PrePass(Shader* a_shader, glm::vec3 a_center, int a_numbe
 	m_lightMatrix = glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0.0f, 1.0f, 0.0f));
 	m_lightProjView = m_lightProjection * m_lightMatrix;
 	a_shader->SetMat4("lightSpaceMatrix", m_lightProjView);
+
+	m_atlasIndex = a_number;
 }
