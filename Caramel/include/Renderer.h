@@ -55,6 +55,7 @@ private:
 	Shader* m_defLight; // Light shaders
 
 	Shader* m_shaderBlur; // For Bloom
+	Shader* m_blendShader;
 
 	Shader* m_lightDummyShader;
 
@@ -71,6 +72,9 @@ private:
 	unsigned int m_shadTexRes; // The resolution of each shadow map
 
 	// HDR & Bloom
+	unsigned int pingpongFBO[2];
+	unsigned int pingpongBuffer[2];
+	int m_blurAmount;
 	float m_bloomMinimum;
 	float m_gammaCorrection;
 

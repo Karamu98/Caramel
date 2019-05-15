@@ -61,10 +61,14 @@ void Renderer::Init(RenderingMode a_renderMode)
 {
 	m_shaderBlur = new Shader("shaders/blurBloomV.glsl", "shaders/blurBloomFrag.glsl");
 	m_shaderBlur->Bind();
-	m_shaderBlur->SetInt("gBloomPass", 0);
-	m_shaderBlur->SetInt("gFinalDraw", 1);
+	m_shaderBlur->SetInt("image", 0);
 
 	m_lightDummyShader = new Shader("shaders/lightV.glsl", "shaders/lightFrag.glsl");
+
+	m_blendShader = new Shader("shaders/bloomBlendV.glsl", "shaders/bloomBlendFrag.glsl");
+	m_blendShader->Bind();
+	m_blendShader->SetInt("scene", 0);
+	m_blendShader->SetInt("bloomBlur", 1);
 
 	// Set the clear colour and enable depth testing and backface culling
 	glClearColor(1.0, 1.0, 1.0, 1.0f);
@@ -132,6 +136,25 @@ void Renderer::Init(RenderingMode a_renderMode)
 	}
 	m_currentMode = a_renderMode;
 
+	// Bloom set-up
+	glGenFramebuffers(2, pingpongFBO);
+	glGenTextures(2, pingpongBuffer);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
+		glBindTexture(GL_TEXTURE_2D, pingpongBuffer[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGB16F, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGB, GL_FLOAT, NULL
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], 0
+		);
+	}
+
 	CL_CORE_INFO("Renderer Initialised.");
 }
 
@@ -182,34 +205,41 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	// Pass over target with post processing
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+#pragma region Blur and Bloom
 	m_shaderBlur->Bind();
-	m_shaderBlur->SetVec2("resolution", glm::vec2(*g_ScreenWidth, *g_ScreenHeight));
-	m_shaderBlur->SetVec2("direction", glm::vec2(15.0f, 0.0f));
-	m_shaderBlur->SetFloat("hdrGamma", m_gammaCorrection);
+
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_bloomColour);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_finalColour);
 
 	// Draw on screen
 
-	int iterations = 4;
-	for (int i = 0; i < iterations; i++) 
+	bool horizontal = true, first_iteration = true;
+	m_shaderBlur->Bind();
+	for (unsigned int i = 0; i < m_blurAmount; i++)
 	{
-		float radius = (iterations - i - 1);
-
-		// draw blurred in one direction
-		m_shaderBlur->SetVec2("direction", i % 2 == 0 ? glm::vec2(radius, 0) : glm::vec2((0, radius)));
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+		m_shaderBlur->SetInt("horizontal", horizontal);
+		glBindTexture(
+			GL_TEXTURE_2D, first_iteration ? m_bloomColour : pingpongBuffer[!horizontal]
+		);
 		m_defQuad->RenderPlane();
+		horizontal = !horizontal;
+		if (first_iteration)
+			first_iteration = false;
 	}
-
-	// Send depth to second pass, this is for blendables (transparents, unlit)
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_finalFramebuffer);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	m_blendShader->Bind();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_finalColour);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
+	m_blendShader->SetInt("gamma", m_gammaCorrection);
+
+	m_defQuad->RenderPlane();
+
+#pragma endregion
 
 	glUseProgram(0);
 
@@ -230,6 +260,7 @@ void Renderer::OnGUI()
 		glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
 		ImGui::DragFloat("Gamma Correction", &m_gammaCorrection, 0.1f, 0.0f, 50.0f);
 		ImGui::DragFloat("Bloom minimum", &m_bloomMinimum, 0.05f, 0.0f, 1.0f);
+		ImGui::DragInt("Bloom strength", &m_blurAmount, 1, 0, 20);
 
 		if (ImGui::TreeNode("Deferred, GBuffer"))
 		{
