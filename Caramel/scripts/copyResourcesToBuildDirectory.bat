@@ -1,2 +1,2 @@
-xcopy "%~dp0..\resources" "%~dp0..\bin" /s /y /i
-xcopy "%~dp0..\lib\assimp-vc140-mt.dll" "%~dp0..\bin" /y
+xcopy "%~dp0..\resources" "%~dp0..\bin" /s /y /i /c
+xcopy "%~dp0..\lib\assimp-vc140-mt.dll" "%~dp0..\bin" /y /c
