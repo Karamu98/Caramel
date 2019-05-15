@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\Camera.cpp" />
     <ClCompile Include="..\source\Component.cpp" />
+    <ClCompile Include="..\source\Cube.cpp" />
     <ClCompile Include="..\source\DirectionalLight.cpp" />
     <ClCompile Include="..\source\Entity.cpp" />
     <ClCompile Include="..\source\Light.cpp" />
@@ -189,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\Component.h" />
+    <ClInclude Include="..\include\Cube.h" />
     <ClInclude Include="..\include\Defines.h" />
     <ClInclude Include="..\include\DirectionalLight.h" />
     <ClInclude Include="..\include\Entity.h" />

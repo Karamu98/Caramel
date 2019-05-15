@@ -59,6 +59,13 @@ Renderer::~Renderer()
 
 void Renderer::Init(RenderingMode a_renderMode)
 {
+	m_shaderBlur = new Shader("shaders/blurBloomV.glsl", "shaders/blurBloomFrag.glsl");
+	m_shaderBlur->Bind();
+	m_shaderBlur->SetInt("gBloomPass", 0);
+	m_shaderBlur->SetInt("gFinalDraw", 1);
+
+	m_lightDummyShader = new Shader("shaders/lightV.glsl", "shaders/lightFrag.glsl");
+
 	// Set the clear colour and enable depth testing and backface culling
 	glClearColor(1.0, 1.0, 1.0, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -80,14 +87,12 @@ void Renderer::Init(RenderingMode a_renderMode)
 	glGenTextures(1, &m_bloomColour);
 	glBindTexture(GL_TEXTURE_2D, m_bloomColour);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_bloomColour, 0);
 
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
-
-	CL_GETGL_ERRORS;
 
 	// Depth render buffer
 	glGenRenderbuffers(1, &m_finalDepth);
@@ -100,6 +105,8 @@ void Renderer::Init(RenderingMode a_renderMode)
 		CL_CORE_ERROR("Framebuffer not complete.");
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	CL_GETGL_ERRORS;
 	
 
 	// Set up the rendering mode that has been picked
@@ -173,9 +180,29 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 
 	// Pass over target with post processing
-	
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	m_shaderBlur->Bind();
+	m_shaderBlur->SetVec2("resolution", glm::vec2(*g_ScreenWidth, *g_ScreenHeight));
+	m_shaderBlur->SetVec2("direction", glm::vec2(15.0f, 0.0f));
+	m_shaderBlur->SetFloat("hdrGamma", m_gammaCorrection);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_bloomColour);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_finalColour);
 
 	// Draw on screen
+
+	int iterations = 4;
+	for (int i = 0; i < iterations; i++) 
+	{
+		float radius = (iterations - i - 1);
+
+		// draw blurred in one direction
+		m_shaderBlur->SetVec2("direction", i % 2 == 0 ? glm::vec2(radius, 0) : glm::vec2((0, radius)));
+		m_defQuad->RenderPlane();
+	}
 
 	// Send depth to second pass, this is for blendables (transparents, unlit)
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_finalFramebuffer);
@@ -183,7 +210,6 @@ void Renderer::Draw(Scene* a_sceneToRender)
 	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 
 	glUseProgram(0);
 
@@ -621,5 +647,16 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	{
 		glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 	}
+
+	// Blend in dummy lights
+	m_lightDummyShader->Bind();
+	m_lightDummyShader->SetMat4("proj", a_activeCam->GetProjectionMatrix(), true);
+	m_lightDummyShader->SetMat4("view", a_activeCam->GetViewMatrix(), true);
+	for (int i = 0; i < pointLights.size(); i++)
+	{
+		pointLights[i]->PostPass(m_lightDummyShader);
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }

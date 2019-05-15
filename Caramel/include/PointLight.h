@@ -2,6 +2,9 @@
 #define __POINT_LIGHT_H__
 
 #include "Light.h"
+#include "Transform.h"
+
+class Cube;
 
 
 class PointLight : public Light
@@ -16,6 +19,7 @@ public:
 	virtual void OnGUI();
 
 	virtual void PrePass(Shader* a_shader, glm::vec2 a_number);
+	void PostPass(Shader* a_shader); // Just used to show the representation light
 
 private:
 
@@ -23,6 +27,9 @@ private:
 	float m_linear;
 	float m_quadratic;
 	glm::vec2 m_atlasIndex;
+
+	Cube* m_cubeRepresentation;
+	Transform m_lightTransform;
 };
 
 

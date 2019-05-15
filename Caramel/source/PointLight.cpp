@@ -2,16 +2,22 @@
 #include "Shader.h"
 #include "Entity.h"
 #include "Transform.h"
+#include "Cube.h"
 
 PointLight::PointLight(Entity * a_pOwner) : Light(a_pOwner),
 m_attenuation(1.0f),
 m_linear(0.09f),
 m_quadratic(0.032f)
 {
+	m_cubeRepresentation = new Cube();
+	m_lightTransform = Transform();
+
+	m_lightTransform.SetScale(glm::vec3(0.1f));
 }
 
 PointLight::~PointLight()
 {
+	delete m_cubeRepresentation;
 }
 
 void PointLight::Update(float a_fDeltaTime)
@@ -47,4 +53,13 @@ void PointLight::OnGUI()
 void PointLight::PrePass(Shader* a_shader, glm::vec2 a_number)
 {
 
+}
+
+void PointLight::PostPass(Shader* a_shader)
+{
+	m_lightTransform.SetPosition(GetOwnerEntity()->GetTransform()->GetPosition());
+
+	a_shader->SetVec3("lightColour", m_diffuseColour, true);
+	a_shader->SetMat4("model", *m_lightTransform.GetMatrix(), true);
+	m_cubeRepresentation->RenderCube(a_shader);
 }

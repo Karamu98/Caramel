@@ -17,6 +17,7 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
+#include "Cube.h"
 
 
 MyApplication::MyApplication() : m_showUI(true)

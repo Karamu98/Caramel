@@ -87,6 +87,9 @@
     <ClCompile Include="..\source\Plane.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\Cube.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\MyApplication.h">
@@ -142,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="..\include\SpotLight.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Cube.h">
+      <Filter>Header Files\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

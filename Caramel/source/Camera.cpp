@@ -9,7 +9,7 @@ typedef Component PARENT;
 
 Camera::Camera(Entity * a_pOwner) : PARENT(a_pOwner),
 m_fov(90),
-m_cameraSpeed(3),
+m_cameraSpeed(20),
 m_bIsPossesed(true)
 {
 	m_localPosition = glm::vec4(0, 5, 0, 1); // Set the camera just above root	

@@ -54,6 +54,10 @@ private:
 	Shader* m_dirPrePass, *m_spotPrePass, *m_pointPrePass; // Light pre-pass shaders
 	Shader* m_defLight; // Light shaders
 
+	Shader* m_shaderBlur; // For Bloom
+
+	Shader* m_lightDummyShader;
+
 	unsigned int m_defGeoBuffer, m_posBuffer, m_normBuffer, m_albedoBuffer, m_specBuffer, m_rboDepth; // Deferred buffers
 	Plane* m_defQuad; // Fullscreen render quad
 
