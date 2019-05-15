@@ -50,6 +50,7 @@ void SpotLight::OnGUI()
 		ImGui::DragFloat("Attenuation", &m_attenuation, 0.1f, 0);
 		ImGui::DragFloat3("Direction", glm::value_ptr(m_direction), 0.01f, -1.0f, 1.0f);
 		ImGui::TreePop();
+		ImGui::Indent();
 	}
 }
 

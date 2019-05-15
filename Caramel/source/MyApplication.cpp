@@ -49,7 +49,7 @@ bool MyApplication::onCreate()
 	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
 	m_scene.m_activeCamera = newCam;
-	newEditor->GetTransform()->SetPosition(glm::vec3(0, 3, 0));
+	newEditor->GetTransform()->SetPosition(glm::vec3(-50.0, 50, -50.0));
 	SpotLight* camFlash = new SpotLight(newEditor);
 
 	// Add a directional light and point light
@@ -57,6 +57,9 @@ bool MyApplication::onCreate()
 	lightHolder->SetName("Directional");
 	lightHolder->GetTransform()->SetPosition(glm::vec3(5, 5, 5));
 	DirectionalLight* sceneLight = new DirectionalLight(lightHolder);
+	sceneLight->SetDirection(glm::vec3(0.55f, -0.35f, -0.7f));
+	sceneLight->SetDiffuse(glm::vec3(1.0f, 0.737f, 0.36f));
+	sceneLight->SetSpecular(glm::vec3(1.0f, 0.7f, 0.0f));
 	Entity* pointHolder = new Entity(&m_scene);
 	pointHolder->SetName("Point");
 	PointLight* pointLight = new PointLight(pointHolder);
@@ -67,13 +70,13 @@ bool MyApplication::onCreate()
 	ruinsEntity->SetName("Ruins");
 	ruinsEntity->GetTransform()->SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
 	ruinsEntity->GetTransform()->SetPosition(glm::vec3(0, 1, 0));
-	MeshFilter* ruins = new MeshFilter(ruinsEntity, MeshType::SOLID); // Create its mesh filter
+	MeshFilter* ruins = new MeshFilter(ruinsEntity, SOLID | SHADCAST); // Create its mesh filter
 	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
 
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
 	wavesEntity->SetName("Waves");
-	wavesEntity->GetTransform()->SetScale(glm::vec3(3, 1, 3));
+	wavesEntity->GetTransform()->SetScale(glm::vec3(10, 1, 10));
 	MeshFilter* waves = new MeshFilter(wavesEntity, MeshType::ANIMATINGSOLID); // Create its mesh filter
 	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
 
@@ -228,7 +231,7 @@ void MyApplication::Update(float a_deltaTime)
 	
 	if (m_showUI)
 	{
-		ImGui::Begin("World Outliner", NULL, ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("World Outliner", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
 		ImGui::TextColored(ImVec4(0, 170, 0, 1), "Entity List:");
 		ImGui::BeginChild("Scrolling");
@@ -261,7 +264,7 @@ void MyApplication::Update(float a_deltaTime)
 		ImGui::End();
 
 
-		ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("Inspector", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 		ImGui::TextColored(ImVec4(170, 0, 0, 1), "Selected Entity:");
 
 		if (m_scene.selectedEntity != nullptr)

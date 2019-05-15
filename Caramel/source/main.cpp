@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 			w = 2560;
 			h = 1440;
 			validRes = true;
-			src = fopen("1440/imgui.ini", "r");
+			src = fopen("config/1440/imgui.ini", "r");
 			break;
 		}
 
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 			w = 1920;
 			h = 1080;
 			validRes = true;
-			src = fopen("1080/imgui.ini", "r");
+			src = fopen("config/1080/imgui.ini", "r");
 			break;
 		}
 
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 			w = 1280;
 			h = 720;
 			validRes = true;
-			src = fopen("720/imgui.ini", "r");
+			src = fopen("config/720/imgui.ini", "r");
 			break;
 		}
 		}
@@ -87,6 +87,8 @@ int main(int argc, char* argv[])
 
 	g_ScreenWidth = &w;
 	g_ScreenHeight = &h;
+
+	system("cls");
 
 	// explicitly control the creation of our application
 	MyApplication* app = new MyApplication();

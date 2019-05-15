@@ -15,6 +15,7 @@ public:
 	virtual void OnGUI();
 
 	void PrePass(Shader* a_shader, glm::vec3 a_center, glm::vec2 a_number);
+	void SetDirection(glm::vec3 a_newDir);
 
 private:
 

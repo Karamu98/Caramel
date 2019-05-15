@@ -39,3 +39,13 @@ bool Light::OnDelete()
 	}
 	return false;
 }
+
+void Light::SetDiffuse(glm::vec3 a_colour)
+{
+	m_diffuseColour = a_colour;
+}
+
+void Light::SetSpecular(glm::vec3 a_spec)
+{
+	m_specularColour = a_spec;
+}

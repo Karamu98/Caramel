@@ -8,7 +8,6 @@ out fragment
 	vec3 pos;
 	vec3 normal;
 	vec2 UV;
-	float displacement;
 }frag;
 
 uniform mat4 model;
@@ -24,7 +23,7 @@ void main()
   frag.pos = worldPos.xyz;
   frag.UV = aTexCoords;
 
-  frag.normal = aNormal.xyz;
+  frag.normal = (model * vec4(aNormal.xyz, 0.0)).xyz;
 
   gl_Position = projectionView * worldPos;
 }

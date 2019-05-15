@@ -7,7 +7,6 @@ in TessCtrl
   vec3 pos;
   vec3 normal;
   vec2 uv;
-  float displacement;
 } tessCS[];
 
 out TessEval
@@ -17,21 +16,35 @@ out TessEval
   vec2 uv;
 } tessEval;
 
+uniform sampler2D texture_height1;
+uniform mat4 projectionView;
 uniform float displacementScale;
+
+vec2 Interpolate2D(vec2 v0, vec2 v1, vec2 v2)
+{
+    return vec2(gl_TessCoord.x) * v0 + vec2(gl_TessCoord.y) * v1 + vec2(gl_TessCoord.z) * v2;
+}
+
+vec3 Interpolate3D(vec3 v0, vec3 v1, vec3 v2)
+{
+    return vec3(gl_TessCoord.x) * v0 + vec3(gl_TessCoord.y) * v1 + vec3(gl_TessCoord.z) * v2;
+}
 
 void main()
 {
+  tessEval.pos = Interpolate3D(tessCS[0].pos, tessCS[1].pos, tessCS[2].pos);
+  tessEval.normal = Interpolate3D(tessCS[0].normal, tessCS[1].normal, tessCS[2].normal);
+  tessEval.normal = normalize(tessEval.normal);
+  tessEval.uv = Interpolate2D(tessCS[0].uv, tessCS[1].uv, tessCS[2].uv);
+
+  // Displace using normal if one is avalible
+  float disp = max(0.0, texture(texture_height1, tessEval.uv).x);
+  tessEval.pos += tessEval.normal * disp * displacementScale;
+
 	vec4 p0 = gl_in[0].gl_Position;
 	vec4 p1 = gl_in[1].gl_Position;
 	vec4 p2 = gl_in[2].gl_Position;
 	vec3 p = gl_TessCoord.xyz;
 
-	tessEval.pos = tessCS[0].pos * p.x + tessCS[1].pos * p.y + tessCS[2].pos * p.z;
-	tessEval.normal = normalize(tessCS[0].normal * p.x + tessCS[1].normal * p.y + tessCS[2].normal * p.z);
-	tessEval.uv = tessCS[0].uv * p.x + tessCS[1].uv * p.y + tessCS[2].uv * p.z;
-  float displacement = tessCS[0].displacement * p.x + tessCS[1].displacement * p.y + tessCS[2].displacement * p.z;
-
-	gl_Position =  p0 * p.x + p1 * p.y + p2 * p.z;
-	// Displace using height map
-  gl_Position.y = gl_Position.y + displacementScale;
+  gl_Position = projectionView * vec4(tessEval.pos, 1.0);
 }

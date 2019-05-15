@@ -40,6 +40,7 @@ void PointLight::OnGUI()
 		// Expose colours and values from base and pointlight here
 		ImGui::DragFloat("Attenuation", &m_attenuation, 0.1f, 0);
 		ImGui::TreePop();
+		ImGui::Indent();
 	}
 }
 

@@ -23,7 +23,7 @@ Renderer::Renderer() :
 	m_shadTexRes(512),
 	m_shadowBufSize(0),
 	m_gammaCorrection(1.2f),
-	m_bloomMinimum(0.6f),
+	m_bloomMinimum(0.67f),
 	showGUI(true)
 {
 }
@@ -401,7 +401,7 @@ void Renderer::InitDeferredRendering()
 	// Setting up the colour buffer
 	glGenTextures(1, &m_albedoBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_albedoBuffer, 0);
@@ -494,7 +494,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	int x = 0; // Where in our buffer we draw
 	int y = 0;
-	// Render the entire scene foreach light to create shadow maps
+	// Render the entire scene foreach directional to create shadow maps (Supports one currently) ::TODO::
 	m_dirPrePass->Bind();
 
 	for (DirectionalLight* light : dirLights)
@@ -516,8 +516,6 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 		}
 	}
 
-	m_spotPrePass->Bind();
-
 	glBindFramebuffer(GL_FRAMEBUFFER, m_defGeoBuffer); // Bind the framebuffer for deferred
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear it
 	glViewport(0, 0, *g_ScreenWidth, *g_ScreenHeight);
@@ -526,6 +524,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	/// First pass
 	m_defGeo->Bind(); // Bind the first pass shader and pass uniforms
 	m_defGeo->SetMat4("projectionView", a_activeCam->GetProjectionView());
+	m_defGeo->SetVec3("cameraPosition", a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition());
 
 	std::vector<MeshFilter*>::iterator xIter = meshes.begin();
 
@@ -533,7 +532,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	/// Solid pass
 	for (MeshFilter* mesh : meshes)
 	{
-		if (mesh->GetType() == MeshType::SOLID)
+		if (mesh->GetType() & SOLID)
 		{
 			mesh->Draw(m_defGeo, true);
 			meshes.erase(xIter);
@@ -549,11 +548,12 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	Utility::tickTimer();
 	float time = Utility::getTotalTime();
 	m_defGeoAnim->SetMat4("projectionView", a_activeCam->GetProjectionView());
+	m_defGeoAnim->SetVec3("cameraPosition", a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition());
 	m_defGeoAnim->SetFloat("Time", time);
 	xIter = meshes.begin();
 	for (MeshFilter* mesh : meshes)
 	{
-		if (mesh->GetType() == MeshType::ANIMATINGSOLID)
+		if (mesh->GetType() & ANIMATINGSOLID)
 		{
 			mesh->Draw(m_defGeoAnim, true);
 			meshes.erase(xIter);

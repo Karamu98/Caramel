@@ -20,6 +20,9 @@ public:
 	virtual void OnGUI();
 	virtual bool OnDelete();
 
+	void SetDiffuse(glm::vec3 a_colour);
+	void SetSpecular(glm::vec3 a_spec);
+
 protected:
 
 	glm::vec3 m_diffuseColour;

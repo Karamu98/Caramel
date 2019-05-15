@@ -34,10 +34,9 @@ void MeshFilter::OnGUI()
 		ImGui::SliderFloat("Specularity", &m_specularity, 0, 1);
 
 		ImGui::Checkbox("Tessalation", &m_isTessActive);
-		ImGui::SliderInt("Inner", &m_innerTess, 0, 7);
-		ImGui::SliderInt("Outer", &m_outerTess, 1, 7);
 		ImGui::SliderInt("Displacement scale", &m_tessScale, 0, 100);
 		ImGui::TreePop();
+		ImGui::Indent();
 	}
 
 
@@ -114,24 +113,33 @@ void MeshFilter::Draw(Shader* a_shader, bool a_tessalation)
 		if (m_isTessActive)
 		{
 			// Calculate tessalation with distance
-			a_shader->SetInt("innerEdge", m_innerTess);
-			a_shader->SetInt("outerEdge", m_outerTess);
 			a_shader->SetInt("displacementScale", m_tessScale, true);
 		}
 		else
 		{
-			a_shader->SetInt("innerEdge", 0);
-			a_shader->SetInt("outerEdge", 1);
 			a_shader->SetInt("displacementScale", -1);
 		}
-	}
 
-	glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
-	a_shader->SetMat4("model", m4ModelMat);
-	a_shader->SetFloat("meshSpecular", m_specularity);
-	for (unsigned int i = 0; i < meshes.size(); i++)
+		glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
+		a_shader->SetMat4("model", m4ModelMat);
+		a_shader->SetFloat("meshSpecular", m_specularity);
+		for (unsigned int i = 0; i < meshes.size(); i++)
+		{
+			meshes[i].Draw(a_shader, a_tessalation);
+		}
+	}
+	else
 	{
-		meshes[i].Draw(a_shader, a_tessalation);
+		if (m_meshType & SHADCAST)
+		{
+			glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
+			a_shader->SetMat4("model", m4ModelMat);
+			a_shader->SetFloat("meshSpecular", m_specularity);
+			for (unsigned int i = 0; i < meshes.size(); i++)
+			{
+				meshes[i].Draw(a_shader, a_tessalation);
+			}
+		}
 	}
 
 }

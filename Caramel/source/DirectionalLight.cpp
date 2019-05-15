@@ -5,7 +5,7 @@
 
 DirectionalLight::DirectionalLight(Entity * a_pOwner) : Light(a_pOwner),
 m_direction(glm::vec3(1.0f, -1.0f, 1.0)),
-m_lightProjection(glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 1.0f, 125.0f))
+m_lightProjection(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 150.0f))
 {
 	
 }
@@ -36,6 +36,7 @@ void DirectionalLight::OnGUI()
 		// Expose direction here
 		ImGui::DragFloat3("Direction", glm::value_ptr(m_direction), 0.05f, -1.0f, 1.0f);
 		ImGui::TreePop();
+		ImGui::Indent();
 	}
 
 
@@ -44,11 +45,16 @@ void DirectionalLight::OnGUI()
 void DirectionalLight::PrePass(Shader* a_shader, glm::vec3 a_center, glm::vec2 a_number)
 {
 	// Pass light uniform
-	glm::vec3 pos = glm::vec3(-m_direction.x * 50, -m_direction.y * 50, -m_direction.z * 50);// generate a position with direction
+	glm::vec3 pos = a_center + glm::vec3(-m_direction.x * 100, -m_direction.y * 100, -m_direction.z * 100);// generate a position with direction
 
-	m_lightMatrix = glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0.0f, 1.0f, 0.0f));
+	m_lightMatrix = glm::lookAt(pos, a_center, glm::vec3(0.0f, 1.0f, 0.0f));
 	m_lightProjView = m_lightProjection * m_lightMatrix;
 	a_shader->SetMat4("lightSpaceMatrix", m_lightProjView);
 
 	m_atlasIndex = a_number;
+}
+
+void DirectionalLight::SetDirection(glm::vec3 a_newDir)
+{
+	m_direction = a_newDir;
 }

@@ -40,12 +40,23 @@ void Camera::Update(float a_fDeltaTime)
 		
 		// Update the local offset
 		m_cameraMatrix = *rootTransform;
-		//m_cameraMatrix[3] = glm::vec4(glm::vec3(m_cameraMatrix[3] + m_localPosition), 1);
+
+		// For FOV Slider, this needs to be recalculated
+		m_projectionMatrix = glm::perspective(glm::radians(m_fov * 0.5f), *g_ScreenWidth / (float)* g_ScreenHeight, 0.1f, 5000.0f); 
 	}
 }
 
 void Camera::OnGUI()
 {
+	// List Transfrom Component
+	if (ImGui::TreeNode("Camera Component"))
+	{
+		ImGui::Unindent();
+		ImGui::SliderFloat("FOV", &m_fov, 10.0f, 170.0f);
+		ImGui::SliderFloat("Camera Speed", &m_cameraSpeed, 0.1f, 200.0f);
+		ImGui::TreePop();
+		ImGui::Indent();
+	}
 }
 
 bool Camera::OnDelete()

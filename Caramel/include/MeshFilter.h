@@ -20,11 +20,14 @@ class Shader;
 
 enum MeshType
 {
-	SOLID,
-	TRANSPARENTS,
-	ANIMATINGSOLID,
-	ANIMATINGTRANSPARENT
+	SOLID = 1, // First bit
+	TRANSPARENTS = 2,
+	ANIMATINGSOLID = 4,
+	ANIMATINGTRANSPARENT = 16,
+	SHADCAST = 32 // 5th bit etc
 };
+
+inline MeshType operator|(MeshType a_1, MeshType a_2) { return static_cast<MeshType>(static_cast<int>(a_1) | static_cast<int>(a_2)); }
 
 class MeshFilter : public Component
 {
