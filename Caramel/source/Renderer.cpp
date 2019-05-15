@@ -22,9 +22,10 @@ Renderer::Renderer() :
 	m_renderWireframe(false),
 	m_shadTexRes(512),
 	m_shadowBufSize(0),
-	m_gammaCorrection(1.2f),
-	m_bloomMinimum(0.67f),
-	showGUI(true)
+	m_gammaCorrection(.4f),
+	m_bloomMinimum(0.7f),
+	showGUI(true),
+	m_blurAmount(7)
 {
 }
 
@@ -71,7 +72,7 @@ void Renderer::Init(RenderingMode a_renderMode)
 	m_blendShader->SetInt("bloomBlur", 1);
 
 	// Set the clear colour and enable depth testing and backface culling
-	glClearColor(1.0, 1.0, 1.0, 1.0f);
+	glClearColor(0.0, 0.0, 0.0, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -239,9 +240,21 @@ void Renderer::Draw(Scene* a_sceneToRender)
 
 	m_defQuad->RenderPlane();
 
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 #pragma endregion
 
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_finalFramebuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glUseProgram(0);
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_defGeoBuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	if (m_renderWireframe)
+	{
+		glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	}
 
 	// Draw the gizmos from this frame
 	Gizmos::draw(glm::inverse(activeCam->GetCameraMatrix()), activeCam->GetProjectionMatrix());
@@ -255,7 +268,7 @@ void Renderer::OnGUI()
 		ImGui::Begin("Renderer", &showGUI, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove);
 
 		ImGui::Checkbox("Render wireframe", &m_renderWireframe);
-		static float clearColour[4] = { 1, 1, 1, 1 };
+		static float clearColour[4] = { 0, 0, 0, 0 };
 		ImGui::ColorEdit4("Clear colour", clearColour);
 		glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
 		ImGui::DragFloat("Gamma Correction", &m_gammaCorrection, 0.1f, 0.0f, 50.0f);
@@ -277,7 +290,7 @@ void Renderer::OnGUI()
 
 			if (ImGui::BeginTabItem("Colour Buffer"))
 			{
-				ImTextureID texID = (void*)(intptr_t)m_albedoBuffer;
+				ImTextureID texID = (void*)(intptr_t)m_albedoSpec;
 				ImGui::Image(texID, ImVec2(*g_ScreenWidth * 0.25f, *g_ScreenHeight * 0.25f), ImVec2(0, 1), ImVec2(1, 0));
 				ImGui::EndTabItem();
 			}
@@ -455,24 +468,16 @@ void Renderer::InitDeferredRendering()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_normBuffer, 0);
 
-	// Setting up the colour buffer
-	glGenTextures(1, &m_albedoBuffer);
-	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	// Setting up the colour and specular buffer (Saves binding two textures later)
+	glGenTextures(1, &m_albedoSpec);
+	glBindTexture(GL_TEXTURE_2D, m_albedoSpec);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_albedoBuffer, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_albedoSpec, 0);
 	
-	// Setting up the specular buffer
-	glGenTextures(1, &m_specBuffer);
-	glBindTexture(GL_TEXTURE_2D, m_specBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, *g_ScreenWidth, *g_ScreenHeight, 0, GL_RED, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_specBuffer, 0);
-	
-	unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-	glDrawBuffers(4, attachments);
+	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, attachments);
 
 	// Renderbuffer for depth to pass to default buffer
 	glGenRenderbuffers(1, &m_rboDepth);
@@ -492,9 +497,8 @@ void Renderer::InitDeferredRendering()
 	m_defLight->Bind();
 	m_defLight->SetInt("gPosition", 0);
 	m_defLight->SetInt("gNormal", 1);
-	m_defLight->SetInt("gAlbedo", 2);
-	m_defLight->SetInt("gSpec", 3);
-	m_defLight->SetInt("gShadow", 4);
+	m_defLight->SetInt("gAlbedoSpec", 2);
+	m_defLight->SetInt("gShadow", 3);
 
 	m_defQuad = new Plane();	
 
@@ -513,8 +517,7 @@ void Renderer::DisableDeferred()
 
 	glDeleteTextures(1, &m_posBuffer);
 	glDeleteTextures(1, &m_normBuffer);
-	glDeleteTextures(1, &m_albedoBuffer);
-	glDeleteTextures(1, &m_specBuffer);
+	glDeleteTextures(1, &m_albedoSpec);
 	glDeleteTextures(1, &m_shadowDepthTex);
 	glDeleteRenderbuffers(1, &m_rboDepth);
 	glDeleteFramebuffers(1, &m_defGeoBuffer);
@@ -583,20 +586,15 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	m_defGeo->SetMat4("projectionView", a_activeCam->GetProjectionView());
 	m_defGeo->SetVec3("cameraPosition", a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition());
 
-	std::vector<MeshFilter*>::iterator xIter = meshes.begin();
-
 #pragma region Solids
 	/// Solid pass
-	for (MeshFilter* mesh : meshes)
+	for (int i = 0; i < meshes.size(); i++)
 	{
+		MeshFilter* mesh = meshes[i];
+
 		if (mesh->GetType() & SOLID)
 		{
 			mesh->Draw(m_defGeo, true);
-			meshes.erase(xIter);
-		}
-		if (meshes.size() > 1)
-		{
-			xIter++;
 		}
 	}
 
@@ -607,17 +605,11 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	m_defGeoAnim->SetMat4("projectionView", a_activeCam->GetProjectionView());
 	m_defGeoAnim->SetVec3("cameraPosition", a_activeCam->GetOwnerEntity()->GetTransform()->GetPosition());
 	m_defGeoAnim->SetFloat("Time", time);
-	xIter = meshes.begin();
 	for (MeshFilter* mesh : meshes)
 	{
 		if (mesh->GetType() & ANIMATINGSOLID)
 		{
 			mesh->Draw(m_defGeoAnim, true);
-			meshes.erase(xIter);
-		}
-		if (meshes.size() > 1)
-		{
-			xIter++;
 		}
 	}
 
@@ -641,10 +633,8 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_normBuffer);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, m_albedoBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_albedoSpec);
 	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, m_specBuffer);
-	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, m_shadowDepthTex);
 
 
@@ -670,14 +660,13 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 
 	m_defQuad->RenderPlane();
 
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	// Send depth to final pass, this is for blendables (transparents, unlit)
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_defGeoBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_finalFramebuffer);
 	glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-	if (m_renderWireframe)
-	{
-		glBlitFramebuffer(0, 0, *g_ScreenWidth, *g_ScreenHeight, 0, 0, *g_ScreenWidth, *g_ScreenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	}
+
 
 	// Blend in dummy lights
 	m_lightDummyShader->Bind();

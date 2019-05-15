@@ -59,7 +59,7 @@ private:
 
 	Shader* m_lightDummyShader;
 
-	unsigned int m_defGeoBuffer, m_posBuffer, m_normBuffer, m_albedoBuffer, m_specBuffer, m_rboDepth; // Deferred buffers
+	unsigned int m_defGeoBuffer, m_posBuffer, m_normBuffer, m_albedoSpec, m_rboDepth; // Deferred buffers
 	Plane* m_defQuad; // Fullscreen render quad
 
 	// SSBOs

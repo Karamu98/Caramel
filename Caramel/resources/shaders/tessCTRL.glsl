@@ -6,7 +6,8 @@ in fragment
 {
 	vec3 pos;
   vec3 normal;
-	vec2 UV;
+	vec3 tangent;
+	vec2 uv;
 }frag[];
 
 uniform vec3 cameraPosition;
@@ -15,6 +16,7 @@ out TessCtrl
 {
 	vec3 pos;
 	vec3 normal;
+	vec3 tangent;
 	vec2 uv;
 } tessCS[];
 
@@ -24,7 +26,8 @@ void main()
 {
 	tessCS[gl_InvocationID].pos = frag[gl_InvocationID].pos;
 	tessCS[gl_InvocationID].normal = frag[gl_InvocationID].normal;
-	tessCS[gl_InvocationID].uv = frag[gl_InvocationID].UV;
+	tessCS[gl_InvocationID].uv = frag[gl_InvocationID].uv;
+	tessCS[gl_InvocationID].tangent = frag[gl_InvocationID].tangent;
 
 	// Calculate tessalation levels
 	float EyeVertDist0 = distance(cameraPosition, tessCS[0].pos);

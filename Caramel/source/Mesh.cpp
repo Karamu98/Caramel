@@ -4,6 +4,7 @@
 #include <string>
 #include "Texture.h"
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 
 Mesh::Mesh(std::vector<Vertex> a_verts, std::vector<unsigned int> a_indices, std::vector<Texture> a_textures)
@@ -30,6 +31,9 @@ void Mesh::Draw(Shader* a_shader, bool a_tessalation)
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;
 	unsigned int heightNr = 1;
+
+	bool hasNorm = false;
+
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
@@ -46,21 +50,25 @@ void Mesh::Draw(Shader* a_shader, bool a_tessalation)
 		else if (name == "texture_normal")
 		{
 			number = std::to_string(normalNr++);
+			hasNorm = true;
 		}
 		else if (name == "texture_height")
 		{
 			number = std::to_string(heightNr++);
 		}
 
-		a_shader->SetInt((name + number).c_str(), i);
+		a_shader->SetInt((name + number).c_str(), i, true);
 		glBindTexture(GL_TEXTURE_2D, textures[i].m_textureID);
 	}
-	glActiveTexture(GL_TEXTURE0);
+
+	a_shader->SetBool("hasNormalMap", hasNorm);
 
 	// Draw mesh
 	glBindVertexArray(m_vArrayObject);
 	glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Mesh::Unload()

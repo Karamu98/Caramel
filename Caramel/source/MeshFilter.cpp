@@ -10,8 +10,7 @@ typedef Component PARENT;
 
 MeshFilter::MeshFilter(Entity * a_pOwner, MeshType a_type) : PARENT(a_pOwner)
 , m_meshType(a_type)
-, m_outerTess(1),
-m_specularity(0.2f)
+, m_outerTess(1)
 {
 }
 
@@ -30,8 +29,6 @@ void MeshFilter::OnGUI()
 		{
 			LoadModel();
 		}
-
-		ImGui::SliderFloat("Specularity", &m_specularity, 0, 1);
 
 		ImGui::Checkbox("Tessalation", &m_isTessActive);
 		ImGui::SliderInt("Displacement scale", &m_tessScale, 0, 100);
@@ -122,7 +119,6 @@ void MeshFilter::Draw(Shader* a_shader, bool a_tessalation)
 
 		glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
 		a_shader->SetMat4("model", m4ModelMat);
-		a_shader->SetFloat("meshSpecular", m_specularity);
 		for (unsigned int i = 0; i < meshes.size(); i++)
 		{
 			meshes[i].Draw(a_shader, a_tessalation);
@@ -134,7 +130,6 @@ void MeshFilter::Draw(Shader* a_shader, bool a_tessalation)
 		{
 			glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
 			a_shader->SetMat4("model", m4ModelMat);
-			a_shader->SetFloat("meshSpecular", m_specularity);
 			for (unsigned int i = 0; i < meshes.size(); i++)
 			{
 				meshes[i].Draw(a_shader, a_tessalation);
@@ -256,7 +251,7 @@ Mesh MeshFilter::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 	std::vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
 	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 	// 4. Height maps
-	std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_height");
+	std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, "texture_height");
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 	
 
@@ -289,6 +284,7 @@ std::vector<Texture> MeshFilter::LoadMaterialTextures(aiMaterial *mat, aiTexture
 			texture.m_type = typeName;
 			texture.m_filePath = filePath.C_Str();
 			textures.push_back(texture);
+			CL_CORE_INFO("Texture has been loaded at {0}. Type: {1}", texture.m_filePath, texture.m_type);
 			//textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
 		}
 	}

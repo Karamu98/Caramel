@@ -6,8 +6,9 @@ layout (location = 4) in vec2 aTexCoords;
 out fragment
 {
 	vec3 pos;
-	vec3 normal;
-	vec2 UV;
+  vec3 normal;
+  vec3 tangent;
+  vec2 uv;
 }frag;
 
 uniform mat4 model;
@@ -21,9 +22,11 @@ void main()
 
   vec4 worldPos = model * (vec4(aPos, 1.0) + vec4(0, yOffset, 0, 0));
   frag.pos = worldPos.xyz;
-  frag.UV = aTexCoords;
+  frag.uv = aTexCoords;
 
-  frag.normal = (model * vec4(aNormal.xyz, 0.0)).xyz;
+
+	frag.normal = aNormal.xyz;
+
 
   gl_Position = projectionView * worldPos;
 }

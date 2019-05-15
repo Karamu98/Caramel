@@ -50,7 +50,7 @@ bool MyApplication::onCreate()
 	newEditor->SetName("Editor");
 	Camera* newCam = new Camera(newEditor);
 	m_scene.m_activeCamera = newCam;
-	newEditor->GetTransform()->SetPosition(glm::vec3(-50.0, 50, -50.0));
+	newEditor->GetTransform()->SetPosition(glm::vec3(-1.5, 4, 17));
 	SpotLight* camFlash = new SpotLight(newEditor);
 
 	// Add a directional light and point light
@@ -64,7 +64,9 @@ bool MyApplication::onCreate()
 	Entity* pointHolder = new Entity(&m_scene);
 	pointHolder->SetName("Point");
 	PointLight* pointLight = new PointLight(pointHolder);
-	pointHolder->GetTransform()->SetPosition(glm::vec3(3, 3, 5));
+	pointHolder->GetTransform()->SetPosition(glm::vec3(0.1f, 4.7f, 10.9f));
+	pointLight->SetDiffuse(glm::vec3(0.90f, 0.0f, 0.90f));
+	pointLight->SetSpecular(glm::vec3(1.0f, 0.0f, 1.0f));
 
 	// Add the ruins
 	Entity* ruinsEntity = new Entity(&m_scene); // Create the entity
@@ -74,20 +76,35 @@ bool MyApplication::onCreate()
 	MeshFilter* ruins = new MeshFilter(ruinsEntity, SOLID | SHADCAST); // Create its mesh filter
 	ruins->LoadModel("models/Ruins/Ruins.obj"); // Load the model
 
+	Entity* nanosuitEntity = new Entity(&m_scene); // Create the entity
+	nanosuitEntity->SetName("Nanosuit");
+	nanosuitEntity->GetTransform()->SetScale(glm::vec3(0.2f));
+	nanosuitEntity->GetTransform()->SetPosition(glm::vec3(0, 1.5f, 10));
+	MeshFilter* nanoMesh = new MeshFilter(nanosuitEntity, SOLID | SHADCAST); // Create its mesh filter
+	nanoMesh->LoadModel("models/nanosuit/nanosuit.obj"); // Load the model
+
+	// Add the squid
+	Entity* squidEntity = new Entity(&m_scene); // Create the entity
+	squidEntity->SetName("Squid");
+	squidEntity->GetTransform()->SetScale(glm::vec3(0.01f));
+	squidEntity->GetTransform()->SetPosition(glm::vec3(-2.5f, 3.3f, 10));
+	MeshFilter* squidMesh = new MeshFilter(squidEntity, SOLID | SHADCAST); // Create its mesh filter
+	squidMesh->LoadModel("models/AlexBloor/Alex.fbx"); // Load the model
+
+	// Add the specular cube
+	Entity* boxEntity = new Entity(&m_scene); // Create the entity
+	boxEntity->SetName("Box");
+	boxEntity->GetTransform()->SetScale(glm::vec3(0.01f));
+	boxEntity->GetTransform()->SetPosition(glm::vec3(-5.0f, 2.0f, 10));
+	MeshFilter * boxMesh = new MeshFilter(boxEntity, SOLID | SHADCAST); // Create its mesh filter
+	boxMesh->LoadModel("models/DragonBox/box.fbx"); // Load the model
+
 	// Add the waves
 	Entity* wavesEntity = new Entity(&m_scene); // Create the entity
 	wavesEntity->SetName("Waves");
 	wavesEntity->GetTransform()->SetScale(glm::vec3(10, 1, 10));
-	MeshFilter* waves = new MeshFilter(wavesEntity, MeshType::ANIMATINGSOLID); // Create its mesh filter
+	MeshFilter* waves = new MeshFilter(wavesEntity, ANIMATINGSOLID); // Create its mesh filter
 	waves->LoadModel("models/Sea/Sea.obj"); // Load the model
-
-	Entity* spotEntity = new Entity(&m_scene);
-	SpotLight* secondSpot = new SpotLight(spotEntity);
-	secondSpot->SetDirection(glm::vec3(1, 0, 1));
-
-	Entity* spotEntity2 = new Entity(&m_scene);
-	SpotLight* secondSpot2 = new SpotLight(spotEntity2);
-	secondSpot->SetDirection(glm::vec3(1, 0, 1));
 
 #pragma endregion
 
