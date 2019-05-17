@@ -22,12 +22,13 @@ enum MeshType : unsigned int
 {
 	SOLID = 1, // First bit
 	TRANSPARENTS = 2,
-	ANIMATINGSOLID = 4,
-	ANIMATINGTRANSPARENT = 16,
-	SHADCAST = 32 // 5th bit etc
+	ANIMATING = 4,
+	SHADCAST = 16 // 4th bit etc
 };
 
 inline MeshType operator|(MeshType a_1, MeshType a_2) { return static_cast<MeshType>(static_cast<int>(a_1) | static_cast<int>(a_2)); }
+inline MeshType operator&(MeshType a_1, MeshType a_2) { return static_cast<MeshType>(static_cast<int>(a_1) & static_cast<int>(a_2)); }
+
 
 class MeshFilter : public Component
 {
@@ -42,7 +43,6 @@ public:
 	virtual Component* Duplicate(Entity* a_owner);
 
 	void LoadModel();
-	void LoadModel(std::string a_path);
 	void Draw(Shader* a_shader, bool a_tessalation);
 
 	MeshType GetType();
@@ -61,6 +61,7 @@ private:
 	std::vector<Mesh> meshes;
 
 	std::string m_dir;
+	std::string m_modelName;
 
 	MeshType m_meshType;
 
@@ -70,8 +71,12 @@ private:
 	bool m_isTessActive;
 	int m_tessScale;
 
-	char m_modelTextbuff[128]; // For ImGui
+	char m_modelTextbuff[256]; // For ImGui
 	char m_shaderTextbuff[128]; // For ImGui
+
+
+	// Imgui
+	bool m_fileExplore;
 };
 
 #endif

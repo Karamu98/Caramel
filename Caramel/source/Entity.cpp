@@ -87,9 +87,9 @@ void Entity::OnGUI()
 
 	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
 	ImGuizmo::DecomposeMatrixToComponents(mat, matrixTranslation, matrixRotation, matrixScale);
-	ImGui::DragFloat3("Position", matrixTranslation, 0.1f);
-	ImGui::DragFloat3("Rotation", matrixRotation, 0.1f);
-	ImGui::DragFloat3("Scale", matrixScale, 0.1f);
+	ImGui::DragFloat3("Position", matrixTranslation, 0.05f);
+	ImGui::DragFloat3("Rotation", matrixRotation, 0.05f);
+	ImGui::DragFloat3("Scale", matrixScale, 0.05f);
 	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, mat);
 
 
@@ -109,7 +109,6 @@ void Entity::OnGUI()
 			pComponent->OnGUI();
 		}
 	}
-
 }
 
 void Entity::AddComponent(Component * a_pComponent)

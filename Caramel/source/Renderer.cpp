@@ -24,7 +24,7 @@ Renderer::Renderer() :
 	m_shadowBufSize(0),
 	m_gammaCorrection(.8f),
 	m_bloomMinimum(0.7f),
-	showGUI(true),
+	showGUI(false),
 	m_blurAmount(7)
 {
 }
@@ -607,7 +607,7 @@ void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
 	m_defGeoAnim->SetFloat("Time", time);
 	for (MeshFilter* mesh : meshes)
 	{
-		if (mesh->GetType() & ANIMATINGSOLID)
+		if (mesh->GetType() & ANIMATING)
 		{
 			mesh->Draw(m_defGeoAnim, true);
 		}

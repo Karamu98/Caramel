@@ -75,6 +75,9 @@
     <ClInclude Include="deps\imgui\include\ImGuizmo.h">
       <Filter>Dear Imgui\Extensions\include</Filter>
     </ClInclude>
+    <ClInclude Include="deps\imgui\include\ImGuiFileDialog.h">
+      <Filter>Dear Imgui\Extensions\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -105,6 +108,9 @@
       <Filter>Dear Imgui\source</Filter>
     </ClCompile>
     <ClCompile Include="deps\imgui\ImGuizmo.cpp">
+      <Filter>Dear Imgui\Extensions\source</Filter>
+    </ClCompile>
+    <ClCompile Include="deps\imgui\ImGuiFileDialog.cpp">
       <Filter>Dear Imgui\Extensions\source</Filter>
     </ClCompile>
   </ItemGroup>

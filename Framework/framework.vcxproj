@@ -14,6 +14,7 @@
     <ClInclude Include="deps\glad\include\glad\glad.h" />
     <ClInclude Include="deps\imgui\include\imconfig.h" />
     <ClInclude Include="deps\imgui\include\imgui.h" />
+    <ClInclude Include="deps\imgui\include\ImGuiFileDialog.h" />
     <ClInclude Include="deps\imgui\include\ImGuizmo.h" />
     <ClInclude Include="deps\imgui\include\imgui_impl_glfw.h" />
     <ClInclude Include="deps\imgui\include\imgui_impl_opengl3.h" />
@@ -28,6 +29,7 @@
   <ItemGroup>
     <ClCompile Include="deps\glad\src\glad.c" />
     <ClCompile Include="deps\imgui\imgui.cpp" />
+    <ClCompile Include="deps\imgui\ImGuiFileDialog.cpp" />
     <ClCompile Include="deps\imgui\ImGuizmo.cpp" />
     <ClCompile Include="deps\imgui\imgui_draw.cpp" />
     <ClCompile Include="deps\imgui\imgui_impl_glfw.cpp" />
@@ -82,7 +84,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)deps/glfw/include;$(ProjectDir)deps/glad/include;$(ProjectDir)deps/stb;$(ProjectDir)deps/glm;$(ProjectDir)deps/imgui/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)deps/glfw/include;$(ProjectDir)deps/glad/include;$(ProjectDir)deps/stb;$(ProjectDir)deps/glm;$(ProjectDir)deps/imgui/include;$(ProjectDir)deps/dirent</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__GL_DEBUG__;IMGUI_IMPL_OPENGL_LOADER_GLAD;_CRT_SECURE_NO_WARNINGS;GLM_FORCE_SWIZZLE;GLM_FORCE_RADIANS;GLM_FORCE_PURE;GLM_ENABLE_EXPERIMENTAL;GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4201;4310;4099;</DisableSpecificWarnings>
     </ClCompile>

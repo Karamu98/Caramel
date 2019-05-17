@@ -7,7 +7,7 @@
 #include "Transform.h"
 #include <string>
 
-#define NAME_BUF_SIZE 16
+#define NAME_BUF_SIZE 32
 
 class Component;
 class Scene;

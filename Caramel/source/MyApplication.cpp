@@ -217,6 +217,14 @@ void MyApplication::Update(float a_deltaTime)
 				m_scene.selectedEntity->OnGUI();
 			}
 
+			ImGui::NewLine();
+			ImGui::NewLine();
+			
+			if (ImGui::Button("Add Component"))
+			{
+				CL_CORE_WARN("Not implemented.");
+			}
+
 			ImGui::End();
 		}
 	}
@@ -245,13 +253,6 @@ void MyApplication::Update(float a_deltaTime)
 		Entity* newEntity = new Entity(*m_scene.selectedEntity, &m_scene);
 	}
 
-
-
-	if (ImGui::BeginPopupContextWindow("Options", 0))
-	{
-		ImGui::Text("Test");
-		ImGui::EndPopup();
-	}
 
 #pragma endregion
 

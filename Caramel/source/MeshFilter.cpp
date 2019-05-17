@@ -4,12 +4,15 @@
 #include "glad/glad.h"
 #include "Shader.h"
 #include "Entity.h"
+#include "ImGuiFileDialog.h" // https://github.com/aiekick/ImGuiFileDialog
 
 
 typedef Component PARENT;
 
 MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
 , m_outerTess(1)
+, m_fileExplore(false)
+, m_meshType(SOLID)
 {
 }
 
@@ -23,23 +26,47 @@ void MeshFilter::OnGUI()
 	if (ImGui::TreeNode("Model Component"))
 	{
 		ImGui::Unindent();
-		ImGui::Text("Model path:");
+		ImGui::Text("Mesh:");
 		ImGui::Indent();
-		ImGui::PushID(GetOwnerEntity() + GetModelNumber());
-		ImGui::InputTextWithHint("", "models/cool.fbx", m_modelTextbuff, IM_ARRAYSIZE(m_modelTextbuff));
-		ImGui::PopID();
-		if (ImGui::Button("Load path"))
+		ImGui::Text(m_modelName.c_str());
+		if (ImGui::Button("Load Model"))
 		{
-			LoadModel();
+			m_fileExplore = true;
 		}
+
+		if (m_fileExplore)
+		{
+			if (ImGuiFileDialog::Instance()->FileDialog("File Explorer", ".obj\0.fbx\0\0", ".", ""))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk == true)
+				{
+					std::string path = ImGuiFileDialog::Instance()->GetFilepathName();
+					memcpy(m_modelTextbuff, path.c_str(), path.length());
+					LoadModel();
+				}
+				m_fileExplore = false;
+			}
+		}
+
 		ImGui::Unindent();
 
 		unsigned int* flagsPtr = (unsigned int*)&m_meshType;
 
 		ImGui::Text("Mesh Options:");
 		ImGui::Indent();
-		ImGui::CheckboxFlags("Solid render", flagsPtr, SOLID);
+
+
+		if (ImGui::CheckboxFlags("Solid render", flagsPtr, SOLID))
+		{
+			m_meshType = (MeshType)(m_meshType & ~ANIMATING);
+		}
+
+		if (ImGui::CheckboxFlags("Animating", flagsPtr, ANIMATING))
+		{
+			m_meshType = (MeshType)(m_meshType & ~SOLID);
+		}
 		ImGui::CheckboxFlags("Casts Shadow", flagsPtr, SHADCAST);
+		
 
 		// Indent again, treepop unindents
 		ImGui::TreePop();
@@ -86,34 +113,13 @@ void MeshFilter::LoadModel()
 		delete scene;
 		return;
 	}
+	
+	std::string fullPath = std::string(m_modelTextbuff);
 
-	m_dir = std::string(m_modelTextbuff).substr(0, std::string(m_modelTextbuff).find_last_of('/'));
+	m_dir = std::string(m_modelTextbuff).substr(0, std::string(m_modelTextbuff).find_last_of('\\'));
+	m_modelName = fullPath.substr(fullPath.find_last_of('\\') + 1, fullPath.length());
 
 	CL_CORE_INFO("Loaded model at'" + std::string(m_modelTextbuff) + "'.");
-
-	// process ASSIMP's root node recursively
-	ProcessNode(scene->mRootNode, scene);
-}
-
-void MeshFilter::LoadModel(std::string a_path)
-{
-	UnloadModel();
-
-	memcpy(m_modelTextbuff, a_path.c_str(), sizeof(char) * 127);
-
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(a_path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-
-	if (scene == nullptr)
-	{
-		CL_CORE_ERROR("Failed to load model at '" + std::string(m_modelTextbuff) + "'.");
-		delete scene;
-		return;
-	}
-
-	m_dir = std::string(a_path).substr(0, std::string(a_path).find_last_of('/'));
-
-	CL_CORE_INFO("Loaded model at'" + a_path + "'.");
 
 	// process ASSIMP's root node recursively
 	ProcessNode(scene->mRootNode, scene);
