@@ -1,4 +1,6 @@
 
+
+
 # Caramel Engine
 
 **Caramel Engine** is a lite engine I'm working on in my free time to improve my understanding of engine development and graphics programming. I plan on using this project as an educational tool but I hope to one day possibly create a small game if the engine is complex enough.
@@ -17,10 +19,7 @@ CaramelEngine uses [ImGui](https://github.com/ocornut/imgui) to handle the UI of
 ## Scene navigation
 Hold right click on the editor window and use WASD EQ to move the camera about the scene, moving your mouse will also change the direction of the camera. **Note:** You must have atleast one active camera in the scene to see anything in the scene, add on by going to **Component**->**Rendering**->**Camera** with atleast one entity in the scene.
 ## Shortcuts
-`Ctrl + N` - Create new entity
-`Ctrl + D` - Duplicate entity  
-
->**Note:** MeshFilter doesn't duplicate currently
->
-`Del` - Deletes selected entity.
-`F2` - Highlights entity name for editing.
+- `Ctrl + N`: Creates a new entity.
+- `Ctrl + D`: Duplicates the selected entity **Note:** MeshFilter doesn't duplicate currently.
+- `Del`: Deletes selected entity.
+- `F2`: Highlights the selected entitys' name for editing.
