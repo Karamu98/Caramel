@@ -52,9 +52,10 @@ void Transform::SetPosition(glm::vec3 a_newPos)
 
 void Transform::SetScale(glm::vec3 a_scale)
 {
-	SetEntityMatrixRow(UP_VECTOR, GetEntityMatrixRow(UP_VECTOR) * a_scale.y);
-	SetEntityMatrixRow(RIGHT_VECTOR, GetEntityMatrixRow(RIGHT_VECTOR) * a_scale.x);
-	SetEntityMatrixRow(FORWARD_VECTOR, GetEntityMatrixRow(FORWARD_VECTOR) * a_scale.z);
+	
+	SetEntityMatrixRow(UP_VECTOR, glm::normalize(GetEntityMatrixRow(UP_VECTOR)) * a_scale.y);
+	SetEntityMatrixRow(RIGHT_VECTOR, glm::normalize(GetEntityMatrixRow(RIGHT_VECTOR)) * a_scale.x);
+	SetEntityMatrixRow(FORWARD_VECTOR, glm::normalize(GetEntityMatrixRow(FORWARD_VECTOR)) * a_scale.z);
 }
 
 void Transform::LookAt(glm::vec3 a_positionToLookAt)

@@ -8,6 +8,7 @@
 #include "Log.h"
 #include "Camera.h"
 #include "Scene.h"
+#include "ImGuizmo.h"
 
 unsigned int Entity::s_uiEntityIDCount = 0;
 
@@ -18,6 +19,20 @@ Entity::Entity(Scene* a_scene)
 	m_uiEntityID = s_uiEntityIDCount++;
 
 	SetName(std::string("Default ") += std::to_string(GetEntityID()));
+}
+
+Entity::Entity(const Entity& a_other, Scene* a_scene)
+{
+	a_scene->Add(this);
+	m_uiEntityID = s_uiEntityIDCount++;
+
+	memcpy(cName, a_other.cName, NAME_BUF_SIZE);
+	m_Transform = a_other.m_Transform;
+
+	for (Component* comp : a_other.m_apComponentList)
+	{
+		Component* newComp = comp->Duplicate(this);
+	}
 }
 
 Entity::~Entity()
@@ -53,10 +68,31 @@ void Entity::OnGUI()
 	glm::mat4* matrix = m_Transform.GetMatrix();
 	auto positionRow = &((*matrix)[3]);
 
+	static glm::vec3 scale = glm::vec3(m_Transform.GetRight().x, m_Transform.GetUp().y, m_Transform.GetForward().z);
+
+
+	if (ImGui::IsKeyPressed(291)) // F2
+	{
+		ImGui::SetKeyboardFocusHere();
+	}
+
+
 	// List Transfrom Component
 	ImGui::TextColored(ImVec4(255, 255, 255, 1), "Transform Component");
-	ImGui::InputText("Name", (char*)ssName.c_str(), 10);
-	ImGui::DragFloat3("Position", glm::value_ptr(*positionRow), 0.1f);
+	ImGui::InputText("Name", cName, NAME_BUF_SIZE);
+
+	ImGuizmo::Enable(true);
+
+	float* mat = glm::value_ptr(*m_Transform.GetMatrix());
+
+	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+	ImGuizmo::DecomposeMatrixToComponents(mat, matrixTranslation, matrixRotation, matrixScale);
+	ImGui::DragFloat3("Position", matrixTranslation, 0.1f);
+	ImGui::DragFloat3("Rotation", matrixRotation, 0.1f);
+	ImGui::DragFloat3("Scale", matrixScale, 0.1f);
+	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, mat);
+
+
 	if (ImGui::Button("Reset"))
 	{
 		m_Transform.Reset();
@@ -99,12 +135,12 @@ Transform* Entity::GetTransform()
 	return &m_Transform;
 }
 
-std::string* Entity::GetName()
+std::string Entity::GetName()
 {
-	return &ssName;
+	return std::string(cName);
 }
 
 void Entity::SetName(std::string a_newName)
 {
-	ssName = a_newName;
+	memcpy(cName, a_newName.c_str(), NAME_BUF_SIZE);
 }

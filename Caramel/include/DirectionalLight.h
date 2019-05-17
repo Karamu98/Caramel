@@ -13,6 +13,7 @@ public:
 	virtual void Update(float a_fDeltaTime) {};
 	virtual void Draw(Shader* a_shader, int a_number);
 	virtual void OnGUI();
+	virtual Component* Duplicate(Entity* a_owner);
 
 	void PrePass(Shader* a_shader, glm::vec3 a_center, glm::vec2 a_number);
 	void SetDirection(glm::vec3 a_newDir);

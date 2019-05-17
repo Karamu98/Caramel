@@ -19,6 +19,7 @@ public:
 	virtual void Draw(Shader* a_shader, int a_number) = 0;
 	virtual void OnGUI();
 	virtual bool OnDelete();
+	virtual Component* Duplicate(Entity* a_owner) = 0;
 
 	void SetDiffuse(glm::vec3 a_colour);
 	void SetSpecular(glm::vec3 a_spec);

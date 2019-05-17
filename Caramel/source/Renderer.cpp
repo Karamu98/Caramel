@@ -22,7 +22,7 @@ Renderer::Renderer() :
 	m_renderWireframe(false),
 	m_shadTexRes(512),
 	m_shadowBufSize(0),
-	m_gammaCorrection(.4f),
+	m_gammaCorrection(.8f),
 	m_bloomMinimum(0.7f),
 	showGUI(true),
 	m_blurAmount(7)

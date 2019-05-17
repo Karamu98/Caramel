@@ -18,6 +18,7 @@ public:
 	virtual void Update(float a_fDeltaTime);
 	virtual void OnGUI();
 	virtual bool OnDelete();
+	virtual Component* Duplicate(Entity* a_owner);
 
 	glm::mat4 GetCameraMatrix();
 	glm::mat4 GetProjectionMatrix(); // Returns a new projection matrix

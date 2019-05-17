@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include <string>
 
+#define NAME_BUF_SIZE 16
 
 class Component;
 class Scene;
@@ -16,6 +17,7 @@ class Entity
 public:
 
 	Entity(Scene* a_scene);
+	Entity(const Entity& a_other, Scene* a_scene);
 	~Entity();
 
 	virtual void Update(float a_fDeltaTime);
@@ -30,20 +32,22 @@ public:
 
 	Transform* GetTransform();
 
-	std::string* GetName();
+	std::string GetName();
 	void SetName(std::string a_newName);
 
 	inline unsigned int GetEntityID() { return m_uiEntityID; }
 
+
 private:
 	unsigned int m_uiEntityID;
 
-	std::string ssName;
+	char cName[NAME_BUF_SIZE];
 	Transform m_Transform;
 	
 	std::vector<Component*>m_apComponentList;
 
 	static unsigned int s_uiEntityIDCount;
+
 };
 
 template<typename T>

@@ -54,6 +54,13 @@ void SpotLight::OnGUI()
 	}
 }
 
+Component* SpotLight::Duplicate(Entity* a_owner)
+{
+	SpotLight* newCopy = new SpotLight(a_owner);
+	*newCopy = *this;
+	return newCopy;
+}
+
 void SpotLight::PrePass(Shader* a_shader, glm::vec2 a_number)
 {
 	// Pass light uniform

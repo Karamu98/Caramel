@@ -14,6 +14,9 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+// https://github.com/CedricGuillemet/ImGuizmo
+#include "ImGuizmo.h"
+
 
 #define BUILD_VERSION_MAJOR 1
 #define BUILD_VERSION_MINOR 0
@@ -101,6 +104,7 @@ void Application::run(const char* a_name, int a_width, int a_height, bool a_bFul
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
+			ImGuizmo::BeginFrame();
 
 			Update(deltaTime);
 

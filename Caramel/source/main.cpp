@@ -2,12 +2,15 @@
 #include "Defines.h"
 #include <iostream>
 
+// Application globals
 int* g_ScreenWidth;
 int* g_ScreenHeight;
 
 // main that controls the creation/destruction of an application
 int main(int argc, char* argv[])
 {
+#pragma region Program start prompt
+
 	FILE* src = nullptr;
 	FILE* dst = fopen("imgui.ini", "w");
 
@@ -89,6 +92,8 @@ int main(int argc, char* argv[])
 	g_ScreenHeight = &h;
 
 	system("cls");
+
+#pragma endregion
 
 	// explicitly control the creation of our application
 	MyApplication* app = new MyApplication();

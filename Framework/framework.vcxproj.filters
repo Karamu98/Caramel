@@ -25,6 +25,15 @@
     <Filter Include="Dear Imgui\source">
       <UniqueIdentifier>{89143fb8-b21a-4d35-a420-37c3afed8124}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dear Imgui\Extensions">
+      <UniqueIdentifier>{f3e63db9-9e38-4e25-858e-b00a92dc491d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dear Imgui\Extensions\source">
+      <UniqueIdentifier>{18bc4e95-a447-41ee-99a3-d5887defa12d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dear Imgui\Extensions\include">
+      <UniqueIdentifier>{cae86a98-60f2-441a-9b36-4e3a4f7152a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Application.h">
@@ -63,6 +72,9 @@
     <ClInclude Include="deps\imgui\include\imstb_textedit.h">
       <Filter>Dear Imgui\include</Filter>
     </ClInclude>
+    <ClInclude Include="deps\imgui\include\ImGuizmo.h">
+      <Filter>Dear Imgui\Extensions\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -91,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="deps\imgui\imgui_widgets.cpp">
       <Filter>Dear Imgui\source</Filter>
+    </ClCompile>
+    <ClCompile Include="deps\imgui\ImGuizmo.cpp">
+      <Filter>Dear Imgui\Extensions\source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

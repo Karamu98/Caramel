@@ -50,6 +50,15 @@ void PointLight::OnGUI()
 	}
 }
 
+Component* PointLight::Duplicate(Entity* a_owner)
+{
+	PointLight* newCopy = new PointLight(a_owner);
+	*newCopy = *this;
+
+	newCopy->m_cubeRepresentation = new Cube();
+	return newCopy;
+}
+
 void PointLight::PrePass(Shader* a_shader, glm::vec2 a_number)
 {
 

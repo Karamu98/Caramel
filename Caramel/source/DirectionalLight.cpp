@@ -5,7 +5,7 @@
 
 DirectionalLight::DirectionalLight(Entity * a_pOwner) : Light(a_pOwner),
 m_direction(glm::vec3(1.0f, -1.0f, 1.0)),
-m_lightProjection(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 150.0f))
+m_lightProjection(glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 1.0f, 150.0f))
 {
 	
 }
@@ -38,14 +38,20 @@ void DirectionalLight::OnGUI()
 		ImGui::TreePop();
 		ImGui::Indent();
 	}
+	ImGui::NewLine();
+}
 
-
+Component* DirectionalLight::Duplicate(Entity* a_owner)
+{
+	DirectionalLight* newCopy = new DirectionalLight(a_owner);
+	*newCopy = *this;
+	return newCopy;
 }
 
 void DirectionalLight::PrePass(Shader* a_shader, glm::vec3 a_center, glm::vec2 a_number)
 {
 	// Pass light uniform
-	glm::vec3 pos = a_center + glm::vec3(-m_direction.x * 100, -m_direction.y * 100, -m_direction.z * 100);// generate a position with direction
+	glm::vec3 pos = a_center + glm::vec3(-m_direction.x * 50, -m_direction.y * 50, -m_direction.z * 50);// generate a position with direction
 
 	m_lightMatrix = glm::lookAt(pos, a_center, glm::vec3(0.0f, 1.0f, 0.0f));
 	m_lightProjView = m_lightProjection * m_lightMatrix;

@@ -8,8 +8,7 @@
 
 typedef Component PARENT;
 
-MeshFilter::MeshFilter(Entity * a_pOwner, MeshType a_type) : PARENT(a_pOwner)
-, m_meshType(a_type)
+MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
 , m_outerTess(1)
 {
 }
@@ -24,18 +23,28 @@ void MeshFilter::OnGUI()
 	if (ImGui::TreeNode("Model Component"))
 	{
 		ImGui::Unindent();
-		ImGui::InputText("Model Path", m_modelTextbuff, IM_ARRAYSIZE(m_modelTextbuff));
+		ImGui::Text("Model path:");
+		ImGui::Indent();
+		ImGui::PushID(GetOwnerEntity() + GetModelNumber());
+		ImGui::InputTextWithHint("", "models/cool.fbx", m_modelTextbuff, IM_ARRAYSIZE(m_modelTextbuff));
+		ImGui::PopID();
 		if (ImGui::Button("Load path"))
 		{
 			LoadModel();
 		}
+		ImGui::Unindent();
 
-		ImGui::Checkbox("Tessalation", &m_isTessActive);
-		ImGui::SliderInt("Displacement scale", &m_tessScale, 0, 100);
-		ImGui::TreePop();
+		unsigned int* flagsPtr = (unsigned int*)&m_meshType;
+
+		ImGui::Text("Mesh Options:");
 		ImGui::Indent();
-	}
+		ImGui::CheckboxFlags("Solid render", flagsPtr, SOLID);
+		ImGui::CheckboxFlags("Casts Shadow", flagsPtr, SHADCAST);
 
+		// Indent again, treepop unindents
+		ImGui::TreePop();
+	}
+	ImGui::NewLine();
 
 }
 
@@ -44,6 +53,7 @@ bool MeshFilter::OnDelete()
 	ImGui::PushID(GetOwnerEntity() + GetModelNumber());
 	if (ImGui::Button("Mesh"))
 	{
+		UnloadModel();
 		GetOwnerEntity()->DeleteComponent(this);
 		ImGui::PopID();
 		return true;
@@ -53,6 +63,12 @@ bool MeshFilter::OnDelete()
 		ImGui::PopID();
 		return false;
 	}
+}
+
+Component* MeshFilter::Duplicate(Entity* a_owner)
+{
+	CL_CORE_WARN("Cannot duplicate mesh currently.");
+	return nullptr;
 }
 
 void MeshFilter::LoadModel()

@@ -17,6 +17,7 @@ public:
 	virtual void Update(float a_fDeltaTime);
 	virtual void Draw(Shader* a_shader, int a_number);
 	virtual void OnGUI();
+	virtual Component* Duplicate(Entity* a_owner);
 
 	virtual void PrePass(Shader* a_shader, glm::vec2 a_number);
 	void PostPass(Shader* a_shader); // Just used to show the representation light

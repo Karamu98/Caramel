@@ -18,7 +18,7 @@ class Shader;
 
 /// Ian Hudson helped a lot with helping me understand the model loading and data management.
 
-enum MeshType
+enum MeshType : unsigned int
 {
 	SOLID = 1, // First bit
 	TRANSPARENTS = 2,
@@ -33,12 +33,13 @@ class MeshFilter : public Component
 {
 public:
 
-	MeshFilter(Entity* a_pOwner, MeshType a_type);
+	MeshFilter(Entity* a_pOwner);
 	~MeshFilter();
 
 	virtual void Update(float a_fDeltaTime) {};
 	virtual void OnGUI();
 	virtual bool OnDelete();
+	virtual Component* Duplicate(Entity* a_owner);
 
 	void LoadModel();
 	void LoadModel(std::string a_path);

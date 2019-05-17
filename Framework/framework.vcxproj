@@ -14,6 +14,7 @@
     <ClInclude Include="deps\glad\include\glad\glad.h" />
     <ClInclude Include="deps\imgui\include\imconfig.h" />
     <ClInclude Include="deps\imgui\include\imgui.h" />
+    <ClInclude Include="deps\imgui\include\ImGuizmo.h" />
     <ClInclude Include="deps\imgui\include\imgui_impl_glfw.h" />
     <ClInclude Include="deps\imgui\include\imgui_impl_opengl3.h" />
     <ClInclude Include="deps\imgui\include\imgui_internal.h" />
@@ -27,6 +28,7 @@
   <ItemGroup>
     <ClCompile Include="deps\glad\src\glad.c" />
     <ClCompile Include="deps\imgui\imgui.cpp" />
+    <ClCompile Include="deps\imgui\ImGuizmo.cpp" />
     <ClCompile Include="deps\imgui\imgui_draw.cpp" />
     <ClCompile Include="deps\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="deps\imgui\imgui_impl_opengl3.cpp" />

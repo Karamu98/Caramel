@@ -15,6 +15,7 @@ public:
 	virtual void Update(float a_fDeltaTime);
 	virtual void OnGUI();
 	virtual bool OnDelete() = 0;
+	virtual Component* Duplicate(Entity* a_owner) = 0;
 
 	Entity* GetOwnerEntity();
 	bool IsEnabled();

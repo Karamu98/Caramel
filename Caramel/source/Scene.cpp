@@ -69,6 +69,7 @@ void Scene::Delete()
 {
 	ptrdiff_t old = std::find(m_sceneEntities.begin(), m_sceneEntities.end(), selectedEntity) - m_sceneEntities.begin();
 
+	delete m_sceneEntities.at(old);
 	m_sceneEntities.erase(m_sceneEntities.begin() + old);
 
 	if (m_sceneEntities.empty())

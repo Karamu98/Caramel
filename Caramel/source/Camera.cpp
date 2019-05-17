@@ -57,6 +57,8 @@ void Camera::OnGUI()
 		ImGui::TreePop();
 		ImGui::Indent();
 	}
+
+	ImGui::NewLine();
 }
 
 bool Camera::OnDelete()
@@ -73,6 +75,13 @@ bool Camera::OnDelete()
 		ImGui::PopID();
 		return false;
 	}
+}
+
+Component* Camera::Duplicate(Entity* a_owner)
+{
+	Camera* newCopy = new Camera(a_owner);
+	*newCopy = *this;
+	return newCopy;
 }
 
 glm::mat4 Camera::GetCameraMatrix()
