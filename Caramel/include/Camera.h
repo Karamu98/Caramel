@@ -4,6 +4,7 @@
 //includes
 #include "Component.h"
 #include "glm/ext.hpp"
+#include <fstream>
 
 class Entity;
 
@@ -19,6 +20,8 @@ public:
 	virtual void OnGUI();
 	virtual bool OnDelete();
 	virtual Component* Duplicate(Entity* a_owner);
+
+	virtual void Save(std::ostream* a_outStream);
 
 	glm::mat4 GetCameraMatrix();
 	glm::mat4 GetProjectionMatrix(); // Returns a new projection matrix

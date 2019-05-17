@@ -2,6 +2,7 @@
 #define _COMPONENT_H_
 
 #include "imgui.h"
+#include <fstream>
 
 class Entity;
 
@@ -16,6 +17,7 @@ public:
 	virtual void OnGUI();
 	virtual bool OnDelete() = 0;
 	virtual Component* Duplicate(Entity* a_owner) = 0;
+	virtual void Save(std::ostream* a_outStream) = 0;
 
 	Entity* GetOwnerEntity();
 	bool IsEnabled();

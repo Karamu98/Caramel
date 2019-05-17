@@ -15,6 +15,8 @@ public:
 	virtual void OnGUI();
 	virtual Component* Duplicate(Entity* a_owner);
 
+	virtual void Save(std::ostream* a_outStream);
+
 	void PrePass(Shader* a_shader, glm::vec3 a_center, glm::vec2 a_number);
 	void SetDirection(glm::vec3 a_newDir);
 

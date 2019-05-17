@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "Cube.h"
+#include "Defines.h"
 
 PointLight::PointLight(Entity * a_pOwner) : Light(a_pOwner),
 m_attenuation(1.0f),
@@ -53,10 +54,34 @@ void PointLight::OnGUI()
 Component* PointLight::Duplicate(Entity* a_owner)
 {
 	PointLight* newCopy = new PointLight(a_owner);
-	*newCopy = *this;
+	
+	newCopy->m_diffuseColour = this->m_diffuseColour;
+	newCopy->m_specularColour = this->m_specularColour;
+
+	newCopy->m_attenuation = this->m_attenuation;
+	newCopy->m_linear = this->m_linear;
+	newCopy->m_quadratic = this->m_quadratic;
+	newCopy->m_atlasIndex = this->m_atlasIndex;
+	newCopy->m_lightTransform = this->m_lightTransform;
+
 
 	newCopy->m_cubeRepresentation = new Cube();
 	return newCopy;
+}
+
+void PointLight::Save(std::ostream* a_outStream)
+{
+	FileHeader pntHead;
+	pntHead.flag = Flags::PNTLIGHT_START;
+	pntHead.size = (sizeof(glm::vec3) * 2) + (sizeof(float) * 3) + sizeof(m_atlasIndex);
+	SaveToFile(a_outStream, pntHead);
+
+	SaveToFile(a_outStream, m_diffuseColour);
+	SaveToFile(a_outStream, m_specularColour);
+	SaveToFile(a_outStream, m_attenuation);
+	SaveToFile(a_outStream, m_linear);
+	SaveToFile(a_outStream, m_quadratic);
+	SaveToFile(a_outStream, m_atlasIndex);
 }
 
 void PointLight::PrePass(Shader* a_shader, glm::vec2 a_number)

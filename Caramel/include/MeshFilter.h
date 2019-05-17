@@ -11,6 +11,7 @@
 #include "assimp/postprocess.h"
 
 #include "Mesh.h"
+#include <fstream>
 #include "Texture.h"
 
 class Entity;
@@ -42,6 +43,8 @@ public:
 	virtual bool OnDelete();
 	virtual Component* Duplicate(Entity* a_owner);
 
+	virtual void Save(std::ostream* a_outStream);
+
 	void LoadModel();
 	void Draw(Shader* a_shader, bool a_tessalation);
 
@@ -64,12 +67,6 @@ private:
 	std::string m_modelName;
 
 	MeshType m_meshType;
-
-	int m_innerTess;
-	int m_outerTess;
-
-	bool m_isTessActive;
-	int m_tessScale;
 
 	char m_modelTextbuff[256]; // For ImGui
 	char m_shaderTextbuff[128]; // For ImGui

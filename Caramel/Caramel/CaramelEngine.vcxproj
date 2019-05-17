@@ -198,6 +198,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\Component.h" />
+    <ClInclude Include="..\include\ComponentList.h" />
     <ClInclude Include="..\include\Cube.h" />
     <ClInclude Include="..\include\Defines.h" />
     <ClInclude Include="..\include\DirectionalLight.h" />

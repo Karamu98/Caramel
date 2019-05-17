@@ -2,6 +2,7 @@
 #include "Log.h"
 #include "Entity.h"
 #include "Camera.h"
+#include "Defines.h"
 
 
 Scene::Scene()
@@ -69,6 +70,16 @@ void Scene::Delete()
 {
 	ptrdiff_t old = std::find(m_sceneEntities.begin(), m_sceneEntities.end(), selectedEntity) - m_sceneEntities.begin();
 
+	Camera* camComp = m_sceneEntities.at(old)->GetComponentOfType<Camera>();
+
+	if (camComp != nullptr)
+	{
+		if (camComp == m_activeCamera)
+		{
+			m_activeCamera = nullptr;
+		}
+	}
+
 	delete m_sceneEntities.at(old);
 	m_sceneEntities.erase(m_sceneEntities.begin() + old);
 
@@ -87,4 +98,40 @@ void Scene::Delete(Entity * a_toDelete)
 
 	m_sceneEntities.erase(m_sceneEntities.begin() + old);
 	selectedEntity = m_sceneEntities[0];
+}
+
+void Scene::Save(std::ostream* a_outFile)
+{
+	FileHeader header; 
+	header.flag = Flags::ENTITYLIST_START;
+	header.size = m_sceneEntities.size();
+	SaveToFile(a_outFile, header);
+
+	for (Entity* entity : m_sceneEntities)
+	{
+		entity->Save(a_outFile);
+	}
+}
+
+void Scene::Load(std::ifstream* a_inFile)
+{
+	FileHeader header;
+	LoadFromFile(a_inFile, &header);
+
+	if (header.flag != Flags::ENTITYLIST_START)
+	{
+		CL_CORE_ERROR("Save file mismatch, expected 'ENTITYLIST_START'");
+		return;
+	}
+
+	m_sceneEntities.reserve(header.size);
+
+	for (int i = 0; i < header.size; ++i)
+	{
+		Entity* newEntity = new Entity(this);
+		newEntity->Load(a_inFile);
+	}
+
+	selectedEntity = m_sceneEntities.back();
+
 }

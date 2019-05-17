@@ -37,6 +37,9 @@ public:
 
 	inline unsigned int GetEntityID() { return m_uiEntityID; }
 
+	void Save(std::ostream* a_outStream);
+	void Load(std::ifstream* a_inStream);
+
 
 private:
 	unsigned int m_uiEntityID;

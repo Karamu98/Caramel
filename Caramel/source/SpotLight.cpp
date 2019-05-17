@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Gizmos.h"
 #include "Camera.h"
+#include "Defines.h"
 
 SpotLight::SpotLight(Entity * a_pOwner) : Light(a_pOwner),
 m_cutoff(10.0f),
@@ -11,8 +12,7 @@ m_outerCutoff(15.0f),
 m_linear(0.09f),
 m_quadratic(0.032f),
 m_direction(glm::vec3(0, 0, 1)),
-m_attenuation(1.0f),
-m_lightProjection(glm::perspective(glm::radians(90.0f), 1.0f, 1.0f, 150.0f))
+m_attenuation(1.0f)
 {
 }
 
@@ -34,7 +34,6 @@ void SpotLight::Draw(Shader * a_shader, int a_number)
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].outerCutOff", glm::cos(glm::radians(m_outerCutoff)));
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].linear", m_linear);
 	a_shader->SetFloat("spotLights[" + std::to_string(a_number) + "].quadratic", m_quadratic);
-	a_shader->SetMat4("spotLights[" + std::to_string(a_number) + "].projViewMatrix", m_lightProjView);
 }
 
 void SpotLight::OnGUI()
@@ -57,20 +56,40 @@ void SpotLight::OnGUI()
 Component* SpotLight::Duplicate(Entity* a_owner)
 {
 	SpotLight* newCopy = new SpotLight(a_owner);
-	*newCopy = *this;
+
+	newCopy->m_diffuseColour = this->m_diffuseColour;
+	newCopy->m_specularColour = this->m_specularColour;
+
+	newCopy->m_attenuation = this->m_attenuation;
+	newCopy->m_linear = this->m_linear;
+	newCopy->m_quadratic = this->m_quadratic;
+	newCopy->m_atlasIndex = this->m_atlasIndex;
+	newCopy->m_cutoff = this->m_cutoff;
+	newCopy->m_outerCutoff = this->m_outerCutoff;
+	newCopy->m_direction = this->m_direction;
+
 	return newCopy;
+}
+
+void SpotLight::Save(std::ostream* a_outStream)
+{
+	FileHeader sptHead;
+	sptHead.flag = Flags::SPTLIGHT_START;
+	sptHead.size = sizeof(SpotLight);
+	SaveToFile(a_outStream, sptHead);
+
+	SaveToFile(a_outStream, m_diffuseColour);
+	SaveToFile(a_outStream, m_specularColour);
+	SaveToFile(a_outStream, m_cutoff);
+	SaveToFile(a_outStream, m_outerCutoff);
+	SaveToFile(a_outStream, m_linear);
+	SaveToFile(a_outStream, m_quadratic);
+	SaveToFile(a_outStream, m_attenuation);
 }
 
 void SpotLight::PrePass(Shader* a_shader, glm::vec2 a_number)
 {
-	// Pass light uniform
-	glm::vec3 pos = GetOwnerEntity()->GetTransform()->GetPosition();
 
-	m_lightMatrix = glm::lookAt(pos, pos + m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
-
-	m_lightProjView = m_lightProjection * m_lightMatrix;
-	a_shader->SetMat4("lightSpaceMatrix", m_lightProjView);
-	m_atlasIndex = a_number;
 }
 
 void SpotLight::SetDirection(glm::vec3 a_newDir)

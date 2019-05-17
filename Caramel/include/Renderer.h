@@ -29,6 +29,9 @@ public:
 
 	bool showGUI;
 
+	void Save(std::ofstream* a_outStream);
+	void Load(std::ifstream* a_inStream);
+
 private:
 
 	void InitForwardRendering() {};

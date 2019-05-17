@@ -80,8 +80,30 @@ bool Camera::OnDelete()
 Component* Camera::Duplicate(Entity* a_owner)
 {
 	Camera* newCopy = new Camera(a_owner);
-	*newCopy = *this;
+
+	newCopy->m_bIsPossesed = false;
+	newCopy->m_cameraSpeed = this->m_cameraSpeed;
+	newCopy->m_fov = this->m_fov;
+	newCopy->m_localPosition = this->m_localPosition;
+	newCopy->m_cameraMatrix = this->m_cameraMatrix;
+	newCopy->m_projectionMatrix = this->m_projectionMatrix;
+
 	return newCopy;
+}
+
+void Camera::Save(std::ostream* a_outStream)
+{
+	FileHeader camHead;
+	camHead.flag = Flags::CAMERA_START;
+	camHead.size = sizeof(Camera);
+	SaveToFile(a_outStream, camHead);
+
+	SaveToFile(a_outStream, m_bIsPossesed);
+	SaveToFile(a_outStream, m_cameraSpeed);
+	SaveToFile(a_outStream, m_fov);
+	SaveToFile(a_outStream, m_localPosition);
+	SaveToFile(a_outStream, m_cameraMatrix);
+	SaveToFile(a_outStream, m_projectionMatrix);
 }
 
 glm::mat4 Camera::GetCameraMatrix()

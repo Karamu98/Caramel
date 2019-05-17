@@ -4,13 +4,13 @@
 #include "glad/glad.h"
 #include "Shader.h"
 #include "Entity.h"
+#include "Defines.h"
 #include "ImGuiFileDialog.h" // https://github.com/aiekick/ImGuiFileDialog
 
 
 typedef Component PARENT;
 
 MeshFilter::MeshFilter(Entity * a_pOwner) : PARENT(a_pOwner)
-, m_outerTess(1)
 , m_fileExplore(false)
 , m_meshType(SOLID)
 {
@@ -98,6 +98,18 @@ Component* MeshFilter::Duplicate(Entity* a_owner)
 	return nullptr;
 }
 
+void MeshFilter::Save(std::ostream* a_outStream)
+{
+	FileHeader modHeader;
+	modHeader.flag = Flags::MODEL_START;
+	modHeader.size = sizeof(m_dir) + sizeof(m_modelName) + sizeof(m_meshType);
+	SaveToFile(a_outStream, modHeader);
+	
+	SaveToFile(a_outStream, m_dir);
+	SaveToFile(a_outStream, m_modelName);
+	SaveToFile(a_outStream, m_meshType);
+}
+
 void MeshFilter::LoadModel()
 {
 	UnloadModel();
@@ -129,16 +141,6 @@ void MeshFilter::Draw(Shader* a_shader, bool a_tessalation)
 {
 	if (a_tessalation)
 	{
-		if (m_isTessActive)
-		{
-			// Calculate tessalation with distance
-			a_shader->SetInt("displacementScale", m_tessScale, true);
-		}
-		else
-		{
-			a_shader->SetInt("displacementScale", -1);
-		}
-
 		glm::mat4 m4ModelMat = *GetOwnerEntity()->GetTransform()->GetMatrix();
 		a_shader->SetMat4("model", m4ModelMat);
 		for (unsigned int i = 0; i < meshes.size(); i++)

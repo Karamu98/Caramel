@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "Transform.h"
 #include "Entity.h"
+#include "Defines.h"
 
 DirectionalLight::DirectionalLight(Entity * a_pOwner) : Light(a_pOwner),
 m_direction(glm::vec3(1.0f, -1.0f, 1.0)),
@@ -44,8 +45,32 @@ void DirectionalLight::OnGUI()
 Component* DirectionalLight::Duplicate(Entity* a_owner)
 {
 	DirectionalLight* newCopy = new DirectionalLight(a_owner);
-	*newCopy = *this;
+
+	newCopy->m_diffuseColour = this->m_diffuseColour;
+	newCopy->m_specularColour = this->m_specularColour;
+
+	newCopy->m_atlasIndex = this->m_atlasIndex;
+	newCopy->m_lightProjection = this->m_lightProjection;
+	newCopy->m_lightMatrix = this->m_lightMatrix;
+	newCopy->m_lightProjView = this->m_lightProjView;
+	newCopy->m_direction = this->m_direction;
+
 	return newCopy;
+}
+
+void DirectionalLight::Save(std::ostream* a_outStream)
+{
+	FileHeader Dirhead;
+	Dirhead.flag = Flags::DIRLIGHT_START;
+	Dirhead.size = sizeof(DirectionalLight);
+
+	SaveToFile(a_outStream, m_diffuseColour);
+	SaveToFile(a_outStream, m_specularColour);
+	SaveToFile(a_outStream, m_direction);
+	SaveToFile(a_outStream, m_lightProjection);
+	SaveToFile(a_outStream, m_lightMatrix);
+	SaveToFile(a_outStream, m_lightProjView);
+	SaveToFile(a_outStream, m_atlasIndex);
 }
 
 void DirectionalLight::PrePass(Shader* a_shader, glm::vec3 a_center, glm::vec2 a_number)

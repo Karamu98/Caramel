@@ -149,6 +149,9 @@
     <ClInclude Include="..\include\Cube.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\ComponentList.h">
+      <Filter>Source Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\resources\shaders\modelFragment.glsl">

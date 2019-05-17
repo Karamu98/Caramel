@@ -4,6 +4,7 @@
 //includes
 #include "Component.h"
 #include "glm/glm.hpp"
+#include <fstream>
 
 class Entity;
 class Shader;

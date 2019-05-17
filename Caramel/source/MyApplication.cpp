@@ -18,7 +18,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Cube.h"
-
+#include "Defines.h"
 
 MyApplication::MyApplication() : m_showUI(true)
 {
@@ -97,6 +97,16 @@ void MyApplication::Update(float a_deltaTime)
 
 	if (ImGui::BeginMenu("File"))
 	{
+		//if (ImGui::MenuItem("Open Scene"))
+		//{
+		//	// File dialog
+		//}
+
+		//if (ImGui::MenuItem("Save Scene", "Ctrl + S"))
+		//{
+		//	Save("");
+		//}
+
 		if (ImGui::MenuItem("Show Explorer", "", m_showUI))
 		{
 			m_showUI = !m_showUI;
@@ -130,37 +140,48 @@ void MyApplication::Update(float a_deltaTime)
 		ImGui::EndMenu();
 	}
 
-	if (ImGui::BeginMenu("Component"))
+	if (m_scene.selectedEntity != nullptr)
 	{
-		if (ImGui::BeginMenu("Mesh"))
+		if (ImGui::BeginMenu("Component"))
 		{
-			if (ImGui::MenuItem("Mesh Filter"))
+			if (ImGui::BeginMenu("Mesh"))
 			{
-				MeshFilter* newMesh = new MeshFilter(m_scene.selectedEntity);
+				if (ImGui::MenuItem("Mesh Filter"))
+				{
+					MeshFilter* newMesh = new MeshFilter(m_scene.selectedEntity);
+				}
+				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("Rendering"))
+			{
+				if (ImGui::MenuItem("Camera"))
+				{
+					Camera* newCam = new Camera(m_scene.selectedEntity);
+				}
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Directional Light"))
+				{
+					DirectionalLight* newLight = new DirectionalLight(m_scene.selectedEntity);
+				}
+
+				if (ImGui::MenuItem("Point Light"))
+				{
+					PointLight* newLight = new PointLight(m_scene.selectedEntity);
+				}
+
+				if (ImGui::MenuItem("Spot Light"))
+				{
+					SpotLight* newLight = new SpotLight(m_scene.selectedEntity);
+				}
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Rendering"))
-		{
-			if (ImGui::MenuItem("Directional Light"))
-			{
-				DirectionalLight* newLight = new DirectionalLight(m_scene.selectedEntity);
-			}
-
-			if (ImGui::MenuItem("Point Light"))
-			{
-				PointLight* newLight = new PointLight(m_scene.selectedEntity);
-			}
-
-			if (ImGui::MenuItem("Spot Light"))
-			{
-				SpotLight* newLight = new SpotLight(m_scene.selectedEntity);
-			}
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMenu();
 	}
 
 	ImGui::EndMainMenuBar();
@@ -253,6 +274,11 @@ void MyApplication::Update(float a_deltaTime)
 		Entity* newEntity = new Entity(*m_scene.selectedEntity, &m_scene);
 	}
 
+	//if (ImGui::IsKeyDown(341) && ImGui::IsKeyPressed(83)) // Ctrl + S
+	//{
+	//	Save("");
+	//}
+
 
 #pragma endregion
 
@@ -275,5 +301,50 @@ void MyApplication::Draw()
 void MyApplication::Destroy()
 {
 	Gizmos::destroy();
+}
+
+// Saving and loading may be improved using boost::serilization
+// https://theboostcpplibraries.com/boost.serialization-class-hierarchies
+// =======================
+
+void MyApplication::Save(std::string a_filePath)
+{
+	
+	std::ofstream outFile("save.sweet", std::ios::binary);
+
+	if (outFile)
+	{
+		m_renderer.Save(&outFile);
+
+		m_scene.Save(&outFile);
+
+		outFile.close();
+		CL_CORE_INFO("Scene saved.");
+	}
+	else
+	{
+		CL_CORE_WARN("Unable to save.");
+	}
+
+
+}
+
+void MyApplication::Load(std::string a_filePath)
+{
+	std::ifstream inFile("save.sweet", std::ios::binary);
+
+	if (inFile)
+	{
+		m_renderer.Load(&inFile);
+
+		m_scene.Load(&inFile);
+
+		inFile.close();
+		CL_CORE_INFO("Scene Loaded.");
+	}
+	else
+	{
+		CL_CORE_WARN("Unable to load scene: {0}.", a_filePath);
+	}
 }
 

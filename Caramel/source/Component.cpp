@@ -2,6 +2,7 @@
 #include <glm/ext.hpp>
 #include "Entity.h"
 #include "imgui.h"
+#include "Defines.h"
 
 
 
@@ -66,5 +67,4 @@ unsigned int Component::GetModelNumber()
 {
 	return m_modelNumber;
 }
-
 

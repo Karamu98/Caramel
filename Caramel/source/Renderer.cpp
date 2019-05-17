@@ -393,6 +393,22 @@ void Renderer::ChangeRenderMode(RenderingMode a_newMode)
 	m_currentMode = a_newMode;
 }
 
+void Renderer::Save(std::ofstream* a_outStream)
+{
+	SaveToFile(a_outStream, m_blurAmount);
+	SaveToFile(a_outStream, m_bloomMinimum);
+	SaveToFile(a_outStream, m_gammaCorrection);
+	SaveToFile(a_outStream, m_renderWireframe);
+}
+
+void Renderer::Load(std::ifstream* a_inStream)
+{
+	LoadFromFile(a_inStream, &m_blurAmount);
+	LoadFromFile(a_inStream, &m_bloomMinimum);
+	LoadFromFile(a_inStream, &m_gammaCorrection);
+	LoadFromFile(a_inStream, &m_renderWireframe);
+}
+
 void Renderer::InitDeferredRendering()
 {
 	// Create the solids shader

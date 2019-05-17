@@ -11,8 +11,6 @@ public:
 	Texture();
 	~Texture();
 	unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma);
-	void SaveToMeta();
-	void LoadFromMeta(const char* a_filePathToMeta);
 	unsigned int GetTextureID();
 	void OnGUI(std::string a_name);
 	void Unload();

@@ -25,6 +25,9 @@ protected:
 	virtual void Draw();
 	virtual void Destroy();
 
+	void Save(std::string a_filePath);
+	void Load(std::string a_filePath);
+
 
 private:
 

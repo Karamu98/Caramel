@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "ImGuizmo.h"
+#include "Defines.h"
 
 unsigned int Entity::s_uiEntityIDCount = 0;
 
@@ -142,4 +143,58 @@ std::string Entity::GetName()
 void Entity::SetName(std::string a_newName)
 {
 	memcpy(cName, a_newName.c_str(), NAME_BUF_SIZE);
+}
+
+void Entity::Save(std::ostream* a_outStream)
+{
+	SaveToFile(a_outStream, m_uiEntityID);
+	SaveToFile(a_outStream, cName);
+	SaveToFile(a_outStream, m_Transform);
+
+	FileHeader compHeader;
+	compHeader.flag = Flags::COMPONENTLIST_START;
+	compHeader.size = m_apComponentList.size();
+
+	for (Component* comp : m_apComponentList)
+	{
+		comp->Save(a_outStream);
+	}
+
+}
+
+void Entity::Load(std::ifstream* a_inStream)
+{
+	LoadFromFile(a_inStream, &m_uiEntityID);
+	LoadFromFile(a_inStream, cName);
+	
+
+	FileHeader compHeader;
+	LoadFromFile(a_inStream, &compHeader);
+
+	if (compHeader.flag != Flags::COMPONENTLIST_START)
+	{
+		CL_CORE_ERROR("Save file mismatch, expected 'COMPONENTLIST_START'");
+		return;
+	}
+
+	m_apComponentList.reserve(compHeader.size);
+
+	FileHeader compTypeHeader;
+
+	for (int i = 0; i < compHeader.size; ++i)
+	{
+		LoadFromFile(a_inStream, &compTypeHeader);
+
+
+		//Component* newComp = CreateComponent(this, compTypeHeader.flag);
+		//if (newComp)
+		//{
+		//	m_apComponentList.push_back(newComp);
+		//}
+		//else
+		//{
+		//	CL_CORE_FATAL("Unable to load entity.");
+		//}
+	}
+
 }

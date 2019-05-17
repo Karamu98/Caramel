@@ -20,6 +20,9 @@ public:
 	void Delete();
 	void Delete(Entity* a_toDelete);
 
+	void Save(std::ostream* a_outFile);
+	void Load(std::ifstream* a_inFile);
+
 	std::vector<Entity*> m_sceneEntities;
 	Entity* selectedEntity;	
 
