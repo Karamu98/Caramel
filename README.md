@@ -25,6 +25,6 @@ Hold right click on the editor window and use WASD EQ to move the camera about t
 - `F2`: Highlights the selected entitys' name for editing.
 
 ## Demonstration
-[![Demo](https://img.youtube.com/vi/HF1gQdjV20s/0.jpg)](https://www.youtube.com/watch?v=HF1gQdjV20s)
+[![Demo](https://i.imgur.com/HJPX0sz.png)](https://www.youtube.com/watch?v=HF1gQdjV20s)
 
 > This is a demo of me using my engine to create a simple scene, nothing fancy but shows the usage!
