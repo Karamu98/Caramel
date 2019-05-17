@@ -68,6 +68,12 @@ Camera* Scene::GetActiveCamera()
 
 void Scene::Delete()
 {
+	if (selectedEntity == nullptr)
+	{
+		CL_CORE_WARN("No entity to delete.");
+		return;
+	}
+
 	ptrdiff_t old = std::find(m_sceneEntities.begin(), m_sceneEntities.end(), selectedEntity) - m_sceneEntities.begin();
 
 	Camera* camComp = m_sceneEntities.at(old)->GetComponentOfType<Camera>();

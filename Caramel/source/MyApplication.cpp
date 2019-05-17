@@ -134,7 +134,7 @@ void MyApplication::Update(float a_deltaTime)
 
 		if (ImGui::MenuItem("Delete Selected", "Del"))
 		{
-			Entity* newEntity = new Entity(&m_scene);
+			m_scene.Delete();
 		}
 
 		ImGui::EndMenu();
@@ -238,13 +238,13 @@ void MyApplication::Update(float a_deltaTime)
 				m_scene.selectedEntity->OnGUI();
 			}
 
-			ImGui::NewLine();
-			ImGui::NewLine();
-			
-			if (ImGui::Button("Add Component"))
-			{
-				CL_CORE_WARN("Not implemented.");
-			}
+			//ImGui::NewLine();
+			//ImGui::NewLine();
+			//
+			//if (ImGui::Button("Add Component"))
+			//{
+			//	CL_CORE_WARN("Not implemented.");
+			//}
 
 			ImGui::End();
 		}
