@@ -37,6 +37,8 @@ unsigned char* FileToBuffer(const char* a_sPath)
 	memset(acBuffer, 0, uiLength + 1);
 	fread(acBuffer, sizeof(unsigned char), uiLength, pFile);
 
+	delete acBuffer;
+
 	fclose(pFile);
 	return acBuffer;
 }

@@ -271,7 +271,14 @@ void MyApplication::Update(float a_deltaTime)
 
 	if (ImGui::IsKeyDown(341) && ImGui::IsKeyPressed(68)) // Ctrl + D
 	{
-		Entity* newEntity = new Entity(*m_scene.selectedEntity, &m_scene);
+		if (m_scene.selectedEntity == nullptr)
+		{
+			CL_CORE_WARN("No entity to duplicate.");
+		}
+		else
+		{
+			Entity* newEntity = new Entity(*m_scene.selectedEntity, &m_scene);
+		}
 	}
 
 	//if (ImGui::IsKeyDown(341) && ImGui::IsKeyPressed(83)) // Ctrl + S

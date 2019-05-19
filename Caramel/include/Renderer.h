@@ -65,9 +65,6 @@ private:
 	unsigned int m_defGeoBuffer, m_posBuffer, m_normBuffer, m_albedoSpec, m_rboDepth; // Deferred buffers
 	Plane* m_defQuad; // Fullscreen render quad
 
-	// SSBOs
-	unsigned int m_dirSSBO, m_pointSSBO, m_spotSSBO;
-
 	// Shadows
 	unsigned int m_shadowFBO;
 	unsigned int m_shadowDepthTex;

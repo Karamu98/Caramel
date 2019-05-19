@@ -530,6 +530,9 @@ void Renderer::DisableDeferred()
 	delete m_dirPrePass;
 	delete m_spotPrePass;
 	delete m_pointPrePass;
+	delete m_shaderBlur;
+	delete m_blendShader;
+	delete m_lightDummyShader;
 
 	glDeleteTextures(1, &m_posBuffer);
 	glDeleteTextures(1, &m_normBuffer);
@@ -538,6 +541,9 @@ void Renderer::DisableDeferred()
 	glDeleteRenderbuffers(1, &m_rboDepth);
 	glDeleteFramebuffers(1, &m_defGeoBuffer);
 	glDeleteFramebuffers(1, &m_shadowFBO);
+
+	glDeleteTextures(2, pingpongBuffer);
+	glDeleteFramebuffers(2, pingpongFBO);
 }
 
 void Renderer::DeferredPass(Scene* a_scene, Camera* a_activeCam)
