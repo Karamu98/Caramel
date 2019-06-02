@@ -7,6 +7,8 @@ Transform::Transform()
 	SetEntityMatrixRow(UP_VECTOR, glm::vec3(0, 1, 0));
 	SetEntityMatrixRow(FORWARD_VECTOR, glm::vec3(0, 0, 1));
 	SetEntityMatrixRow(POSITION_VECTOR, glm::vec3(0, 0, 0));
+
+	m_parent = nullptr;
 }
 
 Transform::~Transform()

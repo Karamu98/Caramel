@@ -2,7 +2,7 @@
 // GLFW 3.3 EGL - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
-// Copyright (c) 2006-2016 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2006-2017 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -25,15 +25,16 @@
 //
 //========================================================================
 
-#ifndef _glfw3_egl_context_h_
-#define _glfw3_egl_context_h_
-
 #if defined(_GLFW_USE_EGLPLATFORM_H)
  #include <EGL/eglplatform.h>
 #elif defined(_GLFW_WIN32)
  #define EGLAPIENTRY __stdcall
 typedef HDC EGLNativeDisplayType;
 typedef HWND EGLNativeWindowType;
+#elif defined(_GLFW_COCOA)
+ #define EGLAPIENTRY
+typedef void* EGLNativeDisplayType;
+typedef id EGLNativeWindowType;
 #elif defined(_GLFW_X11)
  #define EGLAPIENTRY
 typedef Display* EGLNativeDisplayType;
@@ -42,10 +43,6 @@ typedef Window EGLNativeWindowType;
  #define EGLAPIENTRY
 typedef struct wl_display* EGLNativeDisplayType;
 typedef struct wl_egl_window* EGLNativeWindowType;
-#elif defined(_GLFW_MIR)
- #define EGLAPIENTRY
-typedef MirEGLNativeDisplayType EGLNativeDisplayType;
-typedef MirEGLNativeWindowType EGLNativeWindowType;
 #else
  #error "No supported EGL platform selected"
 #endif
@@ -106,6 +103,9 @@ typedef MirEGLNativeWindowType EGLNativeWindowType;
 #define EGL_CONTEXT_OPENGL_NO_ERROR_KHR 0x31b3
 #define EGL_GL_COLORSPACE_KHR 0x309d
 #define EGL_GL_COLORSPACE_SRGB_KHR 0x3089
+#define EGL_CONTEXT_RELEASE_BEHAVIOR_KHR 0x2097
+#define EGL_CONTEXT_RELEASE_BEHAVIOR_NONE_KHR 0
+#define EGL_CONTEXT_RELEASE_BEHAVIOR_FLUSH_KHR 0x2098
 
 typedef int EGLint;
 typedef unsigned int EGLBoolean;
@@ -177,6 +177,7 @@ typedef struct _GLFWlibraryEGL
     GLFWbool        KHR_create_context_no_error;
     GLFWbool        KHR_gl_colorspace;
     GLFWbool        KHR_get_all_proc_addresses;
+    GLFWbool        KHR_context_flush_control;
 
     void*           handle;
 
@@ -206,9 +207,9 @@ GLFWbool _glfwCreateContextEGL(_GLFWwindow* window,
                                const _GLFWctxconfig* ctxconfig,
                                const _GLFWfbconfig* fbconfig);
 #if defined(_GLFW_X11)
-GLFWbool _glfwChooseVisualEGL(const _GLFWctxconfig* ctxconfig,
+GLFWbool _glfwChooseVisualEGL(const _GLFWwndconfig* wndconfig,
+                              const _GLFWctxconfig* ctxconfig,
                               const _GLFWfbconfig* fbconfig,
                               Visual** visual, int* depth);
 #endif /*_GLFW_X11*/
 
-#endif // _glfw3_egl_context_h_

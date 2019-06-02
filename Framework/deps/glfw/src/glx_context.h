@@ -2,7 +2,7 @@
 // GLFW 3.3 GLX - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
-// Copyright (c) 2006-2016 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2006-2017 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -24,9 +24,6 @@
 //    distribution.
 //
 //========================================================================
-
-#ifndef _glfw3_glx_context_h_
-#define _glfw3_glx_context_h_
 
 #define GLX_VENDOR 1
 #define GLX_RGBA_BIT 0x00000001
@@ -67,6 +64,7 @@
 #define GLX_CONTEXT_RELEASE_BEHAVIOR_ARB 0x2097
 #define GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB 0
 #define GLX_CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB 0x2098
+#define GLX_CONTEXT_OPENGL_NO_ERROR_ARB 0x31b3
 
 typedef XID GLXWindow;
 typedef XID GLXDrawable;
@@ -165,10 +163,10 @@ typedef struct _GLFWlibraryGLX
     GLFWbool        ARB_create_context_profile;
     GLFWbool        ARB_create_context_robustness;
     GLFWbool        EXT_create_context_es2_profile;
+    GLFWbool        ARB_create_context_no_error;
     GLFWbool        ARB_context_flush_control;
 
 } _GLFWlibraryGLX;
-
 
 GLFWbool _glfwInitGLX(void);
 void _glfwTerminateGLX(void);
@@ -176,8 +174,8 @@ GLFWbool _glfwCreateContextGLX(_GLFWwindow* window,
                                const _GLFWctxconfig* ctxconfig,
                                const _GLFWfbconfig* fbconfig);
 void _glfwDestroyContextGLX(_GLFWwindow* window);
-GLFWbool _glfwChooseVisualGLX(const _GLFWctxconfig* ctxconfig,
+GLFWbool _glfwChooseVisualGLX(const _GLFWwndconfig* wndconfig,
+                              const _GLFWctxconfig* ctxconfig,
                               const _GLFWfbconfig* fbconfig,
                               Visual** visual, int* depth);
 
-#endif // _glfw3_glx_context_h_

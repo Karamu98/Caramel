@@ -92,7 +92,7 @@
       <DisableSpecificWarnings>4201;4310;4099;</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir)deps\glfw\lib-vc2015\$(Platform)\$(Configuration);$(ProjectDir)deps\imgui\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)deps\glfw\proj\src\Debug;$(ProjectDir)deps\imgui\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGL32.lib;glfw3.lib</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>

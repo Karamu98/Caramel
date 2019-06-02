@@ -31,7 +31,7 @@ MyApplication::~MyApplication()
 
 bool MyApplication::onCreate()
 {
-	// initialise the Gizmos helper class
+	// Initialise the Gizmos helper class
 	Gizmos::create();
 
 	// Initialise logging system
@@ -75,7 +75,7 @@ void MyApplication::Update(float a_deltaTime)
 		}
 	}
 
-	// add a 20x20 grid on the XZ-plane
+	// Add a 20x20 grid on the XZ-plane
 	for (int i = 0; i < 21; ++i)	
 	{
 		Gizmos::addLine(glm::vec3(-10 + i, 0, 10), glm::vec3(-10 + i, 0, -10),
