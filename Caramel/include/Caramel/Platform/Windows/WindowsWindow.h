@@ -9,25 +9,25 @@ namespace Caramel {
 	class WindowsWindow : public Window
 	{
 	public:
-		WindowsWindow(const WindowProps& props);
+		WindowsWindow(const WindowProps& a_props);
 		virtual ~WindowsWindow();
 
 		void OnUpdate() override;
 
-		inline unsigned int GetWidth() const override { return m_Data.Width; }
-		inline unsigned int GetHeight() const override { return m_Data.Height; }
+		inline unsigned int GetWidth() const override { return m_data.Width; }
+		inline unsigned int GetHeight() const override { return m_data.Height; }
 
 		// Window attributes
-		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-		void SetVSync(bool enabled);
+		inline void SetEventCallback(const EventCallbackFn& a_callback) override { m_data.EventCallback = a_callback; }
+		void SetVSync(bool a_enabled);
 		bool IsVSync() const;
 
-		inline void* GetNativeWindow() const { return m_Window; }
+		inline void* GetNativeWindow() const { return m_window; }
 	private:
-		virtual void Init(const WindowProps& props);
+		virtual void Init(const WindowProps& a_props);
 		virtual void Shutdown();
 	private:
-		GLFWwindow* m_Window;
+		GLFWwindow* m_window;
 		GLFWcursor* m_ImGuiMouseCursors[9] = { 0 };
 
 		struct WindowData
@@ -39,7 +39,7 @@ namespace Caramel {
 			EventCallbackFn EventCallback;
 		};
 
-		WindowData m_Data;
+		WindowData m_data;
 	};
 
 }

@@ -13,16 +13,18 @@
 
 namespace Caramel 
 {
+// Macro to simplify std::bind's (Pass in the function)
 #define BIND_EVENT_FN(fn) std::bind(&Application::##fn, this, std::placeholders::_1)
 
-	Application* Application::s_Instance = nullptr;
+	Application* Application::s_instance = nullptr;
 
 	Application::Application()
 	{
-		s_Instance = this;
+		s_instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		// Create our "window" and set the callback
+		m_window = std::unique_ptr<Window>(Window::Create());
+		m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 		m_ImGuiLayer = new ImGuiLayer("ImGui");
 		PushOverlay(m_ImGuiLayer);
@@ -35,21 +37,23 @@ namespace Caramel
 
 	}
 
-	void Application::PushLayer(Layer* layer)
+	void Application::PushLayer(Layer* a_layer)
 	{
-		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
+		// Adds the new layer to tracking and calls Init
+		m_layerStack.PushLayer(a_layer);
+		a_layer->OnAttach();
 	}
 
-	void Application::PushOverlay(Layer* layer)
+	void Application::PushOverlay(Layer* a_layer)
 	{
-		m_LayerStack.PushOverlay(layer);
-		layer->OnAttach();
+		// Adds the new overlay to tracking and calls Init
+		m_layerStack.PushOverlay(a_layer);
+		a_layer->OnAttach();
 	}
 
 	void Application::RenderImGui()
 	{
-		m_ImGuiLayer->Begin();
+		m_ImGuiLayer->StartFrame();
 
 		ImGui::Begin("Renderer");
 		auto& caps = RendererAPI::GetCapabilities();
@@ -58,21 +62,27 @@ namespace Caramel
 		ImGui::Text("Version: %s", caps.Version.c_str());
 		ImGui::End();
 
-		for (Layer* layer : m_LayerStack)
+		for (Layer* layer : m_layerStack)
+		{
 			layer->OnImGuiRender();
+		}
 
-		m_ImGuiLayer->End();
+		m_ImGuiLayer->EndFrame();
 	}
 
 	void Application::Run()
 	{
+		// Initialise our application and the run if we're "running"
 		OnInit();
-		while (m_Running)
+		while (m_isRunning)
 		{
-			if (!m_Minimized)
+			// If we're not minimised, update our layers
+			if (!m_isMinimised)
 			{
-				for (Layer* layer : m_LayerStack)
+				for (Layer* layer : m_layerStack)
+				{
 					layer->OnUpdate();
+				}
 
 				// Render ImGui on render thread
 				Application* app = this;
@@ -80,34 +90,38 @@ namespace Caramel
 
 				Renderer::Get().WaitAndRender();
 			}
-			m_Window->OnUpdate();
+			m_window->OnUpdate();
 		}
 		OnShutdown();
 	}
 
-	void Application::OnEvent(Event& event)
+	void Application::OnEvent(Event& a_event)
 	{
-		EventDispatcher dispatcher(event);
+		EventDispatcher dispatcher(a_event);
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
+		// Loop backwards to handle events. Backwards so things like UI will receive events before game
+		for (auto it = m_layerStack.end(); it != m_layerStack.begin(); )
 		{
-			(*--it)->OnEvent(event);
-			if (event.Handled)
+			// Try handle an event, if something handles it, break
+			(*--it)->OnEvent(a_event);
+			if (a_event.Handled)
+			{
 				break;
+			}
 		}
 	}
 
-	bool Application::OnWindowResize(WindowResizeEvent& e)
+	bool Application::OnWindowResize(WindowResizeEvent& a_event)
 	{
-		int width = e.GetWidth(), height = e.GetHeight();
+		int width = a_event.GetWidth(), height = a_event.GetHeight();
 		if (width == 0 || height == 0)
 		{
-			m_Minimized = true;
+			m_isMinimised = true;
 			return false;
 		}
-		m_Minimized = false;
+		m_isMinimised = false;
 		CL_RENDER_2(width, height, { glViewport(0, 0, width, height); });
 		auto& fbs = FramebufferPool::GetGlobal()->GetAll();
 		for (auto& fb : fbs)
@@ -115,13 +129,13 @@ namespace Caramel
 		return false;
 	}
 
-	bool Application::OnWindowClose(WindowCloseEvent& e)
+	bool Application::OnWindowClose(WindowCloseEvent& a_event)
 	{
-		m_Running = false;
+		m_isRunning = false;
 		return true;
 	}
 
-	std::string Application::OpenFile(const std::string& filter) const
+	std::string Application::OpenFile(const std::string& a_filter) const
 	{
 		OPENFILENAMEA ofn;       // common dialog box structure
 		CHAR szFile[260] = { 0 };       // if using TCHAR macros
@@ -129,7 +143,7 @@ namespace Caramel
 		// Initialize OPENFILENAME
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)m_Window->GetNativeWindow());
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)m_window->GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
 		ofn.lpstrFilter = "All\0*.*\0";

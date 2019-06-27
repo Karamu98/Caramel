@@ -10,140 +10,165 @@
 
 namespace Caramel 
 {
-	static void GLFWErrorCallback(int error, const char* description)
+	static void GLFWErrorCallback(int a_error, const char* a_description)
 	{
-		CL_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+		// Simply logging any error GLFW has to our logger
+		CL_CORE_ERROR("GLFW Error ({0}): {1}", a_error, a_description);
 	}
 	
-	static bool s_GLFWInitialized = false;
+	static bool s_glfwInitialised = false;
 
-	Window* Window::Create(const WindowProps& props)
+	Window* Window::Create(const WindowProps& a_props)
 	{
-		return new WindowsWindow(props);
+		return new WindowsWindow(a_props);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
+	WindowsWindow::WindowsWindow(const WindowProps& a_props)
 	{
-		Init(props);
+		Init(a_props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
 	}
 
-	void WindowsWindow::Init(const WindowProps& props)
+	void WindowsWindow::Init(const WindowProps& a_props)
 	{
-		m_Data.Title = props.Title;
-		m_Data.Width = props.Width;
-		m_Data.Height = props.Height;
+		// Store our window data
+		m_data.Title = a_props.Title;
+		m_data.Width = a_props.Width;
+		m_data.Height = a_props.Height;
 
-		CL_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		// Logging creation of window
+		CL_CORE_INFO("Creating window {0} ({1}, {2})", a_props.Title, a_props.Width, a_props.Height);
 
-		if (!s_GLFWInitialized)
+		// Attempt to initialise GLFW
+		if (!s_glfwInitialised)
 		{
 			// TODO: glfwTerminate on system shutdown
 			int success = glfwInit();
-			CL_CORE_ASSERT(success, "Could not intialize GLFW!");
-			glfwSetErrorCallback(GLFWErrorCallback);
+			CL_CORE_ASSERT(success, "Could not intialise GLFW!");
+			glfwSetErrorCallback(GLFWErrorCallback); // Set the error callback
 
-			s_GLFWInitialized = true;
+			s_glfwInitialised = true;
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
+		// Create and set our window
+		m_window = glfwCreateWindow((int)a_props.Width, (int)a_props.Height, m_data.Title.c_str(), nullptr, nullptr);
+		glfwMakeContextCurrent(m_window);
+
+		// Attempt to initialise glad, assert on failure
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		CL_CORE_ASSERT(status, "Failed to initialize Glad!");
-		glfwSetWindowUserPointer(m_Window, &m_Data);
+		CL_CORE_ASSERT(status, "Failed to initialise Glad!");
+		glfwSetWindowUserPointer(m_window, &m_data); // Setting the user pointer for later retrieval
 		SetVSync(true);
 
-		// Set GLFW callbacks
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+		// Set resize callback
+		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* a_window, int a_width, int a_height)
 		{
-			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+			// Get our user pointer back from GLFW
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(a_window));
 
-			WindowResizeEvent event((unsigned int)width, (unsigned int)height);
+			// Create the resize event, update and dispatch
+			WindowResizeEvent event((unsigned int)a_width, (unsigned int)a_height);
+			data.Width = a_width;
+			data.Height = a_height;
 			data.EventCallback(event);
-			data.Width = width;
-			data.Height = height;
 		});
 
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
+		// Set on window close callback	
+		glfwSetWindowCloseCallback(m_window, [](GLFWwindow* a_window)
 		{
-			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+			// Grab our user pointer from GLFW
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(a_window));
 
+			// Create and dispatch the event
 			WindowCloseEvent event;
 			data.EventCallback(event);
 		});
 
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		// Set the key callback
+		glfwSetKeyCallback(m_window, [](GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_mods)
 		{
-			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+			// Again, grab our user pointer
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(a_window));
 
-			switch (action)
+			// Switch over our actions and get the correct one
+			switch (a_action)
 			{
-				case GLFW_PRESS:
+				// Whatever case, create the event, pass the needed data and dispatch
+				case GLFW_PRESS: // FIXME: GLFW Specific, needs changing
 				{
-					KeyPressedEvent event(key, 0);
+					KeyPressedEvent event(a_key, 0);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					KeyReleasedEvent event(key);
+					KeyReleasedEvent event(a_key);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
-					KeyPressedEvent event(key, 1);
+					KeyPressedEvent event(a_key, 1);
 					data.EventCallback(event);
 					break;
 				}
 			}
 		});
 
-		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int codepoint)
+		// Set our key typed callback
+		glfwSetCharCallback(m_window, [](GLFWwindow* a_window, unsigned int a_codepoint)
 		{
-			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+			// Grabbing the custom user pointer
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(a_window));
 
-			KeyTypedEvent event((int)codepoint);
+			// Create, set and dispatch event
+			KeyTypedEvent event((int)a_codepoint);
 			data.EventCallback(event);
 		});
 
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+		// Set our mouse button callback
+		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* a_window, int a_button, int a_action, int a_mods)
 		{
-			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+			// Grab the user pointer from GLFW
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(a_window));
 
-			switch (action)
+			switch (a_action)
 			{
-				case GLFW_PRESS:
+				// Whatever case, create the event, pass the needed data and dispatch
+				case GLFW_PRESS: // FIXME: GLFW Specific, needs changing
 				{
-					MouseButtonPressedEvent event(button);
+					MouseButtonPressedEvent event(a_button);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					MouseButtonReleasedEvent event(button);
+					MouseButtonReleasedEvent event(a_button);
 					data.EventCallback(event);
 					break;
 				}
 			}
 		});
 
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+		// Set our scrolling callback
+		glfwSetScrollCallback(m_window, [](GLFWwindow* a_window, double a_xOffset, double a_yOffset)
 		{
-			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+			// Grab the user pointer from GLFW
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(a_window));
 
-			MouseScrolledEvent event((float)xOffset, (float)yOffset);
+			MouseScrolledEvent event((float)a_xOffset, (float)a_yOffset);
 			data.EventCallback(event);
 		});
 
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x, double y)
+		// Set our cursor position callback
+		glfwSetCursorPosCallback(m_window, [](GLFWwindow* a_window, double a_x, double a_y)
 		{
-			auto& data = *((WindowData*)glfwGetWindowUserPointer(window));
+			auto& data = *((WindowData*)glfwGetWindowUserPointer(a_window));
 
-			MouseMovedEvent event((float)x, (float)y);
+			MouseMovedEvent event((float)a_x, (float)a_y);
 			data.EventCallback(event);
 		});
 
@@ -164,27 +189,32 @@ namespace Caramel
 
 	void WindowsWindow::OnUpdate()
 	{
+		// Test our window events and swap buffers
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		glfwSwapBuffers(m_window);
 
 		ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
-		glfwSetCursor(m_Window, m_ImGuiMouseCursors[imgui_cursor] ? m_ImGuiMouseCursors[imgui_cursor] : m_ImGuiMouseCursors[ImGuiMouseCursor_Arrow]);
-		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetCursor(m_window, m_ImGuiMouseCursors[imgui_cursor] ? m_ImGuiMouseCursors[imgui_cursor] : m_ImGuiMouseCursors[ImGuiMouseCursor_Arrow]);
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
-	void WindowsWindow::SetVSync(bool enabled)
+	void WindowsWindow::SetVSync(bool a_enabled)
 	{
-		if (enabled)
+		if (a_enabled)
+		{
 			glfwSwapInterval(1);
+		}
 		else
+		{
 			glfwSwapInterval(0);
+		}
 
-		m_Data.VSync = enabled;
+		m_data.VSync = a_enabled;
 	}
 
 	bool WindowsWindow::IsVSync() const
 	{
-		return m_Data.VSync;
+		return m_data.VSync;
 	}
 
 }

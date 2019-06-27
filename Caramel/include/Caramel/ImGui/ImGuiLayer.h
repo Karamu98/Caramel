@@ -12,8 +12,8 @@ namespace Caramel
 		ImGuiLayer(const std::string& name);
 		virtual ~ImGuiLayer();
 
-		void Begin();
-		void End();
+		void StartFrame();
+		void EndFrame();
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;

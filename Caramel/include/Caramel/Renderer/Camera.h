@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 
-namespace Caramel {
-
+namespace Caramel 
+{
 	class Camera
 	{
 	public:

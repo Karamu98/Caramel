@@ -29,8 +29,7 @@ static void ImGuiShowHelpMarker(const char* desc)
 class EditorLayer : public Caramel::Layer
 {
 public:
-	EditorLayer()
-		: m_Scene(Scene::Spheres), m_Camera(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 10000.0f))
+	EditorLayer() : m_Scene(Scene::Spheres), m_Camera(glm::perspectiveFov(glm::radians(45.0f), 1280.0f, 720.0f, 0.1f, 10000.0f))
 	{
 	}
 

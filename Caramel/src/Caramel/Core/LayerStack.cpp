@@ -1,45 +1,54 @@
 #include "clpch.h"
 #include "Caramel/Core/LayerStack.h"
 
-namespace Caramel {
-
+namespace Caramel 
+{
 	LayerStack::LayerStack()
 	{
 	}
 
 	LayerStack::~LayerStack()
 	{
-		for (Layer* layer : m_Layers)
-			delete layer;
-	}
-
-	void LayerStack::PushLayer(Layer* layer)
-	{
-		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
-		m_LayerInsertIndex++;
-	}
-
-	void LayerStack::PushOverlay(Layer* overlay)
-	{
-		m_Layers.emplace_back(overlay);
-	}
-
-	void LayerStack::PopLayer(Layer* layer)
-	{
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
-		if (it != m_Layers.end())
+		// All tracked layers will be deleted
+		for (Layer* layer : m_layers)
 		{
-			m_Layers.erase(it);
-			m_LayerInsertIndex--;
+			delete layer;
+		}
+	}
+
+	void LayerStack::PushLayer(Layer* a_layer)
+	{
+		// Always put layers at the front 
+		m_layers.emplace(m_layers.begin() + m_layerInsertIndex, a_layer);
+		m_layerInsertIndex++;
+	}
+
+	void LayerStack::PushOverlay(Layer* a_overlay)
+	{
+		// Always put overlays at the back of the list
+		m_layers.emplace_back(a_overlay);
+	}
+
+	void LayerStack::PopLayer(Layer* a_layer)
+	{
+		// Remove layer and adjust inserting index
+		auto it = std::find(m_layers.begin(), m_layers.end(), a_layer);
+		if (it != m_layers.end())
+		{
+			m_layers.erase(it);
+			m_layerInsertIndex--;
 		}
 
 	}
 
-	void LayerStack::PopOverlay(Layer* overlay)
+	void LayerStack::PopOverlay(Layer* a_overlay)
 	{
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
-		if (it != m_Layers.end())
-			m_Layers.erase(it);
+		// Remove overlay
+		auto it = std::find(m_layers.begin(), m_layers.end(), a_overlay);
+		if (it != m_layers.end()) 
+		{
+			m_layers.erase(it);
+		}
 	}
 
 }
