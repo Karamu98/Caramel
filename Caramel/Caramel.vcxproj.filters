@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel">
+      <UniqueIdentifier>{AD802C4C-190C-9A10-221D-1D058E27F610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel\Core">
+      <UniqueIdentifier>{251902F3-11A8-8BBC-BAC6-9FB7A6349C62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel\Core\Events">
+      <UniqueIdentifier>{6969859B-D576-B381-5E5D-AF6CCA697F38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel\ImGui">
+      <UniqueIdentifier>{9703B053-0370-6B4E-CC63-03AC388F8DB6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel\Platform">
+      <UniqueIdentifier>{A1CF0E5D-8DF4-5DDD-B63F-436DA2C35CFB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel\Platform\OpenGL">
+      <UniqueIdentifier>{B5793314-215D-4254-2A60-709096C208A5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel\Platform\Windows">
+      <UniqueIdentifier>{DB8ABEF2-C7DB-A934-F03F-98F6DCEF3C9E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Caramel\Renderer">
+      <UniqueIdentifier>{F3D6EB37-DFFB-3AB8-0847-2048F4CA39D6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel">
+      <UniqueIdentifier>{51E0011D-BD95-7A12-468A-74E9B23E7116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel\Core">
+      <UniqueIdentifier>{49DF98A9-35D8-B7FB-5E0A-9D804A629707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel\Deps">
+      <UniqueIdentifier>{EC4099A9-D839-B8FB-016C-9D80EDC39707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel\ImGui">
+      <UniqueIdentifier>{3B8E1FDD-A7A4-1D73-F01B-A9945C71EEFA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel\Platform">
+      <UniqueIdentifier>{C5072470-B196-AD39-5AB5-C1344623BEDF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel\Platform\OpenGL">
+      <UniqueIdentifier>{59A17BDD-C5AE-A9C3-4E95-A5AEBAA1757A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel\Platform\Windows">
+      <UniqueIdentifier>{FFA60BE5-EB61-FB90-9419-74DB80B34521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Caramel\Renderer">
+      <UniqueIdentifier>{170F014B-039E-8A14-ACBC-9E0F982A9BBA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Caramel\Caramel.h">
+      <Filter>include\Caramel</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Application.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Base.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Events\ApplicationEvent.h">
+      <Filter>include\Caramel\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Events\Event.h">
+      <Filter>include\Caramel\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Events\KeyEvent.h">
+      <Filter>include\Caramel\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Events\MouseEvent.h">
+      <Filter>include\Caramel\Core\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Input.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\KeyCodes.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Layer.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\LayerStack.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Log.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Platform.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Core\Window.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\ImGui\ImGuiLayer.h">
+      <Filter>include\Caramel\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLBuffer.h">
+      <Filter>include\Caramel\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLFramebuffer.h">
+      <Filter>include\Caramel\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLShader.h">
+      <Filter>include\Caramel\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLTexture.h">
+      <Filter>include\Caramel\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Platform\Windows\WindowsInput.h">
+      <Filter>include\Caramel\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Platform\Windows\WindowsWindow.h">
+      <Filter>include\Caramel\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\Buffer.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\Camera.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\Framebuffer.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\Mesh.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\RenderCommandQueue.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\Renderer.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\RendererAPI.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\Shader.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Caramel\Renderer\Texture.h">
+      <Filter>include\Caramel\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EntryPoint.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\clpch.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Caramel\Core\Application.cpp">
+      <Filter>src\Caramel\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Core\Base.cpp">
+      <Filter>src\Caramel\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Core\Layer.cpp">
+      <Filter>src\Caramel\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Core\LayerStack.cpp">
+      <Filter>src\Caramel\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Core\Log.cpp">
+      <Filter>src\Caramel\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Core\Window.cpp">
+      <Filter>src\Caramel\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Deps\stb_image.cpp">
+      <Filter>src\Caramel\Deps</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\ImGui\ImGuiBuild.cpp">
+      <Filter>src\Caramel\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\ImGui\ImGuiLayer.cpp">
+      <Filter>src\Caramel\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLBuffer.cpp">
+      <Filter>src\Caramel\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLFramebuffer.cpp">
+      <Filter>src\Caramel\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>src\Caramel\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLShader.cpp">
+      <Filter>src\Caramel\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Caramel\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Platform\Windows\WindowsInput.cpp">
+      <Filter>src\Caramel\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Platform\Windows\WindowsWindow.cpp">
+      <Filter>src\Caramel\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\Buffer.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\Camera.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\Framebuffer.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\Mesh.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\RenderCommandQueue.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\Renderer.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\Shader.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Caramel\Renderer\Texture.cpp">
+      <Filter>src\Caramel\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clpch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

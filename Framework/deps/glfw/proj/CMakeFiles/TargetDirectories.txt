@@ -1,6 +1,0 @@
-C:/Users/Callum/Downloads/glfwBuild/CMakeFiles/uninstall.dir
-C:/Users/Callum/Downloads/glfwBuild/CMakeFiles/INSTALL.dir
-C:/Users/Callum/Downloads/glfwBuild/CMakeFiles/ALL_BUILD.dir
-C:/Users/Callum/Downloads/glfwBuild/CMakeFiles/ZERO_CHECK.dir
-C:/Users/Callum/Downloads/glfwBuild/src/CMakeFiles/glfw.dir
-C:/Users/Callum/Downloads/glfwBuild/src/CMakeFiles/INSTALL.dir
