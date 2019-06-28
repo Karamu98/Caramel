@@ -39,6 +39,7 @@ namespace Caramel
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 
+		// Portable function to return the "window" may that be GLFW etc
 		virtual void* GetNativeWindow() const = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());
