@@ -16,8 +16,8 @@ namespace Caramel {
 		std::string Renderer;
 		std::string Version;
 
-		int MaxSamples;
-		float MaxAnisotropy;
+		int MaxSamples = 0;
+		float MaxAnisotropy = 0;
 	};
 
 	class RendererAPI

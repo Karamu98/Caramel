@@ -80,7 +80,7 @@ namespace Caramel {
 		}
 
 		m_VertexBuffer.reset(VertexBuffer::Create());
-		m_VertexBuffer->SetData(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
+		m_VertexBuffer->SetData(m_Vertices.data(), (unsigned int)m_Vertices.size() * sizeof(Vertex));
 
 		// Extract indices from model
 		m_Indices.reserve(mesh->mNumFaces);
@@ -91,7 +91,7 @@ namespace Caramel {
 		}
 
 		m_IndexBuffer.reset(IndexBuffer::Create());
-		m_IndexBuffer->SetData(m_Indices.data(), m_Indices.size() * sizeof(Index));
+		m_IndexBuffer->SetData(m_Indices.data(), (unsigned int)m_Indices.size() * sizeof(Index));
 	}
 
 	Mesh::~Mesh()

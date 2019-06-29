@@ -34,4 +34,4 @@ namespace Caramel
 #define BIT(x) (1 << x) 
 
 // Macro to simplify binding a function
-#define CL_BIND_EVENT_FN(fn) std::bind(&##fn, this, std::placeholders::_1)
+#define BIND_EVENT_FN(fn) std::bind(&##fn, this, std::placeholders::_1)

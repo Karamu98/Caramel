@@ -104,6 +104,11 @@ public:
 		using namespace Caramel;
 		using namespace glm;
 
+		if (Input::IsKeyPressed(CL_KEY_Q))
+		{
+			CL_TRACE("Q");
+		}
+
 		m_Camera.Update();
 		auto viewProjection = m_Camera.GetProjectionMatrix() * m_Camera.GetViewMatrix();
 
@@ -628,14 +633,12 @@ private:
 class Sandbox : public Caramel::Application
 {
 public:
-	Sandbox()
-	{
-		CL_TRACE("Hello!");
-	}
+	Sandbox(){}
 
 	virtual void OnInit() override
 	{
 		PushLayer(new EditorLayer());
+		
 	}
 };
 

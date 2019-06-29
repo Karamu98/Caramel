@@ -19,3 +19,4 @@ project "Glad"
     
 	filter "system:windows"
         systemversion "latest"
+        warnings "Off"

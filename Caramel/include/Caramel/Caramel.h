@@ -8,6 +8,10 @@
 #include "Caramel/Core/Events/KeyEvent.h"
 #include "Caramel/Core/Events/MouseEvent.h"
 
+#include "Caramel/Core/KeyCodes.h"
+#include "Caramel/Core/MouseButtonCodes.h"
+#include "Caramel/Core/Input.h"
+
 #include "imgui/imgui.h"
 
 // --- Caramel Render API ------------------------------

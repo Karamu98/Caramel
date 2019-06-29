@@ -2,7 +2,6 @@
 #include "Caramel/Renderer/Shader.h"
 
 #include "Caramel/Platform/OpenGL/OpenGLShader.h"
-#include <string>
 #include <sstream>
 #include <limits>
 

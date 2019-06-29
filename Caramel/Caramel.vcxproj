@@ -152,6 +152,7 @@
     <ClInclude Include="include\Caramel\Core\Layer.h" />
     <ClInclude Include="include\Caramel\Core\LayerStack.h" />
     <ClInclude Include="include\Caramel\Core\Log.h" />
+    <ClInclude Include="include\Caramel\Core\MouseButtonCodes.h" />
     <ClInclude Include="include\Caramel\Core\Platform.h" />
     <ClInclude Include="include\Caramel\Core\Window.h" />
     <ClInclude Include="include\Caramel\ImGui\ImGuiLayer.h" />
@@ -216,4 +217,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project>
+</Project> 

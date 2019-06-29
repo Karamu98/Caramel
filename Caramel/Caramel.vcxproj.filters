@@ -93,6 +93,9 @@
     <ClInclude Include="include\Caramel\Core\Log.h">
       <Filter>include\Caramel\Core</Filter>
     </ClInclude>
+    <ClInclude Include="include\Caramel\Core\MouseButtonCodes.h">
+      <Filter>include\Caramel\Core</Filter>
+    </ClInclude>
     <ClInclude Include="include\Caramel\Core\Platform.h">
       <Filter>include\Caramel\Core</Filter>
     </ClInclude>
