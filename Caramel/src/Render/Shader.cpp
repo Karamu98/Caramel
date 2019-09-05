@@ -3,6 +3,7 @@
 #include "glad/glad.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "Core/Log.h"
+#include "Core/Utilities.h"
 
 
 namespace Caramel

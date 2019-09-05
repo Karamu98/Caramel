@@ -33,6 +33,9 @@
     </ClInclude>
     <ClInclude Include="src\clpch.h" />
     <ClInclude Include="src\Core\Log.h" />
+    <ClInclude Include="src\Render\Skybox.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -58,5 +61,8 @@
     </ClCompile>
     <ClCompile Include="src\clpch.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
+    <ClCompile Include="src\Render\Skybox.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

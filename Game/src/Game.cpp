@@ -80,6 +80,18 @@ bool Game::OnCreate()
 	cubeSpecular = Caramel::Texture::CreateTexture("resources/textures/container_specular.png");
 	cubeEmission = Caramel::Texture::CreateTexture("resources/textures/container_emissive.png");
 
+	// Setting up the skybox
+	const std::vector<std::string> faces = {
+		"resources/textures/skybox/right.jpg",
+		"resources/textures/skybox/left.jpg",
+		"resources/textures/skybox/top.jpg",
+		"resources/textures/skybox/bottom.jpg",
+		"resources/textures/skybox/front.jpg",
+		"resources/textures/skybox/back.jpg"
+	};
+
+	Caramel::Skybox::SetSkybox(faces);
+
 	// Setting up the light 
 	light = std::make_shared<Cube>();
 	light->SetPosition(glm::vec3(0, 2, -5));
@@ -135,6 +147,8 @@ void Game::Draw()
 		Screenshot();
 	}
 
+	Caramel::Skybox::Draw(*cam);
+
 	ImGuiDraw();
 }
 
@@ -148,8 +162,6 @@ void Game::ImGuiDraw()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-
-	
 
 	static bool p_open = true;
 

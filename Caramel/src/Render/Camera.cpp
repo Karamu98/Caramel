@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
+#include <glm/ext.hpp>
+
 #include "Window.h"
 
 namespace Caramel
@@ -122,5 +124,17 @@ namespace Caramel
 	void Camera::SetProjectionMatrix(glm::mat4 a_newMat)
 	{
 		m_projMatrix = a_newMat;
+	}
+	glm::mat4 Camera::GetProjectionMatrix()
+	{
+		return m_projMatrix;
+	}
+	glm::mat4 Camera::GetViewMatrix()
+	{
+		return glm::inverse(m_camMatrix);
+	}
+	glm::mat4 Camera::GetProjectionView()
+	{
+		return m_projMatrix * GetViewMatrix();
 	}
 }

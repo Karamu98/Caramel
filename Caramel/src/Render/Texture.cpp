@@ -4,6 +4,7 @@
 #include "stb_image.h"
 #include <glad/glad.h>
 #include "Core/Log.h"
+#include "Core/Utilities.h"
 
 namespace Caramel
 {
