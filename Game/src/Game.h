@@ -2,8 +2,8 @@
 #define __GAME_H__
 #include "Caramel.h"
 
-#include "Cube.h"
-#include "Pyramid.h"
+#include "Shapes/Cube.h"
+#include "Shapes/Pyramid.h"
 
 #include <memory>
 #include <glm/glm.hpp>

@@ -144,16 +144,16 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Cube.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\Pyramid.h" />
-    <ClInclude Include="src\Shape.h" />
+    <ClInclude Include="src\Shapes\Cube.h" />
+    <ClInclude Include="src\Shapes\Pyramid.h" />
+    <ClInclude Include="src\Shapes\Shape.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Cube.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Pyramid.cpp" />
-    <ClCompile Include="src\Shape.cpp" />
+    <ClCompile Include="src\Shapes\Cube.cpp" />
+    <ClCompile Include="src\Shapes\Pyramid.cpp" />
+    <ClCompile Include="src\Shapes\Shape.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
