@@ -11,6 +11,8 @@
 
 namespace Caramel
 {
+	float Application::sm_timeDilation = 1;
+
 	Application::Application() : m_isRunning(false), m_window(nullptr)
 	{
 	}
@@ -58,6 +60,7 @@ namespace Caramel
 			do
 			{
 				float deltaTime = Utility::TickTimer();
+				deltaTime = deltaTime * sm_timeDilation;
 
 				// Start the Dear ImGui frame
 				ImGui_ImplOpenGL3_NewFrame();
@@ -101,6 +104,10 @@ namespace Caramel
 
 		m_window->DestroyWindow();
 		glfwTerminate();
+	}
+	void Application::SetTimeDilation(float a_newDilation)
+	{
+		sm_timeDilation = a_newDilation;
 	}
 }
 

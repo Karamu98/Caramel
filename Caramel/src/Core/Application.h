@@ -26,5 +26,11 @@ namespace Caramel
 
 		AppWindow* m_window;
 		bool m_isRunning;
+
+
+	public:
+		static void SetTimeDilation(float a_newDilation);
+	private:
+		static float sm_timeDilation;
 	};
 }

@@ -219,6 +219,11 @@ void Game::ImGuiDraw()
 	ImGui::Begin("Rendering", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Properties");
 	ImGui::Separator();
+	static float timeBuf = 1;
+	if (ImGui::DragFloat("Time Dilation", &timeBuf, 0.05f))
+	{
+		Caramel::Application::SetTimeDilation(timeBuf);
+	}
 	if (ImGui::Button("Screenshot"))
 	{
 		screenshot = true;
