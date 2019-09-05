@@ -208,7 +208,8 @@ typedef struct _GLFWwindowWayland
 
     struct zwp_idle_inhibitor_v1*          idleInhibitor;
 
-    GLFWbool                    wasFullscreen;
+    // This is a hack to prevent auto-iconification on creation.
+    GLFWbool                    justCreated;
 
     struct {
         GLFWbool                           serverSide;

@@ -33,7 +33,6 @@ struct async_msg
     fmt::basic_memory_buffer<char, 176> raw;
 
     size_t msg_id;
-    source_loc source;
     async_logger_ptr worker_ptr;
 
     async_msg() = default;
@@ -50,7 +49,6 @@ struct async_msg
                                                    thread_id(other.thread_id),
                                                    raw(move(other.raw)),
                                                    msg_id(other.msg_id),
-                                                   source(other.source),
                                                    worker_ptr(std::move(other.worker_ptr))
     {
     }
@@ -63,7 +61,6 @@ struct async_msg
         thread_id = other.thread_id;
         raw = std::move(other.raw);
         msg_id = other.msg_id;
-        source = other.source;
         worker_ptr = std::move(other.worker_ptr);
         return *this;
     }
@@ -79,7 +76,6 @@ struct async_msg
         , time(m.time)
         , thread_id(m.thread_id)
         , msg_id(m.msg_id)
-        , source(m.source)
         , worker_ptr(std::move(worker))
     {
         fmt_helper::append_string_view(m.payload, raw);
@@ -91,7 +87,6 @@ struct async_msg
         , time()
         , thread_id(0)
         , msg_id(0)
-        , source()
         , worker_ptr(std::move(worker))
     {
     }
@@ -108,7 +103,6 @@ struct async_msg
         msg.time = time;
         msg.thread_id = thread_id;
         msg.msg_id = msg_id;
-        msg.source = source;
         msg.color_range_start = 0;
         msg.color_range_end = 0;
         return msg;

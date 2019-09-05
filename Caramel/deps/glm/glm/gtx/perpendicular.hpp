@@ -7,9 +7,9 @@
 /// @defgroup gtx_perpendicular GLM_GTX_perpendicular
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/perpendicular.hpp> to use the features of this extension.
+/// @brief Perpendicular of a vector from other one
 ///
-/// Perpendicular of a vector from other one
+/// <glm/gtx/perpendicular.hpp> need to be included to use these functionalities.
 
 #pragma once
 
@@ -21,7 +21,7 @@
 #	error "GLM: GLM_GTX_perpendicular is an experimental extension and may change in the future. Use #define GLM_ENABLE_EXPERIMENTAL before including it, if you really want to use it."
 #endif
 
-#if GLM_MESSAGES == GLM_ENABLE && !defined(GLM_EXT_INCLUDED)
+#if GLM_MESSAGES == GLM_MESSAGES_ENABLED && !defined(GLM_EXT_INCLUDED)
 #	pragma message("GLM: GLM_GTX_perpendicular extension included")
 #endif
 
@@ -32,8 +32,10 @@ namespace glm
 
 	//! Projects x a perpendicular axis of Normal.
 	//! From GLM_GTX_perpendicular extension.
-	template<typename genType>
-	GLM_FUNC_DECL genType perp(genType const& x, genType const& Normal);
+	template <typename vecType> 
+	GLM_FUNC_DECL vecType perp(
+		vecType const & x, 
+		vecType const & Normal);
 
 	/// @}
 }//namespace glm

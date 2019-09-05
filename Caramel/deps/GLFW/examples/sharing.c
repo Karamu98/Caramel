@@ -23,7 +23,7 @@
 //
 //========================================================================
 
-#include <glad/gl.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <stdio.h>
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 
     // The contexts are created with the same APIs so the function
     // pointers should be re-usable between them
-    gladLoadGL(glfwGetProcAddress);
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 
     // Create the OpenGL objects inside the first context, created above
     // All objects will be shared with the second context, created below

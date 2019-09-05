@@ -22,6 +22,8 @@ void err_handler_example();
 void syslog_example();
 void clone_example();
 
+#define SPDLOG_TRACE_ON
+
 #include "spdlog/spdlog.h"
 
 int main(int, char *[])
@@ -31,7 +33,7 @@ int main(int, char *[])
     spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
     spdlog::info("Support for floats {:03.2f}", 1.23456);
     spdlog::info("Positional args are {1} {0}..", "too", "supported");
-    spdlog::info("{:>8} aligned, {:<8} aligned", "right", "left");
+    spdlog::info("{:>8} aligned, {:>8} aligned", "right", "left");
 
     // Runtime log levels
     spdlog::set_level(spdlog::level::info); // Set global log level to info
@@ -158,17 +160,12 @@ void binary_example()
 }
 
 // Compile time log levels.
-// define SPDLOG_ACTIVE_LEVEL to required level (e.g. SPDLOG_LEVEL_TRACE)
+// Must define SPDLOG_DEBUG_ON or SPDLOG_TRACE_ON before including spdlog.h to turn them on.
 void trace_example()
 {
-    // trace from default logger
-    SPDLOG_TRACE("Some trace message.. {} ,{}", 1, 3.23);
-    // debug from default logger
-    SPDLOG_DEBUG("Some debug message.. {} ,{}", 1, 3.23);
-
-    // trace from logger object
     auto logger = spdlog::get("file_logger");
-    SPDLOG_LOGGER_TRACE(logger, "another trace message");
+    SPDLOG_TRACE(logger, "Enabled only #ifdef SPDLOG_TRACE_ON..{} ,{}", 1, 3.23);
+    SPDLOG_DEBUG(logger, "Enabled only #ifdef SPDLOG_DEBUG_ON.. {} ,{}", 1, 3.23);
 }
 
 // A logger with multiple sinks (stdout and file) - each with a different format and log level.

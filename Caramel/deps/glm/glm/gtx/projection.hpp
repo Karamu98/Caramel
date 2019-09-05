@@ -6,9 +6,9 @@
 /// @defgroup gtx_projection GLM_GTX_projection
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/projection.hpp> to use the features of this extension.
+/// @brief Projection of a vector to other one
 ///
-/// Projection of a vector to other one
+/// <glm/gtx/projection.hpp> need to be included to use these functionalities.
 
 #pragma once
 
@@ -19,7 +19,7 @@
 #	error "GLM: GLM_GTX_projection is an experimental extension and may change in the future. Use #define GLM_ENABLE_EXPERIMENTAL before including it, if you really want to use it."
 #endif
 
-#if GLM_MESSAGES == GLM_ENABLE && !defined(GLM_EXT_INCLUDED)
+#if GLM_MESSAGES == GLM_MESSAGES_ENABLED && !defined(GLM_EXT_INCLUDED)
 #	pragma message("GLM: GLM_GTX_projection extension included")
 #endif
 
@@ -31,8 +31,8 @@ namespace glm
 	/// Projects x on Normal.
 	///
 	/// @see gtx_projection
-	template<typename genType>
-	GLM_FUNC_DECL genType proj(genType const& x, genType const& Normal);
+	template <typename vecType>
+	GLM_FUNC_DECL vecType proj(vecType const & x, vecType const & Normal);
 
 	/// @}
 }//namespace glm

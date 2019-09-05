@@ -156,9 +156,6 @@ static int createAnonymousFile(off_t size)
         fcntl(fd, F_ADD_SEALS, F_SEAL_SHRINK | F_SEAL_SEAL);
     }
     else
-#elif defined(SHM_ANON)
-    fd = shm_open(SHM_ANON, O_RDWR | O_CLOEXEC, 0600);
-    if (fd < 0)
 #endif
     {
         path = getenv("XDG_RUNTIME_DIR");
@@ -178,12 +175,7 @@ static int createAnonymousFile(off_t size)
             return -1;
     }
 
-#if defined(SHM_ANON)
-    // posix_fallocate does not work on SHM descriptors
-    ret = ftruncate(fd, size);
-#else
     ret = posix_fallocate(fd, 0, size);
-#endif
     if (ret != 0)
     {
         close(fd);
@@ -641,17 +633,10 @@ static void xdgToplevelHandleConfigure(void* data,
         _glfwInputWindowDamage(window);
     }
 
-    if (window->wl.wasFullscreen && window->autoIconify)
-    {
-        if (!activated || !fullscreen)
-        {
-            _glfwPlatformIconifyWindow(window);
-            window->wl.wasFullscreen = GLFW_FALSE;
-        }
-    }
-    if (fullscreen && activated)
-        window->wl.wasFullscreen = GLFW_TRUE;
+    if (!window->wl.justCreated && !activated && window->autoIconify)
+        _glfwPlatformIconifyWindow(window);
     _glfwInputWindowFocus(window, activated);
+    window->wl.justCreated = GLFW_FALSE;
 }
 
 static void xdgToplevelHandleClose(void* data,
@@ -920,6 +905,7 @@ int _glfwPlatformCreateWindow(_GLFWwindow* window,
                               const _GLFWctxconfig* ctxconfig,
                               const _GLFWfbconfig* fbconfig)
 {
+    window->wl.justCreated = GLFW_TRUE;
     window->wl.transparent = fbconfig->transparent;
 
     if (!createSurface(window, wndconfig))
@@ -1318,16 +1304,6 @@ void _glfwPlatformSetWindowOpacity(_GLFWwindow* window, float opacity)
 {
 }
 
-void _glfwPlatformSetRawMouseMotion(_GLFWwindow *window, GLFWbool enabled)
-{
-    // This is handled in relativePointerHandleRelativeMotion
-}
-
-GLFWbool _glfwPlatformRawMouseMotionSupported(void)
-{
-    return GLFW_TRUE;
-}
-
 void _glfwPlatformPollEvents(void)
 {
     handleEvents(0);
@@ -1447,24 +1423,13 @@ static void relativePointerHandleRelativeMotion(void* data,
                                                 wl_fixed_t dyUnaccel)
 {
     _GLFWwindow* window = data;
-    double xpos = window->virtualCursorPosX;
-    double ypos = window->virtualCursorPosY;
 
     if (window->cursorMode != GLFW_CURSOR_DISABLED)
         return;
 
-    if (window->rawMouseMotion)
-    {
-        xpos += wl_fixed_to_double(dxUnaccel);
-        ypos += wl_fixed_to_double(dyUnaccel);
-    }
-    else
-    {
-        xpos += wl_fixed_to_double(dx);
-        ypos += wl_fixed_to_double(dy);
-    }
-
-    _glfwInputCursorPos(window, xpos, ypos);
+    _glfwInputCursorPos(window,
+                        window->virtualCursorPosX + wl_fixed_to_double(dxUnaccel),
+                        window->virtualCursorPosY + wl_fixed_to_double(dyUnaccel));
 }
 
 static const struct zwp_relative_pointer_v1_listener relativePointerListener = {

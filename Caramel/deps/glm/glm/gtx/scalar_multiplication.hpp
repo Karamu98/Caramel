@@ -2,9 +2,7 @@
 /// @file glm/gtx/scalar_multiplication.hpp
 /// @author Joshua Moerman
 ///
-/// Include <glm/gtx/scalar_multiplication.hpp> to use the features of this extension.
-///
-/// Enables scalar multiplication for all types
+/// @brief Enables scalar multiplication for all types
 ///
 /// Since GLSL is very strict about types, the following (often used) combinations do not work:
 ///    double * vec4
@@ -32,28 +30,28 @@
 
 namespace glm
 {
-	template<typename T, typename Vec>
+	template <typename T, typename Vec>
 	using return_type_scalar_multiplication = typename std::enable_if<
 		!std::is_same<T, float>::value       // T may not be a float
 		&& std::is_arithmetic<T>::value, Vec // But it may be an int or double (no vec3 or mat3, ...)
 	>::type;
 
 #define GLM_IMPLEMENT_SCAL_MULT(Vec) \
-	template<typename T> \
+	template <typename T> \
 	return_type_scalar_multiplication<T, Vec> \
-	operator*(T const& s, Vec rh){ \
+	operator*(T const & s, Vec rh){ \
 		return rh *= static_cast<float>(s); \
 	} \
 	 \
-	template<typename T> \
+	template <typename T> \
 	return_type_scalar_multiplication<T, Vec> \
-	operator*(Vec lh, T const& s){ \
+	operator*(Vec lh, T const & s){ \
 		return lh *= static_cast<float>(s); \
 	} \
 	 \
-	template<typename T> \
+	template <typename T> \
 	return_type_scalar_multiplication<T, Vec> \
-	operator/(Vec lh, T const& s){ \
+	operator/(Vec lh, T const & s){ \
 		return lh *= 1.0f / s; \
 	}
 

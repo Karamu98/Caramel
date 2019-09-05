@@ -45,12 +45,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// Uncomment to prevent spdlog from using thread local storage.
+// Uncomment to prevent spdlog from caching thread ids in thread local storage.
+// By default spdlog saves thread ids in tls to gain a few micros for each call.
 //
 // WARNING: if your program forks, UNCOMMENT this flag to prevent undefined
 // thread ids in the children logs.
 //
-// #define SPDLOG_NO_TLS
+// #define SPDLOG_DISABLE_TID_CACHING
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -126,20 +127,4 @@
 // This might save some (very) small initialization time if no default logger is needed.
 //
 // #define SPDLOG_DISABLE_DEFAULT_LOGGER
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-// Uncomment and set to compile time level with zero cost (default is INFO).
-// Macros like SPDLOG_DEBUG(..), SPDLOG_INFO(..)  will expand to empty statements if not enabled
-//
-// #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
-// Uncomment (and change if desired) macro to use for function names.
-// This is compiler dependent.
-// __PRETTY_FUNCTION__ might be nicer in clang/gcc, and __FUNCTION__ in msvc.
-// Defaults to __FUNCTION__ (should work on all compilers) if not defined.
-//
-// #define SPDLOG_FUNCTION __PRETTY_FUNCTION__
 ///////////////////////////////////////////////////////////////////////////////

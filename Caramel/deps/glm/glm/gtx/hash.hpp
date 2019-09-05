@@ -5,10 +5,10 @@
 ///
 /// @defgroup gtx_hash GLM_GTX_hash
 /// @ingroup gtx
-///
-/// Include <glm/gtx/hash.hpp> to use the features of this extension.
-///
-/// Add std::hash support for glm types
+/// 
+/// @brief Add std::hash support for glm types
+/// 
+/// <glm/gtx/hash.hpp> need to be included to use these functionalities.
 
 #pragma once
 
@@ -44,94 +44,94 @@
 
 namespace std
 {
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::vec<1, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tvec1<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::vec<1, T, Q> const& v) const;
+		GLM_FUNC_DECL size_t operator()(glm::tvec1<T, P> const & v) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::vec<2, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tvec2<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::vec<2, T, Q> const& v) const;
+		GLM_FUNC_DECL size_t operator()(glm::tvec2<T, P> const & v) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::vec<3, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tvec3<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::vec<3, T, Q> const& v) const;
+		GLM_FUNC_DECL size_t operator()(glm::tvec3<T, P> const & v) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::vec<4, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tvec4<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::vec<4, T, Q> const& v) const;
+		GLM_FUNC_DECL size_t operator()(glm::tvec4<T, P> const & v) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::tquat<T,Q>>
+	template <typename T, glm::precision P>
+	struct hash<glm::tquat<T,P>>
 	{
-		GLM_FUNC_DECL size_t operator()(glm::tquat<T, Q> const& q) const;
+		GLM_FUNC_DECL size_t operator()(glm::tquat<T, P> const & q) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::tdualquat<T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tdualquat<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::tdualquat<T,Q> const& q) const;
+		GLM_FUNC_DECL size_t operator()(glm::tdualquat<T,P> const & q) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<2, 2, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat2x2<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<2, 2, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat2x2<T,P> const & m) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<2, 3, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat2x3<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<2, 3, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat2x3<T,P> const & m) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<2, 4, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat2x4<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<2, 4, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat2x4<T,P> const & m) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<3, 2, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat3x2<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<3, 2, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat3x2<T,P> const & m) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<3, 3, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat3x3<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<3, 3, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat3x3<T,P> const & m) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<3, 4, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat3x4<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<3, 4, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat3x4<T,P> const & m) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<4, 2, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat4x2<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<4, 2, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat4x2<T,P> const & m) const;
+	};
+	
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat4x3<T,P> >
+	{
+		GLM_FUNC_DECL size_t operator()(glm::tmat4x3<T,P> const & m) const;
 	};
 
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<4, 3, T,Q> >
+	template <typename T, glm::precision P>
+	struct hash<glm::tmat4x4<T,P> >
 	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<4, 3, T,Q> const& m) const;
-	};
-
-	template<typename T, glm::qualifier Q>
-	struct hash<glm::mat<4, 4, T,Q> >
-	{
-		GLM_FUNC_DECL size_t operator()(glm::mat<4, 4, T,Q> const& m) const;
+		GLM_FUNC_DECL size_t operator()(glm::tmat4x4<T,P> const & m) const;
 	};
 } // namespace std
 

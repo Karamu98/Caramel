@@ -23,7 +23,7 @@
 //
 //========================================================================
 
-#include <glad/gl.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #if USE_NATIVE_OSMESA
@@ -104,7 +104,7 @@ int main(void)
     }
 
     glfwMakeContextCurrent(window);
-    gladLoadGL(glfwGetProcAddress);
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 
     // NOTE: OpenGL error checks have been omitted for brevity
 

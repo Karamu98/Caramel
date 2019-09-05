@@ -2,7 +2,7 @@
 // GLFW 3.3 Win32 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
-// Copyright (c) 2006-2019 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2006-2016 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -329,30 +329,27 @@ static void createKeyTables(void)
 
 // Creates a dummy window for behind-the-scenes work
 //
-static GLFWbool createHelperWindow(void)
+static HWND createHelperWindow(void)
 {
     MSG msg;
-
-    _glfw.win32.helperWindowHandle =
-        CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,
-                        _GLFW_WNDCLASSNAME,
-                        L"GLFW message window",
-                        WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-                        0, 0, 1, 1,
-                        NULL, NULL,
-                        GetModuleHandleW(NULL),
-                        NULL);
-
-    if (!_glfw.win32.helperWindowHandle)
+    HWND window = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,
+                                  _GLFW_WNDCLASSNAME,
+                                  L"GLFW message window",
+                                  WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+                                  0, 0, 1, 1,
+                                  NULL, NULL,
+                                  GetModuleHandleW(NULL),
+                                  NULL);
+    if (!window)
     {
         _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
                              "Win32: Failed to create helper window");
-        return GLFW_FALSE;
+        return NULL;
     }
 
     // HACK: The command to the first ShowWindow call is ignored if the parent
     //       process passed along a STARTUPINFO, so clear that with a no-op call
-    ShowWindow(_glfw.win32.helperWindowHandle, SW_HIDE);
+    ShowWindow(window, SW_HIDE);
 
     // Register for HID device notifications
     {
@@ -363,7 +360,7 @@ static GLFWbool createHelperWindow(void)
         dbi.dbcc_classguid = GUID_DEVINTERFACE_HID;
 
         _glfw.win32.deviceNotificationHandle =
-            RegisterDeviceNotificationW(_glfw.win32.helperWindowHandle,
+            RegisterDeviceNotificationW(window,
                                         (DEV_BROADCAST_HDR*) &dbi,
                                         DEVICE_NOTIFY_WINDOW_HANDLE);
     }
@@ -374,7 +371,7 @@ static GLFWbool createHelperWindow(void)
         DispatchMessageW(&msg);
     }
 
-   return GLFW_TRUE;
+   return window;
 }
 
 
@@ -452,7 +449,7 @@ void _glfwInputErrorWin32(int error, const char* description)
                    GetLastError() & 0xffff,
                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                    buffer,
-                   sizeof(buffer) / sizeof(WCHAR),
+                   sizeof(buffer),
                    NULL);
     WideCharToMultiByte(CP_UTF8, 0, buffer, -1, message, sizeof(message), NULL, NULL);
 
@@ -574,7 +571,8 @@ int _glfwPlatformInit(void)
     if (!_glfwRegisterWindowClassWin32())
         return GLFW_FALSE;
 
-    if (!createHelperWindow())
+    _glfw.win32.helperWindowHandle = createHelperWindow();
+    if (!_glfw.win32.helperWindowHandle)
         return GLFW_FALSE;
 
     _glfwInitTimerWin32();
@@ -612,7 +610,7 @@ void _glfwPlatformTerminate(void)
 
 const char* _glfwPlatformGetVersionString(void)
 {
-    return _GLFW_VERSION_NUMBER " Win32 WGL EGL OSMesa"
+    return _GLFW_VERSION_NUMBER " Win32 WGL EGL"
 #if defined(__MINGW32__)
         " MinGW"
 #elif defined(_MSC_VER)

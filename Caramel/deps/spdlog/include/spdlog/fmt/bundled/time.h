@@ -1,6 +1,6 @@
 // Formatting library for C++ - time formatting
 //
-// Copyright (c) 2012 - present, Victor Zverovich
+// Copyright (c) 2012 - 2016, Victor Zverovich
 // All rights reserved.
 //
 // For the license information refer to format.h.
@@ -10,7 +10,6 @@
 
 #include "format.h"
 #include <ctime>
-#include <locale>
 
 FMT_BEGIN_NAMESPACE
 
@@ -23,7 +22,7 @@ inline null<> localtime_r FMT_NOMACRO(...) { return null<>(); }
 inline null<> localtime_s(...) { return null<>(); }
 inline null<> gmtime_r(...) { return null<>(); }
 inline null<> gmtime_s(...) { return null<>(); }
-}  // namespace internal
+}
 
 // Thread-safe replacement for std::localtime
 inline std::tm localtime(std::time_t time) {
@@ -47,20 +46,18 @@ inline std::tm localtime(std::time_t time) {
 
     bool fallback(int res) { return res == 0; }
 
-#if !FMT_MSC_VER
     bool fallback(internal::null<>) {
       using namespace fmt::internal;
       std::tm *tm = std::localtime(&time_);
       if (tm) tm_ = *tm;
       return tm != FMT_NULL;
     }
-#endif
   };
   dispatcher lt(time);
+  if (lt.run())
+    return lt.tm_;
   // Too big time values may be unsupported.
-  if (!lt.run())
-    FMT_THROW(format_error("time_t value out of range"));
-  return lt.tm_;
+  FMT_THROW(format_error("time_t value out of range"));
 }
 
 // Thread-safe replacement for std::gmtime
@@ -85,19 +82,17 @@ inline std::tm gmtime(std::time_t time) {
 
     bool fallback(int res) { return res == 0; }
 
-#if !FMT_MSC_VER
     bool fallback(internal::null<>) {
       std::tm *tm = std::gmtime(&time_);
       if (tm) tm_ = *tm;
       return tm != FMT_NULL;
     }
-#endif
   };
   dispatcher gt(time);
+  if (gt.run())
+    return gt.tm_;
   // Too big time values may be unsupported.
-  if (!gt.run())
-    FMT_THROW(format_error("time_t value out of range"));
-  return gt.tm_;
+  FMT_THROW(format_error("time_t value out of range"));
 }
 
 namespace internal {
@@ -116,21 +111,22 @@ template <typename Char>
 struct formatter<std::tm, Char> {
   template <typename ParseContext>
   auto parse(ParseContext &ctx) -> decltype(ctx.begin()) {
-    auto it = ctx.begin();
-    if (it != ctx.end() && *it == ':')
+    auto it = internal::null_terminating_iterator<Char>(ctx);
+    if (*it == ':')
       ++it;
     auto end = it;
-    while (end != ctx.end() && *end != '}')
+    while (*end && *end != '}')
       ++end;
-    tm_format.reserve(internal::to_unsigned(end - it + 1));
-    tm_format.append(it, end);
+    tm_format.reserve(end - it + 1);
+    using internal::pointer_from;
+    tm_format.append(pointer_from(it), pointer_from(end));
     tm_format.push_back('\0');
-    return end;
+    return pointer_from(end);
   }
 
   template <typename FormatContext>
   auto format(const std::tm &tm, FormatContext &ctx) -> decltype(ctx.out()) {
-    basic_memory_buffer<Char> buf;
+    internal::basic_buffer<Char> &buf = internal::get_container(ctx.out());
     std::size_t start = buf.size();
     for (;;) {
       std::size_t size = buf.capacity() - start;
@@ -150,7 +146,7 @@ struct formatter<std::tm, Char> {
       const std::size_t MIN_GROWTH = 10;
       buf.reserve(buf.capacity() + (size > MIN_GROWTH ? size : MIN_GROWTH));
     }
-    return std::copy(buf.begin(), buf.end(), ctx.out());
+    return ctx.out();
   }
 
   basic_memory_buffer<Char> tm_format;

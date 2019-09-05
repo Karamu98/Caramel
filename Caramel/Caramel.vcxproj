@@ -55,19 +55,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\bin\Debug-windows-x86_64\Caramel\</OutDir>
-    <IntDir>..\bin\Debug-windows-x86_64\Caramel\obj\</IntDir>
+    <IntDir>..\bin\Debug-windows-x86_64\obj\Caramel\</IntDir>
     <TargetName>Caramel</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\bin\Release-windows-x86_64\Caramel\</OutDir>
-    <IntDir>..\bin\Release-windows-x86_64\Caramel\obj\</IntDir>
+    <IntDir>..\bin\Release-windows-x86_64\obj\Caramel\</IntDir>
     <TargetName>Caramel</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <OutDir>..\bin\Dist-windows-x86_64\Caramel\</OutDir>
-    <IntDir>..\bin\Dist-windows-x86_64\Caramel\obj\</IntDir>
+    <IntDir>..\bin\Dist-windows-x86_64\obj\Caramel\</IntDir>
     <TargetName>Caramel</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
@@ -76,11 +76,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>clpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>CL_PLATFORM_WINDOWS;CL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;deps;deps\GLFW\include;deps\glad\include;deps\glm;deps\ImGui;deps\spdlog\include;deps\assimp\include;deps\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLM_FORCE_SWIZZLE;GLM_FORCE_RADIANS;GLM_FORCE_PURE;GLM_ENABLE_EXPERIMENTAL;IMGUI_IMPL_OPENGL_LOADER_GLAD;CL_PLATFORM_WINDOWS;CL_BUILD_DLL;GLFW_INCLUDE_NONE;CL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;deps\spdlog\include;deps\GLFW\include;deps\Glad\include;deps\imgui;deps\glm;deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -96,14 +98,15 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>clpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>CL_PLATFORM_WINDOWS;CL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;deps;deps\GLFW\include;deps\glad\include;deps\glm;deps\ImGui;deps\spdlog\include;deps\assimp\include;deps\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLM_FORCE_SWIZZLE;GLM_FORCE_RADIANS;GLM_FORCE_PURE;GLM_ENABLE_EXPERIMENTAL;IMGUI_IMPL_OPENGL_LOADER_GLAD;CL_PLATFORM_WINDOWS;CL_BUILD_DLL;GLFW_INCLUDE_NONE;CL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;deps\spdlog\include;deps\GLFW\include;deps\Glad\include;deps\imgui;deps\glm;deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -120,14 +123,15 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>clpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>CL_PLATFORM_WINDOWS;CL_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;deps;deps\GLFW\include;deps\glad\include;deps\glm;deps\ImGui;deps\spdlog\include;deps\assimp\include;deps\stb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLM_FORCE_SWIZZLE;GLM_FORCE_RADIANS;GLM_FORCE_PURE;GLM_ENABLE_EXPERIMENTAL;IMGUI_IMPL_OPENGL_LOADER_GLAD;CL_PLATFORM_WINDOWS;CL_BUILD_DLL;GLFW_INCLUDE_NONE;CL_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;deps\spdlog\include;deps\GLFW\include;deps\Glad\include;deps\imgui;deps\glm;deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -140,65 +144,23 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Caramel\Caramel.h" />
-    <ClInclude Include="include\Caramel\Core\Application.h" />
-    <ClInclude Include="include\Caramel\Core\Base.h" />
-    <ClInclude Include="include\Caramel\Core\Events\ApplicationEvent.h" />
-    <ClInclude Include="include\Caramel\Core\Events\Event.h" />
-    <ClInclude Include="include\Caramel\Core\Events\KeyEvent.h" />
-    <ClInclude Include="include\Caramel\Core\Events\MouseEvent.h" />
-    <ClInclude Include="include\Caramel\Core\Input.h" />
-    <ClInclude Include="include\Caramel\Core\KeyCodes.h" />
-    <ClInclude Include="include\Caramel\Core\Layer.h" />
-    <ClInclude Include="include\Caramel\Core\LayerStack.h" />
-    <ClInclude Include="include\Caramel\Core\Log.h" />
-    <ClInclude Include="include\Caramel\Core\MouseButtonCodes.h" />
-    <ClInclude Include="include\Caramel\Core\Platform.h" />
-    <ClInclude Include="include\Caramel\Core\Window.h" />
-    <ClInclude Include="include\Caramel\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLBuffer.h" />
-    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLFramebuffer.h" />
-    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLShader.h" />
-    <ClInclude Include="include\Caramel\Platform\OpenGL\OpenGLTexture.h" />
-    <ClInclude Include="include\Caramel\Platform\Windows\WindowsInput.h" />
-    <ClInclude Include="include\Caramel\Platform\Windows\WindowsWindow.h" />
-    <ClInclude Include="include\Caramel\Renderer\Buffer.h" />
-    <ClInclude Include="include\Caramel\Renderer\Camera.h" />
-    <ClInclude Include="include\Caramel\Renderer\Framebuffer.h" />
-    <ClInclude Include="include\Caramel\Renderer\Mesh.h" />
-    <ClInclude Include="include\Caramel\Renderer\RenderCommandQueue.h" />
-    <ClInclude Include="include\Caramel\Renderer\Renderer.h" />
-    <ClInclude Include="include\Caramel\Renderer\RendererAPI.h" />
-    <ClInclude Include="include\Caramel\Renderer\Shader.h" />
-    <ClInclude Include="include\Caramel\Renderer\Texture.h" />
-    <ClInclude Include="include\EntryPoint.h" />
-    <ClInclude Include="include\clpch.h" />
+    <ClInclude Include="src\Caramel.h" />
+    <ClInclude Include="src\Core\Application.h" />
+    <ClInclude Include="src\Core\Utilities.h" />
+    <ClInclude Include="src\Render\Camera.h" />
+    <ClInclude Include="src\Render\Shader.h" />
+    <ClInclude Include="src\Render\Texture.h" />
+    <ClInclude Include="src\Render\Window.h" />
+    <ClInclude Include="src\clpch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Caramel\Core\Application.cpp" />
-    <ClCompile Include="src\Caramel\Core\Base.cpp" />
-    <ClCompile Include="src\Caramel\Core\Layer.cpp" />
-    <ClCompile Include="src\Caramel\Core\LayerStack.cpp" />
-    <ClCompile Include="src\Caramel\Core\Log.cpp" />
-    <ClCompile Include="src\Caramel\Core\Window.cpp" />
-    <ClCompile Include="src\Caramel\Deps\stb_image.cpp" />
-    <ClCompile Include="src\Caramel\ImGui\ImGuiBuild.cpp" />
-    <ClCompile Include="src\Caramel\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLBuffer.cpp" />
-    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLFramebuffer.cpp" />
-    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLRendererAPI.cpp" />
-    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLShader.cpp" />
-    <ClCompile Include="src\Caramel\Platform\OpenGL\OpenGLTexture.cpp" />
-    <ClCompile Include="src\Caramel\Platform\Windows\WindowsInput.cpp" />
-    <ClCompile Include="src\Caramel\Platform\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\Camera.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\Framebuffer.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\Mesh.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\RenderCommandQueue.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\Shader.cpp" />
-    <ClCompile Include="src\Caramel\Renderer\Texture.cpp" />
+    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Utilities.cpp" />
+    <ClCompile Include="src\Deps\ImGuiBuild.cpp" />
+    <ClCompile Include="src\Render\Camera.cpp" />
+    <ClCompile Include="src\Render\Shader.cpp" />
+    <ClCompile Include="src\Render\Texture.cpp" />
+    <ClCompile Include="src\Render\Window.cpp" />
     <ClCompile Include="src\clpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -207,14 +169,14 @@
     <ProjectReference Include="deps\GLFW\GLFW.vcxproj">
       <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
     </ProjectReference>
-    <ProjectReference Include="deps\glad\Glad.vcxproj">
+    <ProjectReference Include="deps\Glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
-    <ProjectReference Include="deps\ImGui\ImGui.vcxproj">
+    <ProjectReference Include="deps\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>
