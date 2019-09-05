@@ -8,7 +8,14 @@ namespace Caramel
 	class Skybox
 	{
 	public:
+		/// <summary>
+		/// Constructs a skybox.
+		/// Faces must be in the following order: right, left, top, bottom, front and back
+		/// </summary>
 		static void SetSkybox(const std::vector<std::string>& a_faces);
+		/// <summary>
+		/// Draws the skybox. You should call this at the end of drawing.
+		/// </summary>
 		static void Draw(Camera& a_camera);
 	private:
 		static std::shared_ptr<Skybox> sm_instance;

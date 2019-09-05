@@ -25,6 +25,23 @@ namespace Caramel
 		m_shaderPath = a_sourcePath;
 	}
 
+	unsigned int Shader::GetUniformLocation(const std::string& a_name) const
+	{
+		if (m_uniformCache.find(a_name) != m_uniformCache.end())
+		{
+			return m_uniformCache[a_name];
+		}
+		
+		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		if (loc == -1)
+		{
+			return loc;
+		}
+
+		m_uniformCache[a_name] = loc;
+		return loc;
+	}
+
 	std::string Shader::StringFromShaderType(const unsigned int a_type)
 	{
 		if (a_type == GL_VERTEX_SHADER)
@@ -127,19 +144,6 @@ namespace Caramel
 		return true;
 	}
 
-	bool Shader::LocationValid(unsigned int& a_loc, const std::string& a_name, bool a_logErrors)
-	{
-		if (a_loc == -1)
-		{
-			if (a_logErrors)
-			{
-				CL_CORE_ERROR("Unable to find location of {0} in shader", a_name);
-			}
-			return false;
-		}
-		return true;
-	}
-
 	std::shared_ptr<std::unordered_map<unsigned int, std::string>> Shader::Preprocess(const std::string& a_shaderPath)
 	{
 		std::shared_ptr<std::unordered_map<unsigned int, std::string>> sources = std::make_shared<std::unordered_map<unsigned int, std::string>>();
@@ -236,9 +240,13 @@ namespace Caramel
 
 	void Shader::SetBool(const std::string& a_name, bool a_value, bool a_logErrors)
 	{
-		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		unsigned int loc = GetUniformLocation(a_name);
 
-		if (LocationValid(loc, a_name, a_logErrors))
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if(loc != -1)
 		{
 			glUniform1i(loc, (int)a_value);
 		}
@@ -246,9 +254,13 @@ namespace Caramel
 
 	void Shader::SetInt(const std::string& a_name, int a_value, bool a_logErrors)
 	{
-		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		unsigned int loc = GetUniformLocation(a_name);
 
-		if (LocationValid(loc, a_name, a_logErrors))
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
 		{
 			glUniform1i(loc, (int)a_value);
 		}
@@ -256,9 +268,13 @@ namespace Caramel
 
 	void Shader::SetFloat(const std::string& a_name, float a_value, bool a_logErrors)
 	{
-		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		unsigned int loc = GetUniformLocation(a_name);
 
-		if (LocationValid(loc, a_name, a_logErrors))
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
 		{
 			glUniform1f(loc, a_value);
 		}
@@ -266,9 +282,13 @@ namespace Caramel
 
 	void Shader::SetVec4(const std::string& a_name, glm::vec4 a_value, bool a_logErrors)
 	{
-		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		unsigned int loc = GetUniformLocation(a_name);
 
-		if (LocationValid(loc, a_name, a_logErrors))
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
 		{
 			float* valArray = glm::value_ptr(a_value);
 
@@ -278,9 +298,13 @@ namespace Caramel
 
 	void Shader::SetVec3(const std::string& a_name, glm::vec3 a_value, bool a_logErrors)
 	{
-		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		unsigned int loc = GetUniformLocation(a_name);
 
-		if (LocationValid(loc, a_name, a_logErrors))
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
 		{
 			float* valArray = glm::value_ptr(a_value);
 			glUniform3f(loc, valArray[0], valArray[1], valArray[2]);
@@ -289,9 +313,13 @@ namespace Caramel
 
 	void Shader::SetVec2(const std::string& a_name, glm::vec2 a_value, bool a_logErrors)
 	{
-		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		unsigned int loc = GetUniformLocation(a_name);
 
-		if (LocationValid(loc, a_name, a_logErrors))
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
 		{
 			float* valArray = glm::value_ptr(a_value);
 			glUniform2f(loc, valArray[0], valArray[1]);
@@ -300,9 +328,13 @@ namespace Caramel
 
 	void Shader::SetMat4(const std::string& a_name, glm::mat4 a_value, bool a_logErrors)
 	{
-		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
+		unsigned int loc = GetUniformLocation(a_name);
 
-		if (LocationValid(loc, a_name, a_logErrors))
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
 		{
 			glUniformMatrix4fv(loc, 1, false, glm::value_ptr(a_value));
 		}

@@ -89,7 +89,6 @@ bool Game::OnCreate()
 		"resources/textures/skybox/front.jpg",
 		"resources/textures/skybox/back.jpg"
 	};
-
 	Caramel::Skybox::SetSkybox(faces);
 
 	// Setting up the light 

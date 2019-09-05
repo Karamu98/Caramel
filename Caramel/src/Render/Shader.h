@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <unordered_map>
 
 namespace Caramel
 {
@@ -26,16 +27,18 @@ namespace Caramel
 		unsigned int m_shaderProgram;
 		bool m_isValid;
 		std::string m_shaderPath;
+		mutable std::unordered_map<std::string, unsigned int> m_uniformCache;
+
+	public:
+		static std::shared_ptr<Shader> CreateShader(const std::string& a_shaderPath);
 
 	private:
 		static std::string StringFromShaderType(const unsigned int a_type);
 		static unsigned int ShaderTypeFromString(const std::string& a_type);
 		static std::shared_ptr<std::unordered_map<unsigned int, std::string>> Preprocess(const std::string& a_shaderPath);
 		bool Compile(const std::unordered_map<unsigned int, std::string>& a_sources);
-		inline bool LocationValid(unsigned int& a_loc, const std::string& a_name, bool a_logErrors);
+		unsigned int GetUniformLocation(const std::string& a_name) const;
 
-	public:
-		static std::shared_ptr<Shader> CreateShader(const std::string& a_shaderPath);
 	};
 
 }
