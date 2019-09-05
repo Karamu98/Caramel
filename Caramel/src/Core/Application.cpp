@@ -8,6 +8,7 @@
 
 #include "Utilities.h"
 #include "Render/Window.h"
+#include "Core/Log.h"
 
 namespace Caramel
 {
@@ -19,7 +20,7 @@ namespace Caramel
 
 	bool Application::CreateApp(const char* a_name, int a_width, int a_height, bool a_bFullscreen)
 	{
-		m_window = AppWindow::CreateWindow(a_name, a_width, a_height, a_bFullscreen);
+		m_window = AppWindow::CreateGLWindow(a_name, a_width, a_height, a_bFullscreen);
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -53,6 +54,8 @@ namespace Caramel
 
 	void Application::Run(const char* a_name, int a_width, int a_height, bool a_bFullscreen)
 	{
+		Log::Init();
+		CL_CORE_INFO("Logging system initialised");
 		if (CreateApp(a_name, a_width, a_height, a_bFullscreen))
 		{
 			Utility::ResetTimer();

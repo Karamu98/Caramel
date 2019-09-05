@@ -2,6 +2,7 @@
 #include "Window.h"
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#include "Core/Log.h"
 
 namespace Caramel
 {
@@ -17,14 +18,14 @@ namespace Caramel
 		// Initialise glfw
 		if (glfwInit() != GL_TRUE)
 		{
-			std::cout << "Unable to initialize GLFW" << std::endl;
+			CL_CORE_INFO("Unable to initialize GLFW");
 		}
 
 		// Create the window with glfw
 		m_nativeWindow = glfwCreateWindow(a_width, a_height, a_name, (a_bFullscreen ? glfwGetPrimaryMonitor() : nullptr), nullptr);
 		if (m_nativeWindow == nullptr)
 		{
-			std::cout << "Unable to create a GLFW Window" << std::endl;
+			CL_CORE_INFO("Unable to create a GLFW Window");
 			glfwTerminate();
 		}
 
@@ -41,7 +42,7 @@ namespace Caramel
 		m_data.isFocused = true;
 
 		// Print GL version to console
-		std::cout << "=====\nOpenGl:\nVendor: " << glGetString(GL_VENDOR) << "\nRenderer: " << glGetString(GL_RENDERER) << "\nVersion: " << glGetString(GL_VERSION) << "\n=====\n";
+		CL_CORE_TRACE("\n=====\nOpenGl:\nVendor: {0}\nRenderer: {1}\nVersion: {2}\n=====\n", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
 		// Give OpenGL our user data
 		glfwSetWindowUserPointer(m_nativeWindow, &m_data);
@@ -114,7 +115,7 @@ namespace Caramel
 		return glfwWindowShouldClose(s_Instance->m_nativeWindow);
 	}
 
-	AppWindow* AppWindow::CreateWindow(const char* a_name, int a_width, int a_height, bool a_bFullscreen)
+	AppWindow* AppWindow::CreateGLWindow(const char* a_name, int a_width, int a_height, bool a_bFullscreen)
 	{
 		if (s_Instance == nullptr)
 		{
@@ -122,7 +123,7 @@ namespace Caramel
 		}
 		else
 		{
-			std::cout << "Window already exists\n";
+			CL_CORE_ERROR("Window already exists.");
 		}
 		return s_Instance;
 	}

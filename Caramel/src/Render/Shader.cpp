@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "glad/glad.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "Core/Log.h"
 
 
 namespace Caramel
@@ -79,7 +80,7 @@ namespace Caramel
 
 				DeleteShader(shader);
 
-				std::cout << StringFromShaderType(type) << " shader failed to compile\n" << infoLog.data() << std::endl;
+				CL_CORE_ERROR("{0} shader failed to compile\n{1}\n", StringFromShaderType(type), infoLog.data());
 				return false;
 			}
 
@@ -107,8 +108,7 @@ namespace Caramel
 			{
 				glDeleteShader(id);
 			}
-
-			std::cout << "Program failed to Link\n" << infoLog.data() << std::endl;
+			CL_CORE_ERROR("Program failed to link\n{0}\n", infoLog.data());
 			return false;
 		}
 
@@ -132,7 +132,7 @@ namespace Caramel
 		{
 			if (a_logErrors)
 			{
-				std::cout << "Unable to find location of '" << a_name << "' in shader\n";
+				CL_CORE_ERROR("Unable to find location of {0} in shader", a_name);
 			}
 			return false;
 		}
@@ -164,7 +164,7 @@ namespace Caramel
 			size_t eol = file->find_first_of("\r\n", pos);
 			if (eol == std::string::npos)
 			{
-				std::cout << "Syntax error when looking for shader type\n";
+				CL_CORE_ERROR("Syntax error when looking for shader type");
 				return nullptr;
 			}
 
@@ -173,7 +173,7 @@ namespace Caramel
 			std::string type = file->substr(begin, eol - begin);
 			if (ShaderTypeFromString(type) == 0)
 			{
-				std::cout << "Invalid shader type\n";
+				CL_CORE_ERROR("Invalid shader type");
 				return nullptr;
 			}
 

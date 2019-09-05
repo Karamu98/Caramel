@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="src\Caramel.h" />
     <ClInclude Include="src\Core\Application.h" />
+    <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\Utilities.h" />
     <ClInclude Include="src\Render\Camera.h" />
     <ClInclude Include="src\Render\Shader.h" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Core\Utilities.cpp" />
     <ClCompile Include="src\Deps\ImGuiBuild.cpp" />
     <ClCompile Include="src\Render\Camera.cpp" />

@@ -13,8 +13,9 @@
 
 Game::Game() :
 	isWireframe(false),
-	specularAmount(32.0f),
 	gammaCorrection(1.8f),
+	cubeBrightness(1.0f),
+	cubeShine(32.0f),
 	screenshot(false)
 {
 
@@ -75,7 +76,9 @@ bool Game::OnCreate()
 	lightProgram = lightShader->GetProgramID();
 
 	// Setting up textures
-	newTexture = Caramel::Texture::CreateTexture("resources/textures/test3.jpg");
+	cubeDiffuse = Caramel::Texture::CreateTexture("resources/textures/container.png");
+	cubeSpecular = Caramel::Texture::CreateTexture("resources/textures/container_specular.png");
+	cubeEmission = Caramel::Texture::CreateTexture("resources/textures/container_emissive.png");
 
 	// Setting up the light 
 	light = std::make_shared<Cube>();
@@ -85,6 +88,8 @@ bool Game::OnCreate()
 
 	simpleShader->Bind();
 	simpleShader->SetInt("gMaterial.texture", 0);
+	simpleShader->SetInt("gMaterial.spec", 1);
+	simpleShader->SetInt("gMaterial.emission", 2);
 
 	return true;
 }
@@ -106,9 +111,12 @@ void Game::Draw()
 	{
 		simpleShader->SetVec3("gLight.pos", light->GetPos());
 		simpleShader->SetVec3("gLight.colour", lightColour);
-		simpleShader->SetFloat("gMaterial.spec", specularAmount);
+		simpleShader->SetFloat("gMaterial.shininess", cubeShine);
+		simpleShader->SetFloat("gMaterial.emissionBrightness", cubeBrightness);
 		simpleShader->SetFloat("gGamma", gammaCorrection);
-		newTexture->Bind(GL_TEXTURE0);
+		cubeDiffuse->Bind(GL_TEXTURE0);
+		cubeSpecular->Bind(GL_TEXTURE1);
+		cubeEmission->Bind(GL_TEXTURE2);
 		cam->Draw(shaderProgram);
 		shape->Draw(shaderProgram);
 	}
@@ -141,7 +149,7 @@ void Game::ImGuiDraw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-	ImTextureID texID;
+	
 
 	static bool p_open = true;
 
@@ -187,7 +195,7 @@ void Game::ImGuiDraw()
 	auto viewportSize = ImGui::GetContentRegionAvail();
 	ResizeFBO(viewportSize.x, viewportSize.y); // Resize the fbo to match the viewport size
 	cam->SetProjectionMatrix(glm::perspective(glm::radians(50.0f), viewportSize.x / viewportSize.y, 0.1f, 5000.0f));
-	texID = (void*)(intptr_t)defaultColourTex;
+	ImTextureID texID = (void*)(intptr_t)defaultColourTex;
 	ImGui::Image(texID, viewportSize, { 0, 1 }, { 1, 0 });
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -205,15 +213,16 @@ void Game::ImGuiDraw()
 	ImGui::Begin("Material", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Properties");
 	ImGui::Separator();
-	texID = (void*)(intptr_t)newTexture->GetID();
 
-	if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
-	{
-		newTexture->Reload(Caramel::Utility::OpenFileDialog(m_window->GetNative()));
-	}
+	GUITextureButton("Diffuse", cubeDiffuse);
+	GUITextureButton("Specular", cubeSpecular);
 	ImGui::SameLine();
-	ImGui::Text("Texture");
-	ImGui::DragFloat("Specularity", &specularAmount, 0.05f);
+	ImGui::DragFloat("Shine", &cubeShine, 0.05f, 0, 8096);
+	GUITextureButton("Emissive", cubeEmission);
+	ImGui::SameLine();
+	ImGui::DragFloat("Brightness", &cubeBrightness, 0.05f, 0.0f, 1000.0f);
+
+
 	ImGui::End();
 
 	ImGui::Begin("Rendering", 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
@@ -353,7 +362,7 @@ void Game::Screenshot()
 
 std::shared_ptr<Shape> Game::InitShape()
 {
-	std::cout << "\n1. Pyramid\n2. Cube\n";
+	CL_TRACE("Pick a shape:\n1. Pyramid\n2. Cube\n");
 
 	int option = 0;
 
@@ -380,4 +389,16 @@ std::shared_ptr<Shape> Game::InitShape()
 		}
 	}
 	return nullptr;
+}
+
+void Game::GUITextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture)
+{
+	ImTextureID texID = (void*)(intptr_t)a_texture->GetID();
+
+	if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
+	{
+		a_texture->Reload(Caramel::Utility::OpenFileDialog(m_window->GetNative()));
+	}
+	ImGui::SameLine();
+	ImGui::Text(a_textureName.c_str());
 }

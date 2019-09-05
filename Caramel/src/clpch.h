@@ -1,7 +1,6 @@
 #pragma once
 
 // Defaults
-#include <iostream>
 #include <memory>
 #include <string>
 #include <fstream>

@@ -42,7 +42,7 @@ namespace Caramel
 		AppWindow(AppWindow const&) = delete;
 		void operator=(AppWindow const&) = delete;
 
-		static AppWindow* CreateWindow(const char* a_name, int a_width, int a_height, bool a_bFullscreen);
+		static AppWindow* CreateGLWindow(const char* a_name, int a_width, int a_height, bool a_bFullscreen);
 		static void DestroyWindow();
 	private:
 		static AppWindow* s_Instance;

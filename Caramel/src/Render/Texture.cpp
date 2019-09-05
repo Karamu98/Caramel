@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <glad/glad.h>
-
+#include "Core/Log.h"
 
 namespace Caramel
 {
@@ -47,13 +47,13 @@ namespace Caramel
 		unsigned char* data = stbi_load(a_texturePath.c_str(), &width, &height, &nrChannels, 0);
 		if (data)
 		{
-			std::cout << "Loaded texture at: " << a_texturePath << std::endl;
+			CL_CORE_INFO("Loaded texture at: {0}", a_texturePath);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		else
 		{
-			std::cout << "Failed to load texture" << std::endl;
+			CL_CORE_INFO("Failed to load texture at: {0}", a_texturePath);
 			stbi_image_free(data);
 			return false;
 		}

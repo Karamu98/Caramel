@@ -24,10 +24,10 @@ private:
 	void ResizeFBO(float a_width, float a_height);
 	void Screenshot();
 	std::shared_ptr<Shape> InitShape();
+	void GUITextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture);
 
 private:
 	bool isWireframe;
-	float specularAmount;
 	float gammaCorrection;
 
 	unsigned int defaultFBO;
@@ -40,8 +40,13 @@ private:
 	std::shared_ptr<Shape> shape;
 	std::shared_ptr<Cube> light;
 	std::shared_ptr<Caramel::Camera> cam;
-	std::shared_ptr<Caramel::Texture> newTexture;
 	glm::vec3 lightColour;
+
+	std::shared_ptr<Caramel::Texture> cubeDiffuse;
+	std::shared_ptr<Caramel::Texture> cubeSpecular;
+	std::shared_ptr<Caramel::Texture> cubeEmission;
+	float cubeShine;
+	float cubeBrightness;
 
 	// Cache
 	unsigned int shaderProgram, lightProgram;

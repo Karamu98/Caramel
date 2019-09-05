@@ -12,6 +12,7 @@
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
+#include "Core/Log.h"
 
 namespace Caramel
 {
@@ -90,7 +91,7 @@ namespace Caramel
 		}
 		else
 		{
-			std::cout << "Couldn't open file " << a_file << std::endl;
+			CL_CORE_ERROR("Couldn't open file {0}", a_file);
 			return nullptr;
 		}
 	}
@@ -113,7 +114,7 @@ namespace Caramel
 			if (GL_NO_ERROR == err)
 				break;
 
-			std::cout << "GL Error: " << GetGLErrorStr(err) << std::endl;
+			CL_CORE_ERROR("GL Error: {0}", GetGLErrorStr(err));
 		}
 	}
 
