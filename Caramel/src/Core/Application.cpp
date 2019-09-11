@@ -14,7 +14,7 @@ namespace Caramel
 {
 	float Application::sm_timeDilation = 1;
 
-	Application::Application() : m_isRunning(false), m_window(nullptr), m_drawGUI(true)
+	Application::Application() : m_isRunning(false), m_window(nullptr)
 	{
 	}
 
@@ -71,13 +71,10 @@ namespace Caramel
 				float deltaTime = Utility::TickTimer();
 				deltaTime = deltaTime * sm_timeDilation;
 
-				if (m_drawGUI)
-				{
-					// Start the Dear ImGui frame
-					ImGui_ImplOpenGL3_NewFrame();
-					ImGui_ImplGlfw_NewFrame();
-					ImGui::NewFrame();
-				}
+				// Start the Dear ImGui frame
+				ImGui_ImplOpenGL3_NewFrame();
+				ImGui_ImplGlfw_NewFrame();
+				ImGui::NewFrame();
 
 				// Application events
 				Update(deltaTime);
@@ -112,11 +109,6 @@ namespace Caramel
 
 	void Application::ClientGUI()
 	{
-		if (!m_drawGUI)
-		{
-			return;
-		}
-
 		// Process the client draw commands
 		ImDraw();
 
