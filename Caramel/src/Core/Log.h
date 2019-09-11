@@ -34,3 +34,17 @@ namespace Caramel
 #define CL_INFO(...) ::Caramel::Log::GetClientLogger()->info(__VA_ARGS__)
 #define CL_TRACE(...) ::Caramel::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define CL_FATAL(...) ::Caramel::Log::GetClientLogger()->critical(__VA_ARGS__)
+
+#ifdef CL_ENABLE_ASSERTS
+
+#define CL_ASSERT_NO_MESSAGE(condition) { if(!(condition)) { CL_ERROR("Assertion failed."); __debugbreak(); } }
+#define CL_ASSERT_MESSAGE(condition, ...) { if(!(condition)) { CL_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak(); } }
+
+#define CL_ASSERT_RESOLVE(arg1, arg2, macro, ...) macro
+
+#define CL_ASSERT(...) CL_ASSERT_RESOLVE(__VA_ARGS__, CL_ASSERT_MESSAGE, CL_ASSERT_NO_MESSAGE)(__VA_ARGS__)
+#define CL_CORE_ASSERT(...) CL_ASSERT_RESOLVE(__VA_ARGS__, CL_ASSERT_MESSAGE, CL_ASSERT_NO_MESSAGE)(__VA_ARGS__)
+#else
+#define CL_ASSERT(...)
+#define CL_CORE_ASSERT(...)
+#endif

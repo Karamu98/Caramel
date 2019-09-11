@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>clpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLM_FORCE_SWIZZLE;GLM_FORCE_RADIANS;GLM_FORCE_PURE;GLM_ENABLE_EXPERIMENTAL;IMGUI_IMPL_OPENGL_LOADER_GLAD;CL_PLATFORM_WINDOWS;CL_BUILD_DLL;GLFW_INCLUDE_NONE;CL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLM_FORCE_SWIZZLE;GLM_FORCE_RADIANS;GLM_FORCE_PURE;GLM_ENABLE_EXPERIMENTAL;IMGUI_IMPL_OPENGL_LOADER_GLAD;CL_PLATFORM_WINDOWS;CL_BUILD_DLL;GLFW_INCLUDE_NONE;CL_DEBUG;CL_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;deps\spdlog\include;deps\GLFW\include;deps\Glad\include;deps\imgui;deps\glm;deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -147,10 +147,11 @@
     <ClInclude Include="src\Caramel.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Log.h" />
-    <ClInclude Include="src\Render\Skybox.h" />
     <ClInclude Include="src\Core\Utilities.h" />
     <ClInclude Include="src\Render\Camera.h" />
+    <ClInclude Include="src\Render\Framebuffer.h" />
     <ClInclude Include="src\Render\Shader.h" />
+    <ClInclude Include="src\Render\Skybox.h" />
     <ClInclude Include="src\Render\Texture.h" />
     <ClInclude Include="src\Render\Window.h" />
     <ClInclude Include="src\clpch.h" />
@@ -158,11 +159,12 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
-    <ClCompile Include="src\Render\Skybox.cpp" />
     <ClCompile Include="src\Core\Utilities.cpp" />
     <ClCompile Include="src\Deps\ImGuiBuild.cpp" />
     <ClCompile Include="src\Render\Camera.cpp" />
+    <ClCompile Include="src\Render\Framebuffer.cpp" />
     <ClCompile Include="src\Render\Shader.cpp" />
+    <ClCompile Include="src\Render\Skybox.cpp" />
     <ClCompile Include="src\Render\Texture.cpp" />
     <ClCompile Include="src\Render\Window.cpp" />
     <ClCompile Include="src\clpch.cpp">

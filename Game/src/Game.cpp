@@ -12,11 +12,11 @@
 
 
 Game::Game() :
-	isWireframe(false),
-	gammaCorrection(1.8f),
-	cubeBrightness(1.0f),
+	cubeBrightness(8.0f),
 	cubeShine(32.0f),
-	screenshot(false)
+	shouldScreenshot(false),
+	m_gammaCorrection(1.8f),
+	m_renderWireFrame(false)
 {
 
 }
@@ -27,47 +27,12 @@ Game::~Game()
 
 bool Game::OnCreate()
 {
-	glEnable(GL_DEPTH_TEST);
-	if (isWireframe)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	else
-	{
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-	}
-
-	fboWidth = 1;
-	fboHeight = 1;
-
-	// Creating the FBO
-	glGenFramebuffers(1, &defaultFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO);
-
-	// Create a color attachment texture
-	glGenTextures(1, &defaultColourTex);
-	glBindTexture(GL_TEXTURE_2D, defaultColourTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, fboWidth, fboHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, defaultColourTex, 0);
-
-	// Create a renderbuffer object for depth attachment (not a texture because we're not sampling)
-	glGenRenderbuffers(1, &depthRender);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthRender);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, fboWidth, fboHeight); // Create the depth render buffer object
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRender); // Attach the render buffer object to the FBO depth slot
-
-	// Test that the framebuffer is complete
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 	cam = std::make_shared<Caramel::Camera>();
 
 	// Create the user picked shape
 	shape = InitShape();
+
+	m_viewFramebuffer = std::make_shared<Caramel::Framebuffer>();
 
 	// Setting up the shaders
 	simpleShader = Caramel::Shader::CreateShader("resources/shaders/simple.glsl");
@@ -111,53 +76,9 @@ void Game::Update(float a_deltaTime)
 	cam->Update(a_deltaTime);
 }
 
-void Game::Draw()
+void Game::ImDraw()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-
-	/// DRAW
-	if (simpleShader->Bind())
-	{
-		simpleShader->SetVec3("gLight.pos", light->GetPos());
-		simpleShader->SetVec3("gLight.colour", lightColour);
-		simpleShader->SetFloat("gMaterial.shininess", cubeShine);
-		simpleShader->SetFloat("gMaterial.emissionBrightness", cubeBrightness);
-		simpleShader->SetFloat("gGamma", gammaCorrection);
-		cubeDiffuse->Bind(GL_TEXTURE0);
-		cubeSpecular->Bind(GL_TEXTURE1);
-		cubeEmission->Bind(GL_TEXTURE2);
-		cam->Draw(shaderProgram);
-		shape->Draw(shaderProgram);
-	}
-
-	if (lightShader->Bind())
-	{
-		lightShader->SetVec3("gLightColour", lightColour);
-		cam->Draw(lightProgram);
-		light->Draw(lightProgram);
-		lightShader->Unbind();
-	}
-
-
-	if (screenshot)
-	{
-		Screenshot();
-	}
-
-	Caramel::Skybox::Draw(*cam);
-
-	ImGuiDraw();
-}
-
-void Game::Destroy()
-{
-}
-
-void Game::ImGuiDraw()
-{
-	// Draw ImGui on the backbuffer
+	// Draw ImGui on the backbuffer as we're drawing the scene as a texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -204,9 +125,10 @@ void Game::ImGuiDraw()
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("Viewport");
 	auto viewportSize = ImGui::GetContentRegionAvail();
-	ResizeFBO(viewportSize.x, viewportSize.y); // Resize the fbo to match the viewport size
+	portSize = { viewportSize.x, viewportSize.y };
+	m_viewFramebuffer->ResizeFBO(viewportSize.x, viewportSize.y); // Resize the fbo to match the viewport size
 	cam->SetProjectionMatrix(glm::perspective(glm::radians(50.0f), viewportSize.x / viewportSize.y, 0.1f, 5000.0f));
-	ImTextureID texID = (void*)(intptr_t)defaultColourTex;
+	ImTextureID texID = (void*)(intptr_t)m_viewFramebuffer->m_colourTex;
 	ImGui::Image(texID, viewportSize, { 0, 1 }, { 1, 0 });
 	ImGui::End();
 	ImGui::PopStyleVar();
@@ -225,11 +147,11 @@ void Game::ImGuiDraw()
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Properties");
 	ImGui::Separator();
 
-	GUITextureButton("Diffuse", cubeDiffuse);
-	GUITextureButton("Specular", cubeSpecular);
+	Caramel::Utility::TextureButton("Diffuse", cubeDiffuse);
+	Caramel::Utility::TextureButton("Specular", cubeSpecular);
 	ImGui::SameLine();
 	ImGui::DragFloat("Shine", &cubeShine, 0.05f, 0, 8096);
-	GUITextureButton("Emissive", cubeEmission);
+	Caramel::Utility::TextureButton("Emissive", cubeEmission);
 	ImGui::SameLine();
 	ImGui::DragFloat("Brightness", &cubeBrightness, 0.05f, 0.0f, 1000.0f);
 
@@ -246,16 +168,17 @@ void Game::ImGuiDraw()
 	}
 	if (ImGui::Button("Screenshot"))
 	{
-		screenshot = true;
+		shouldScreenshot = true;
 	}
 	static bool isFullscreen = Caramel::AppWindow::IsFullscreen();
 	if (ImGui::Checkbox("Toggle fullscreen", &isFullscreen))
 	{
 		Caramel::AppWindow::SetFullscreen(isFullscreen);
 	}
-	if (ImGui::Checkbox("Wireframe", &isWireframe))
+	bool* wFrame = &m_renderWireFrame;
+	if (ImGui::Checkbox("Wireframe", wFrame))
 	{
-		if (isWireframe)
+		if (*wFrame)
 		{
 			glDisable(GL_CULL_FACE);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -267,7 +190,7 @@ void Game::ImGuiDraw()
 			glCullFace(GL_BACK);
 		}
 	}
-	ImGui::DragFloat("Gamma", &gammaCorrection, 0.05f);
+	ImGui::DragFloat("Gamma", &m_gammaCorrection, 0.05f);
 	ImGui::Separator();
 	static char buf[32] = "";
 	if (ImGui::InputText("Window title", buf, 32))
@@ -299,76 +222,44 @@ void Game::ImGuiDraw()
 	ImGui::End();
 }
 
-void Game::ResizeFBO(float a_width, float a_height)
+void Game::Draw()
 {
-	if (fboWidth == a_width && fboHeight == a_height)
+	/// DRAW
+	m_viewFramebuffer->Bind();
+
+	Caramel::Skybox::Draw(*cam);
+
+	if (simpleShader->Bind())
 	{
-		return;
+		simpleShader->SetVec3("gLight.pos", light->GetPos());
+		simpleShader->SetVec3("gLight.colour", lightColour);
+		simpleShader->SetFloat("gMaterial.shininess", cubeShine);
+		simpleShader->SetFloat("gMaterial.emissionBrightness", cubeBrightness);
+		simpleShader->SetFloat("gGamma", m_gammaCorrection);
+		cubeDiffuse->Bind(GL_TEXTURE0);
+		cubeSpecular->Bind(GL_TEXTURE1);
+		cubeEmission->Bind(GL_TEXTURE2);
+		cam->Draw(shaderProgram);
+		shape->Draw(shaderProgram);
 	}
 
-	glDeleteFramebuffers(1, &defaultFBO);
-	glDeleteTextures(1, &defaultColourTex);
-	glDeleteRenderbuffers(1, &depthRender);
+	if (lightShader->Bind())
+	{
+		lightShader->SetVec3("gLightColour", lightColour);
+		cam->Draw(lightProgram);
+		light->Draw(lightProgram);
+		lightShader->Unbind();
+	}
 
-	fboWidth = a_width;
-	fboHeight = a_height;
-
-	// Creating the FBO
-	glGenFramebuffers(1, &defaultFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, defaultFBO);
-
-	// Create a color attachment texture
-	glGenTextures(1, &defaultColourTex);
-	glBindTexture(GL_TEXTURE_2D, defaultColourTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, fboWidth, fboHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, defaultColourTex, 0);
-
-	// Create a renderbuffer object for depth attachment (not a texture because we're not sampling)
-	glGenRenderbuffers(1, &depthRender);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthRender);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, fboWidth, fboHeight); // Create the depth render buffer object
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRender); // Attach the render buffer object to the FBO depth slot
-
-	// Test that the framebuffer is complete
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-	glViewport(0, 0, fboWidth, fboHeight);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	viewPortSize.x = a_width;
-	viewPortSize.y = a_height;
+	if (shouldScreenshot)
+	{
+		shouldScreenshot = false;
+		Caramel::Utility::Screenshot("image.png", portSize.x, portSize.y);
+	}
 }
 
-void Game::Screenshot()
+void Game::Destroy()
 {
-	screenshot = false;
-
-	auto viewportSize = ImGui::GetContentRegionAvail();
-
-	int width = viewPortSize.x;
-	int height = viewPortSize.y;
-
-	int imageSize = width * height * 3;
-
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-
-	// Create buffer for images
-	char* dataBuffer = new char[imageSize];
-
-	// Grab pixels
-	glReadPixels((GLint)0, (GLint)0,
-		(GLint)width, (GLint)height,
-		GL_RGB, GL_UNSIGNED_BYTE, dataBuffer);
-
-
-	// Save to file
-	stbi_flip_vertically_on_write(true);
-	stbi_write_png("image.png", width, height, 3, (void*)dataBuffer, width * 3);
-
-	// Free resources
-	delete[] dataBuffer;
 }
 
 std::shared_ptr<Shape> Game::InitShape()
@@ -400,16 +291,4 @@ std::shared_ptr<Shape> Game::InitShape()
 		}
 	}
 	return nullptr;
-}
-
-void Game::GUITextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture)
-{
-	ImTextureID texID = (void*)(intptr_t)a_texture->GetID();
-
-	if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
-	{
-		a_texture->Reload(Caramel::Utility::OpenFileDialog(m_window->GetNative()));
-	}
-	ImGui::SameLine();
-	ImGui::Text(a_textureName.c_str());
 }

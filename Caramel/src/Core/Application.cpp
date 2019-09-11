@@ -14,7 +14,7 @@ namespace Caramel
 {
 	float Application::sm_timeDilation = 1;
 
-	Application::Application() : m_isRunning(false), m_window(nullptr)
+	Application::Application() : m_isRunning(false), m_window(nullptr), m_drawGUI(true)
 	{
 	}
 
@@ -54,60 +54,96 @@ namespace Caramel
 
 	void Application::Run(const char* a_name, int a_width, int a_height, bool a_bFullscreen)
 	{
+		// Initialise logging system and attempt to create app
 		Log::Init();
 		CL_CORE_INFO("Logging system initialised");
+
 		if (CreateApp(a_name, a_width, a_height, a_bFullscreen))
 		{
+			// Reset timer and flag program as running
 			Utility::ResetTimer();
 			m_isRunning = true;
+
+			// Program loop
 			do
 			{
+				// Grab delta time and adjust by dilation
 				float deltaTime = Utility::TickTimer();
 				deltaTime = deltaTime * sm_timeDilation;
 
-				// Start the Dear ImGui frame
-				ImGui_ImplOpenGL3_NewFrame();
-				ImGui_ImplGlfw_NewFrame();
-				ImGui::NewFrame();
-
-
-				Update(deltaTime);
-
-				Draw();
-
-				// Grab IO and make sure size is correct
-				ImGuiIO& io = ImGui::GetIO();
-				io.DisplaySize = ImVec2(AppWindow::GetWidth(), AppWindow::GetHeight());
-
-				// Rendering
-				ImGui::Render();
-				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-				// Viewports rendering
-				if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+				if (m_drawGUI)
 				{
-					GLFWwindow* backup_current_context = glfwGetCurrentContext();
-					ImGui::UpdatePlatformWindows();
-					ImGui::RenderPlatformWindowsDefault();
-					glfwMakeContextCurrent(backup_current_context);
+					// Start the Dear ImGui frame
+					ImGui_ImplOpenGL3_NewFrame();
+					ImGui_ImplGlfw_NewFrame();
+					ImGui::NewFrame();
 				}
 
+				// Application events
+				Update(deltaTime);
+				ClientDraw();
+				ClientGUI();
 
+				// GL display calls
 				glfwSwapBuffers(m_window->GetNative());
 				glfwPollEvents();
 
 			} while (m_isRunning == true && m_window->ShouldClose() == 0);
 
-			Destroy();
+			// Client destroy call
+			ClientDestroy();
 		}
-		// Cleanup
+
+		// ImGui Cleanup
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 
+		// OpenGL Cleanup
 		m_window->DestroyWindow();
 		glfwTerminate();
 	}
+
+	void Application::ClientDraw()
+	{
+		// Process the client gl draw commands
+		Draw();
+	}
+
+	void Application::ClientGUI()
+	{
+		if (!m_drawGUI)
+		{
+			return;
+		}
+
+		// Process the client draw commands
+		ImDraw();
+
+		// Grab IO and make sure size is correct
+		ImGuiIO& io = ImGui::GetIO();
+		io.DisplaySize = ImVec2(AppWindow::GetWidth(), AppWindow::GetHeight());
+
+		// Rendering
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		// Viewports rendering
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+		}
+	}
+
+	void Application::ClientDestroy()
+	{
+		// Client destroy
+		Destroy();
+	}
+
 	void Application::SetTimeDilation(float a_newDilation)
 	{
 		sm_timeDilation = a_newDilation;

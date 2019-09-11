@@ -49,7 +49,7 @@ namespace Caramel
 		if (a_type == GL_FRAGMENT_SHADER)
 			return "fragment";
 
-		assert(false, "Unknown shader type");
+		CL_CORE_ASSERT(false, "Unknown shader type");
 		return 0;
 	}
 
@@ -60,16 +60,16 @@ namespace Caramel
 		if (a_type == "fragment" || a_type == "pixel")
 			return GL_FRAGMENT_SHADER;
 
-		assert(false, "Unknown shader type");
+		CL_CORE_ASSERT(false, "Unknown shader type");
 		return 0;
 	}
 
 	bool Shader::Compile(const std::unordered_map<unsigned int, std::string>& a_sources)
 	{
 		GLuint program = glCreateProgram();
-		std::vector<GLenum> glShaderIDs(a_sources.size());
+		std::array<unsigned int, 5> glShaderIDs; // Stack alloc for performance over memory (20bytes max)
 		m_isValid = false;
-
+		int idIndex = 0;
 		// Loop through all our sources and compile them
 		for (auto& kv : a_sources)
 		{
@@ -104,7 +104,7 @@ namespace Caramel
 
 			// Finally attach the shader to the program
 			glAttachShader(program, shader);
-			glShaderIDs.push_back(shader);
+			glShaderIDs[idIndex++] = shader;
 		}
 
 		// Now try link the program

@@ -16,6 +16,9 @@
     <ClInclude Include="src\Core\Application.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\Log.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Core\Utilities.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -25,6 +28,9 @@
     <ClInclude Include="src\Render\Shader.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="src\Render\Skybox.h">
+      <Filter>Render</Filter>
+    </ClInclude>
     <ClInclude Include="src\Render\Texture.h">
       <Filter>Render</Filter>
     </ClInclude>
@@ -32,13 +38,15 @@
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="src\clpch.h" />
-    <ClInclude Include="src\Core\Log.h" />
-    <ClInclude Include="src\Render\Skybox.h">
+    <ClInclude Include="src\Render\Framebuffer.h">
       <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Log.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Utilities.cpp">
@@ -53,6 +61,9 @@
     <ClCompile Include="src\Render\Shader.cpp">
       <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="src\Render\Skybox.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
     <ClCompile Include="src\Render\Texture.cpp">
       <Filter>Render</Filter>
     </ClCompile>
@@ -60,8 +71,7 @@
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="src\clpch.cpp" />
-    <ClCompile Include="src\Core\Log.cpp" />
-    <ClCompile Include="src\Render\Skybox.cpp">
+    <ClCompile Include="src\Render\Framebuffer.cpp">
       <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>

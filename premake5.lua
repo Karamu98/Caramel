@@ -92,7 +92,7 @@ project "Caramel"
 		}
 
 	filter "configurations:Debug"
-		defines "CL_DEBUG"
+		defines {"CL_DEBUG", "CL_ENABLE_ASSERTS"}
 		runtime "Debug"
 		symbols "on"
 

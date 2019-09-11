@@ -3,6 +3,8 @@
 // Class declarations
 class GLFWwindow;
 
+#include "Render/Texture.h"
+
 namespace Caramel
 {
 	// A utility class with static helper methods
@@ -22,6 +24,11 @@ namespace Caramel
 
 		// OpenGL
 		static void GetGLErrors();
+		static void Screenshot(const std::string& a_imageName, unsigned int a_width, unsigned int a_height);
+
+		// ImGui helpers
+		static void TextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture);
+
 
 	private:
 		static const char* GetGLErrorStr(unsigned int a_error);

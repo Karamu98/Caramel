@@ -8,6 +8,7 @@
 #include "Render\Camera.h"
 #include "Render\Shader.h"
 #include "Render\Window.h"
+#include "Render\Framebuffer.h"
 
 
 #include "imgui.h"

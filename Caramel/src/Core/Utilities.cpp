@@ -13,6 +13,9 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 #include "Core/Log.h"
+#include "Render/Window.h"
+
+#include <stb_image_write.h>
 
 namespace Caramel
 {
@@ -76,7 +79,7 @@ namespace Caramel
 		// Read in the file
 		std::shared_ptr<std::string> result = std::make_shared<std::string>();
 		std::ifstream in;
-		in.open(a_file, std::ios::in, std::ios::binary);
+		in.open(a_file, std::ios::in | std::ios::binary);
 		if (in.is_open())
 		{
 			// Grab the size of the file
@@ -116,6 +119,46 @@ namespace Caramel
 
 			CL_CORE_ERROR("GL Error: {0}", GetGLErrorStr(err));
 		}
+	}
+
+	void Utility::TextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture)
+	{
+		ImTextureID texID = (void*)(intptr_t)a_texture->GetID();
+
+		if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
+		{
+			
+			a_texture->Reload(Caramel::Utility::OpenFileDialog(AppWindow::GetNative()));
+		}
+		ImGui::SameLine();
+		ImGui::Text(a_textureName.c_str());
+	}
+
+	void Utility::Screenshot(const std::string& a_imageName, unsigned int a_width, unsigned int a_height)
+	{
+		std::string outPath = GetWorkingDir() + a_imageName;
+		int imageSize = a_width * a_height * 3;
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+		// Create buffer for images
+		char* dataBuffer = new char[imageSize];
+
+		// Grab pixels
+		glReadPixels((GLint)0, (GLint)0,
+			(GLint)a_width, (GLint)a_height,
+			GL_RGB, GL_UNSIGNED_BYTE, dataBuffer);
+
+
+		// Save to file
+		stbi_flip_vertically_on_write(true);
+		if (stbi_write_png(outPath.c_str(), a_width, a_height, 3, (void*)dataBuffer, a_width * 3))
+		{
+			CL_CORE_INFO("{0} saved at {1}", a_imageName, GetWorkingDir());
+		}
+
+		// Free resources
+		delete[] dataBuffer;
 	}
 
 	const char* Utility::GetGLErrorStr(unsigned int a_error)

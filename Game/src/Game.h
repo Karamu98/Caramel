@@ -16,25 +16,16 @@ public:
 
 	bool OnCreate() override;
 	void Update(float a_deltaTime) override;
+	void ImDraw() override;
 	void Draw() override;
 	void Destroy() override;
 
 private:
-	void ImGuiDraw();
-	void ResizeFBO(float a_width, float a_height);
-	void Screenshot();
-	std::shared_ptr<Shape> InitShape();
-	void GUITextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture);
-
-private:
-	bool isWireframe;
-	float gammaCorrection;
-
-	unsigned int defaultFBO;
-	unsigned int defaultColourTex;
-	unsigned int depthRender;
-	float fboWidth, fboHeight;
 	
+	std::shared_ptr<Shape> InitShape();
+
+private:	
+	std::shared_ptr<Caramel::Framebuffer> m_viewFramebuffer;
 	std::shared_ptr<Caramel::Shader> simpleShader;
 	std::shared_ptr<Caramel::Shader> lightShader;
 	std::shared_ptr<Shape> shape;
@@ -48,10 +39,15 @@ private:
 	float cubeShine;
 	float cubeBrightness;
 
+	bool m_renderWireFrame;
+	float m_gammaCorrection;
+
+	// Input
+	bool shouldScreenshot;
+
 	// Cache
 	unsigned int shaderProgram, lightProgram;
-	bool screenshot;
-	glm::vec2 viewPortSize;
+	glm::vec2 portSize;
 };
 
 #endif
