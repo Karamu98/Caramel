@@ -23,6 +23,9 @@ namespace Caramel
 	static float s_totalTime = 0;
 	static float s_deltaTime = 0;
 
+	std::string Utility::sm_workingDir;
+	std::string Utility::sm_engineDir;
+
 	void Utility::ResetTimer()
 	{
 		s_prevTime = glfwGetTime();
@@ -101,12 +104,32 @@ namespace Caramel
 
 	std::string Utility::GetWorkingDir()
 	{
+		if (sm_workingDir != "")
+		{
+			return sm_workingDir;
+		}
 		char path[MAX_PATH] = "";
 		GetModuleFileNameA(NULL, path, MAX_PATH);
 
 		std::string dir(path);
 		dir = dir.substr(0, dir.find_last_of("\\/"));
-		return dir + '\\';
+		sm_workingDir = dir + '\\';
+		return sm_workingDir;
+	}
+
+	std::string Utility::GetEngineDir()
+	{
+		if (sm_engineDir != "")
+		{
+			return sm_engineDir;
+		}
+		char path[MAX_PATH] = "";
+		GetModuleFileNameA(NULL, path, MAX_PATH);
+
+		std::string dir(path);
+		dir = dir.substr(0, dir.find_last_of("\\/"));
+		sm_engineDir = dir + "\\..\\Caramel\\";
+		return sm_engineDir;
 	}
 
 	void Utility::GetGLErrors()

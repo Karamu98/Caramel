@@ -34,25 +34,26 @@ bool Game::OnCreate()
 
 	m_viewFramebuffer = std::make_shared<Caramel::Framebuffer>();
 
+	std::string workingDir = Caramel::Utility::GetWorkingDir();
 	// Setting up the shaders
-	simpleShader = Caramel::Shader::CreateShader("resources/shaders/simple.glsl");
-	lightShader = Caramel::Shader::CreateShader("resources/shaders/light.glsl");
+	simpleShader = Caramel::Shader::CreateShader(workingDir + "resources/shaders/simple.glsl");
+	lightShader = Caramel::Shader::CreateShader(workingDir + "resources/shaders/light.glsl");
 	shaderProgram = simpleShader->GetProgramID();
 	lightProgram = lightShader->GetProgramID();
 
 	// Setting up textures
-	cubeDiffuse = Caramel::Texture::CreateTexture("resources/textures/container.png");
-	cubeSpecular = Caramel::Texture::CreateTexture("resources/textures/container_specular.png");
-	cubeEmission = Caramel::Texture::CreateTexture("resources/textures/container_emissive.png");
+	cubeDiffuse = Caramel::Texture::CreateTexture(workingDir + "resources/textures/container.png");
+	cubeSpecular = Caramel::Texture::CreateTexture(workingDir + "resources/textures/container_specular.png");
+	cubeEmission = Caramel::Texture::CreateTexture(workingDir + "resources/textures/container_emissive.png");
 
 	// Setting up the skybox
 	const std::vector<std::string> faces = {
-		"resources/textures/skybox/right.jpg",
-		"resources/textures/skybox/left.jpg",
-		"resources/textures/skybox/top.jpg",
-		"resources/textures/skybox/bottom.jpg",
-		"resources/textures/skybox/front.jpg",
-		"resources/textures/skybox/back.jpg"
+		workingDir + "resources/textures/skybox/right.jpg",
+		workingDir + "resources/textures/skybox/left.jpg",
+		workingDir + "resources/textures/skybox/top.jpg",
+		workingDir + "resources/textures/skybox/bottom.jpg",
+		workingDir + "resources/textures/skybox/front.jpg",
+		workingDir + "resources/textures/skybox/back.jpg"
 	};
 	Caramel::Skybox::SetSkybox(faces);
 

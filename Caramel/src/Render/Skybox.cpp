@@ -5,6 +5,7 @@
 #include <stb_image.h>
 
 #include "Core/Log.h"
+#include "Core/Utilities.h"
 #include "Render/Shader.h"
 
 namespace Caramel
@@ -18,7 +19,7 @@ namespace Caramel
 		if (!sm_instance)
 		{
 			sm_instance = std::make_shared<Skybox>();
-			sm_shader = Shader::CreateShader("resources/shaders/skybox.glsl");
+			sm_shader = Shader::CreateShader(Utility::GetEngineDir() + "resources/shaders/skybox.glsl");
 
 			const float skyboxVertices[] = {
 				// positions          

@@ -54,7 +54,7 @@ namespace Caramel
 		}
 		else
 		{
-			CL_CORE_INFO("Failed to load texture at: {0}", a_texturePath);
+			CL_CORE_ERROR("Failed to load texture at: {0}", a_texturePath);
 			stbi_image_free(data);
 			return false;
 		}
@@ -80,7 +80,7 @@ namespace Caramel
 	{
 		std::shared_ptr<Texture> newTexture = std::make_shared<Texture>();
 
-		if (newTexture->LoadTexture(Utility::GetWorkingDir() + a_texturePath))
+		if (newTexture->LoadTexture(a_texturePath))
 		{
 			return newTexture;
 		}

@@ -21,6 +21,7 @@ namespace Caramel
 		static std::string OpenFileDialog(GLFWwindow* a_window, const std::string& a_filter = "");
 		static std::shared_ptr<std::string> ReadFile(const std::string& a_file);
 		static std::string GetWorkingDir();
+		static std::string GetEngineDir();
 
 		// OpenGL
 		static void GetGLErrors();
@@ -32,6 +33,8 @@ namespace Caramel
 
 	private:
 		static const char* GetGLErrorStr(unsigned int a_error);
+		static std::string sm_workingDir; // Cache path
+		static std::string sm_engineDir;  // Cache path
 
 	};
 }

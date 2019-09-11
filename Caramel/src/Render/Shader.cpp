@@ -195,8 +195,7 @@ namespace Caramel
 
 	std::shared_ptr<Shader> Shader::CreateShader(const std::string& a_shaderPath)
 	{
-		std::string fullPath = Utility::GetWorkingDir() + a_shaderPath;
-		std::shared_ptr< std::unordered_map<unsigned int, std::string>> sources = Preprocess(fullPath);
+		std::shared_ptr< std::unordered_map<unsigned int, std::string>> sources = Preprocess(a_shaderPath);
 
 		if (sources == nullptr)
 		{
@@ -204,7 +203,7 @@ namespace Caramel
 		}
 
 		// Now that we have all the source files separated, give them to OpenGL
-		std::shared_ptr<Shader> newShader = std::make_shared<Shader>(fullPath);
+		std::shared_ptr<Shader> newShader = std::make_shared<Shader>(a_shaderPath);
 
 		// Now try create a shader with our sorted sources
 		if (newShader->Compile(*sources))

@@ -26,19 +26,21 @@ private:
 
 private:	
 	std::shared_ptr<Caramel::Framebuffer> m_viewFramebuffer;
-	std::shared_ptr<Caramel::Shader> simpleShader;
-	std::shared_ptr<Caramel::Shader> lightShader;
+	std::shared_ptr<Caramel::Shader> lightShader; // Debug shader to show light position
 	std::shared_ptr<Shape> shape;
 	std::shared_ptr<Cube> light;
 	std::shared_ptr<Caramel::Camera> cam;
 	glm::vec3 lightColour;
 
+	// Cube "Material" to be abstracted
+	std::shared_ptr<Caramel::Shader> simpleShader; // Universal shader for drawing Blinn-phong
 	std::shared_ptr<Caramel::Texture> cubeDiffuse;
 	std::shared_ptr<Caramel::Texture> cubeSpecular;
 	std::shared_ptr<Caramel::Texture> cubeEmission;
 	float cubeShine;
 	float cubeBrightness;
 
+	// Doesn't belong here, things like this should be in the renderer
 	bool m_renderWireFrame;
 	float m_gammaCorrection;
 
