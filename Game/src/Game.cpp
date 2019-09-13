@@ -38,8 +38,6 @@ bool Game::OnCreate()
 	// Setting up the shaders
 	simpleShader = Caramel::Shader::CreateShader(workingDir + "resources/shaders/simple.glsl");
 	lightShader = Caramel::Shader::CreateShader(workingDir + "resources/shaders/light.glsl");
-	shaderProgram = simpleShader->GetProgramID();
-	lightProgram = lightShader->GetProgramID();
 
 	// Setting up textures
 	cubeDiffuse = Caramel::Texture::CreateTexture(workingDir + "resources/textures/container.png");
@@ -240,15 +238,15 @@ void Game::Draw()
 		cubeDiffuse->Bind(GL_TEXTURE0);
 		cubeSpecular->Bind(GL_TEXTURE1);
 		cubeEmission->Bind(GL_TEXTURE2);
-		cam->Draw(shaderProgram);
-		shape->Draw(shaderProgram);
+		cam->Draw(simpleShader);
+		shape->Draw(simpleShader);
 	}
 
 	if (lightShader->Bind())
 	{
 		lightShader->SetVec3("gLightColour", lightColour);
-		cam->Draw(lightProgram);
-		light->Draw(lightProgram);
+		cam->Draw(lightShader);
+		light->Draw(lightShader);
 		lightShader->Unbind();
 	}
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "Render/Shader.h"
+
 
 namespace Caramel
 {
@@ -9,7 +11,7 @@ namespace Caramel
 	public:
 		Camera();
 
-		void Draw(unsigned int a_program);
+		void Draw(std::shared_ptr<Shader> a_program);
 		void Update(float a_deltaTime);
 		void SetProjectionMatrix(glm::mat4 a_newMat);
 		glm::mat4 GetProjectionMatrix();
@@ -24,6 +26,5 @@ namespace Caramel
 		glm::mat4 m_projViewMatrix;
 
 		float m_camSpeed = 2;
-
 	};
 }

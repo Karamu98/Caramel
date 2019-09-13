@@ -17,15 +17,12 @@ namespace Caramel
 		m_projMatrix = glm::perspective(glm::radians(50.0f), (float)AppWindow::GetWidth() / (float)AppWindow::GetHeight(), 0.1f, 5000.0f);
 	}
 
-	void Camera::Draw(unsigned int a_program)
+	void Camera::Draw(std::shared_ptr<Shader> a_program)
 	{
 		m_projViewMatrix = m_projMatrix * glm::inverse(m_camMatrix);
 
-		unsigned int loc = glGetUniformLocation(a_program, "camProjView");
-		glUniformMatrix4fv(loc, 1, GL_FALSE, &m_projViewMatrix[0][0]);
-
-		loc = glGetUniformLocation(a_program, "gCamPos");
-		glUniform3f(loc, m_camMatrix[3].x, m_camMatrix[3].y, m_camMatrix[3].z);
+		a_program->SetMat4("camProjView", m_projViewMatrix);
+		a_program->SetVec3("gCamPos", m_camMatrix[3].xyz);
 	}
 
 	void Camera::Update(float a_deltaTime)

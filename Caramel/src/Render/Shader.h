@@ -15,10 +15,11 @@ namespace Caramel
 		void SetBool(const std::string& a_name, bool a_value, bool a_logErrors = false);
 		void SetInt(const std::string& a_name, int a_value, bool a_logErrors = false);
 		void SetFloat(const std::string& a_name, float a_value, bool a_logErrors = false);
-		void SetVec4(const std::string& a_name, glm::vec4 a_value, bool a_logErrors = false);
-		void SetVec3(const std::string& a_name, glm::vec3 a_value, bool a_logErrors = false);
-		void SetVec2(const std::string& a_name, glm::vec2 a_value, bool a_logErrors = false);
-		void SetMat4(const std::string& a_name, glm::mat4 a_value, bool a_logErrors = true);
+		void SetVec4(const std::string& a_name, glm::vec4& a_value, bool a_logErrors = false);
+		void SetVec3(const std::string& a_name, glm::vec3& a_value, bool a_logErrors = false);
+		void SetVec3(const std::string& a_name, glm::detail::_swizzle<3, float, glm::packed_highp, glm::tvec3, 0, 1, 2, -1>& a_value, bool a_logErrors = false);
+		void SetVec2(const std::string& a_name, glm::vec2& a_value, bool a_logErrors = false);
+		void SetMat4(const std::string& a_name, glm::mat4& a_value, bool a_logErrors = true);
 
 		inline unsigned int GetProgramID() { return m_shaderProgram; }
 		void Recompile();

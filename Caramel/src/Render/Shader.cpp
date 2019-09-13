@@ -33,10 +33,6 @@ namespace Caramel
 		}
 		
 		unsigned int loc = glGetUniformLocation(m_shaderProgram, a_name.c_str());
-		if (loc == -1)
-		{
-			return loc;
-		}
 
 		m_uniformCache[a_name] = loc;
 		return loc;
@@ -140,6 +136,7 @@ namespace Caramel
 		// If we successfully created a shader, assign ID and validate
 		m_shaderProgram = program;
 		m_isValid = true;
+		m_uniformCache.clear(); // Clear to grab new uniforms
 
 		return true;
 	}
@@ -279,7 +276,7 @@ namespace Caramel
 		}
 	}
 
-	void Shader::SetVec4(const std::string& a_name, glm::vec4 a_value, bool a_logErrors)
+	void Shader::SetVec4(const std::string& a_name, glm::vec4& a_value, bool a_logErrors)
 	{
 		unsigned int loc = GetUniformLocation(a_name);
 
@@ -295,7 +292,7 @@ namespace Caramel
 		}
 	}
 
-	void Shader::SetVec3(const std::string& a_name, glm::vec3 a_value, bool a_logErrors)
+	void Shader::SetVec3(const std::string& a_name, glm::vec3& a_value, bool a_logErrors)
 	{
 		unsigned int loc = GetUniformLocation(a_name);
 
@@ -310,7 +307,21 @@ namespace Caramel
 		}
 	}
 
-	void Shader::SetVec2(const std::string& a_name, glm::vec2 a_value, bool a_logErrors)
+	void Shader::SetVec3(const std::string& a_name, glm::detail::_swizzle<3, float, glm::packed_highp, glm::tvec3, 0, 1, 2, -1> & a_value, bool a_logErrors)
+	{
+		unsigned int loc = GetUniformLocation(a_name);
+
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
+		{
+			glUniform3f(loc, a_value[0], a_value[1], a_value[2]);
+		}
+	}
+
+	void Shader::SetVec2(const std::string& a_name, glm::vec2& a_value, bool a_logErrors)
 	{
 		unsigned int loc = GetUniformLocation(a_name);
 
@@ -325,7 +336,7 @@ namespace Caramel
 		}
 	}
 
-	void Shader::SetMat4(const std::string& a_name, glm::mat4 a_value, bool a_logErrors)
+	void Shader::SetMat4(const std::string& a_name, glm::mat4& a_value, bool a_logErrors)
 	{
 		unsigned int loc = GetUniformLocation(a_name);
 

@@ -4,7 +4,7 @@
 #include <glm/ext.hpp>
 
 
-Shape::Shape() : m_vbo(-1), m_vao(-1)
+Shape::Shape() : m_vbo(-1), m_vao(-1), m_objMatLoc(-1)
 {
 	m_objMatrix = glm::inverse(glm::lookAt(glm::vec3(0), glm::vec3(0, 0, 1), glm::vec3(0, 1, 0)));
 }
@@ -15,11 +15,9 @@ Shape::~Shape()
 	glDeleteBuffers(2, buffers);
 }
 
-void Shape::Draw(unsigned int a_program)
+void Shape::Draw(std::shared_ptr<Caramel::Shader> a_program)
 {
-	unsigned int loc = glGetUniformLocation(a_program, "objMatrix");
-	glUniformMatrix4fv(loc, 1, GL_FALSE, &m_objMatrix[0][0]);
-
+	a_program->SetMat4("objMatrix", m_objMatrix);
 	DrawShape();
 }
 

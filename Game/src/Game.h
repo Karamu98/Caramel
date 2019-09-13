@@ -48,7 +48,6 @@ private:
 	bool shouldScreenshot;
 
 	// Cache
-	unsigned int shaderProgram, lightProgram;
 	glm::vec2 portSize;
 };
 
