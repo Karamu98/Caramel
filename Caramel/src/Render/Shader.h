@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
+#include "Transform.h"
+
 namespace Caramel
 {
 	class Shader
@@ -20,6 +22,7 @@ namespace Caramel
 		void SetVec3(const std::string& a_name, glm::detail::_swizzle<3, float, glm::packed_highp, glm::tvec3, 0, 1, 2, -1>& a_value, bool a_logErrors = false);
 		void SetVec2(const std::string& a_name, glm::vec2& a_value, bool a_logErrors = false);
 		void SetMat4(const std::string& a_name, glm::mat4& a_value, bool a_logErrors = true);
+		void SetMat4(const std::string& a_name, Transform& a_value, bool a_logErrors = true);
 
 		inline unsigned int GetProgramID() { return m_shaderProgram; }
 		void Recompile();

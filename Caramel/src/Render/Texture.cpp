@@ -1,7 +1,7 @@
 #include "clpch.h"
 #include "Texture.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 #include <glad/glad.h>
 #include "Core/Log.h"
 #include "Core/Utilities.h"
@@ -48,9 +48,20 @@ namespace Caramel
 		unsigned char* data = stbi_load(a_texturePath.c_str(), &width, &height, &nrChannels, 0);
 		if (data)
 		{
+			GLint format = 0;
+			if (nrChannels == 1)
+				format = GL_RED;
+			else if (nrChannels == 2)
+				format = GL_RG;
+			else if (nrChannels == 3)
+				format = GL_RGB;
+			else if (nrChannels == 4)
+				format = GL_RGBA;
+
 			CL_CORE_INFO("Loaded texture at: {0}", a_texturePath);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
+			stbi_image_free(data);
 		}
 		else
 		{
@@ -58,7 +69,6 @@ namespace Caramel
 			stbi_image_free(data);
 			return false;
 		}
-		stbi_image_free(data);
 
 		m_filePath = a_texturePath;
 

@@ -148,6 +148,7 @@
     <ClInclude Include="src\Shapes\Cube.h" />
     <ClInclude Include="src\Shapes\Pyramid.h" />
     <ClInclude Include="src\Shapes\Shape.h" />
+    <ClInclude Include="src\Shapes\Sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="src\Shapes\Pyramid.cpp" />
     <ClCompile Include="src\Shapes\Shape.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Shapes\Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caramel\Caramel.vcxproj">

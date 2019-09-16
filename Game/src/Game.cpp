@@ -12,11 +12,13 @@
 
 
 Game::Game() :
-	cubeBrightness(8.0f),
-	cubeShine(32.0f),
 	shouldScreenshot(false),
 	m_gammaCorrection(1.8f),
-	m_renderWireFrame(false)
+	m_renderWireFrame(false),
+	lightLinear(0.09f),
+	lightQuadratic(0.032f),
+	lightAttenuation(9.0f),
+	isShapeScene(false)
 {
 
 }
@@ -27,51 +29,80 @@ Game::~Game()
 
 bool Game::OnCreate()
 {
+	std::string workingDir = Caramel::Utility::GetWorkingDir();
 	cam = std::make_shared<Caramel::Camera>();
+	cam->Transform()->SetPosition(glm::vec3(-3, 0, 3));
 
 	// Create the user picked shape
-	shape = InitShape();
+	
+	if (isShapeScene)
+	{
+		// Load model
+		model = Caramel::Model::LoadModel(workingDir + "resources/models/shapes/sphere.obj");
+
+		// Setting up textures
+		shapeAlbedo = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/rustedIron/albedo.png");
+		shapeNormal = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/rustedIron/normal.png");
+		shapeMetallic = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/rustedIron/metallic.png");
+		shapeRoughness = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/rustedIron/roughness.png");
+		shapeAO = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/bamboo/ao.png");
+	}
+	else
+	{
+		// Load and position model
+		model = Caramel::Model::LoadModel(workingDir + "resources/models/cerberus/Cerberus_LP.fbx");
+		modelTransform.Scale(glm::vec3(0.05f));
+		modelTransform.Rotate(-90, glm::vec3(1, 0, 0));
+
+		// Setting up textures
+		shapeAlbedo = Caramel::Texture::CreateTexture(workingDir + "resources/models/cerberus/Textures/Cerberus_A.tga");
+		shapeNormal = Caramel::Texture::CreateTexture(workingDir + "resources/models/cerberus/Textures/Cerberus_N.tga");
+		shapeMetallic = Caramel::Texture::CreateTexture(workingDir + "resources/models/cerberus/Textures/Cerberus_M.tga");
+		shapeRoughness = Caramel::Texture::CreateTexture(workingDir + "resources/models/cerberus/Textures/Cerberus_R.tga");
+		shapeAO = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/bamboo/ao.png");
+	}
+
 
 	m_viewFramebuffer = std::make_shared<Caramel::Framebuffer>();
 
-	std::string workingDir = Caramel::Utility::GetWorkingDir();
 	// Setting up the shaders
-	simpleShader = Caramel::Shader::CreateShader(workingDir + "resources/shaders/simple.glsl");
+	objectShader = Caramel::Shader::CreateShader(workingDir + "resources/engine/shaders/pbr.glsl");
 	lightShader = Caramel::Shader::CreateShader(workingDir + "resources/shaders/light.glsl");
-
-	// Setting up textures
-	cubeDiffuse = Caramel::Texture::CreateTexture(workingDir + "resources/textures/container.png");
-	cubeSpecular = Caramel::Texture::CreateTexture(workingDir + "resources/textures/container_specular.png");
-	cubeEmission = Caramel::Texture::CreateTexture(workingDir + "resources/textures/container_emissive.png");
 
 	// Setting up the skybox
 	const std::vector<std::string> faces = {
-		workingDir + "resources/textures/skybox/right.jpg",
-		workingDir + "resources/textures/skybox/left.jpg",
-		workingDir + "resources/textures/skybox/top.jpg",
-		workingDir + "resources/textures/skybox/bottom.jpg",
-		workingDir + "resources/textures/skybox/front.jpg",
-		workingDir + "resources/textures/skybox/back.jpg"
+		workingDir + "resources/engine/textures/defaultSkybox/right.jpg",
+		workingDir + "resources/engine/textures/defaultSkybox/left.jpg",
+		workingDir + "resources/engine/textures/defaultSkybox/top.jpg",
+		workingDir + "resources/engine/textures/defaultSkybox/bottom.jpg",
+		workingDir + "resources/engine/textures/defaultSkybox/front.jpg",
+		workingDir + "resources/engine/textures/defaultSkybox/back.jpg"
 	};
 	Caramel::Skybox::SetSkybox(faces);
 
 	// Setting up the light 
-	light = std::make_shared<Cube>();
-	light->SetPosition(glm::vec3(0, 2, -5));
-	light->Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-	lightColour = glm::vec3(1, 0.5f, 1);
+	lightShape = std::make_shared<Cube>();
+	lightShape->Transform()->SetPosition(glm::vec3(-2, 3, 0));
+	lightShape->Transform()->Scale(glm::vec3(0.2f, 0.2f, 0.2f));
+	lightColour = glm::vec3(1, 1, 1);
 
-	simpleShader->Bind();
-	simpleShader->SetInt("gMaterial.texture", 0);
-	simpleShader->SetInt("gMaterial.spec", 1);
-	simpleShader->SetInt("gMaterial.emission", 2);
+	objectShader->Bind();
+	objectShader->SetInt("gMaterial.albedo", 0);
+	objectShader->SetInt("gMaterial.normal", 1);
+	objectShader->SetInt("gMaterial.metallic", 2);
+	objectShader->SetInt("gMaterial.roughness", 3);
+	objectShader->SetInt("gMaterial.ao", 4);
+
+	objectShader->SetInt("gLight.linear", lightLinear);
+	objectShader->SetInt("gLight.quadratic", lightQuadratic);
 
 	return true;
 }
 
 void Game::Update(float a_deltaTime)
 {
-	shape->Rotate(a_deltaTime, glm::vec3(0, 1, 0));
+	if(isShapeScene)
+		modelTransform.Rotate(a_deltaTime, glm::vec3(0, 1, 0));
 	cam->Update(a_deltaTime);
 }
 
@@ -137,8 +168,9 @@ void Game::ImDraw()
 
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Properties");
 	ImGui::Separator();
-	ImGui::DragFloat3("Position", glm::value_ptr((*light->GetMatrix())[3]), 0.1f);
+	ImGui::DragFloat3("Position", glm::value_ptr((*lightShape->Transform()->GetMatrix())[3]), 0.1f);
 	ImGui::ColorEdit3("Colour", glm::value_ptr(lightColour));
+	ImGui::DragFloat("Attenuation", &lightAttenuation, 0.05f);
 
 	ImGui::End();
 
@@ -146,13 +178,11 @@ void Game::ImDraw()
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Properties");
 	ImGui::Separator();
 
-	Caramel::Utility::TextureButton("Diffuse", cubeDiffuse);
-	Caramel::Utility::TextureButton("Specular", cubeSpecular);
-	ImGui::SameLine();
-	ImGui::DragFloat("Shine", &cubeShine, 0.05f, 0, 8096);
-	Caramel::Utility::TextureButton("Emissive", cubeEmission);
-	ImGui::SameLine();
-	ImGui::DragFloat("Brightness", &cubeBrightness, 0.05f, 0.0f, 1000.0f);
+	Caramel::Utility::TextureButton("Albedo", shapeAlbedo);
+	Caramel::Utility::TextureButton("Normal", shapeNormal);
+	Caramel::Utility::TextureButton("Metallic", shapeMetallic);
+	Caramel::Utility::TextureButton("Roughness", shapeRoughness);
+	Caramel::Utility::TextureButton("AO", shapeAO);
 
 
 	ImGui::End();
@@ -210,7 +240,7 @@ void Game::ImDraw()
 	ImGui::Begin("Shader Reloading");
 	if (ImGui::Button("Simple Shader"))
 	{
-		simpleShader->Recompile();
+		objectShader->Recompile();
 	}
 	if (ImGui::Button("Light Shader"))
 	{
@@ -228,25 +258,27 @@ void Game::Draw()
 
 	Caramel::Skybox::Draw(*cam);
 
-	if (simpleShader->Bind())
+	if (objectShader->Bind())
 	{
-		simpleShader->SetVec3("gLight.pos", light->GetPos());
-		simpleShader->SetVec3("gLight.colour", lightColour);
-		simpleShader->SetFloat("gMaterial.shininess", cubeShine);
-		simpleShader->SetFloat("gMaterial.emissionBrightness", cubeBrightness);
-		simpleShader->SetFloat("gGamma", m_gammaCorrection);
-		cubeDiffuse->Bind(GL_TEXTURE0);
-		cubeSpecular->Bind(GL_TEXTURE1);
-		cubeEmission->Bind(GL_TEXTURE2);
-		cam->Draw(simpleShader);
-		shape->Draw(simpleShader);
+		objectShader->SetVec3("gLight.pos", lightShape->Transform()->GetPos());
+		objectShader->SetVec3("gLight.colour", lightColour * lightAttenuation);
+		objectShader->SetFloat("gGamma", m_gammaCorrection);
+		shapeAlbedo->Bind(GL_TEXTURE0);
+		shapeNormal->Bind(GL_TEXTURE1);
+		shapeMetallic->Bind(GL_TEXTURE2);
+		shapeRoughness->Bind(GL_TEXTURE3);
+		shapeAO->Bind(GL_TEXTURE4);
+		cam->Draw(objectShader);
+
+		objectShader->SetMat4("objMatrix", modelTransform);
+		model->Draw();
 	}
 
 	if (lightShader->Bind())
 	{
 		lightShader->SetVec3("gLightColour", lightColour);
 		cam->Draw(lightShader);
-		light->Draw(lightShader);
+		lightShape->Draw(lightShader);
 		lightShader->Unbind();
 	}
 
@@ -263,7 +295,7 @@ void Game::Destroy()
 
 std::shared_ptr<Shape> Game::InitShape()
 {
-	CL_TRACE("Pick a shape:\n1. Pyramid\n2. Cube\n");
+	CL_TRACE("Pick a shape:\n1. Pyramid\n2. Cube\n3. Sphere\n");
 
 	int option = 0;
 
@@ -281,6 +313,11 @@ std::shared_ptr<Shape> Game::InitShape()
 		case 2:
 		{
 			return std::make_shared<Cube>();
+			break;
+		}
+		case 3:
+		{
+			return std::make_shared<Sphere>();
 			break;
 		}
 		default:

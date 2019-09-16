@@ -9,6 +9,9 @@
 #include "Render\Shader.h"
 #include "Render\Window.h"
 #include "Render\Framebuffer.h"
+#include "Render\Model.h"
+
+#include "Transform.h"
 
 
 #include "imgui.h"

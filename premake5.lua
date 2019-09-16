@@ -23,6 +23,7 @@ IncludeDir["Glad"] = "Caramel/deps/Glad/include"
 IncludeDir["ImGui"] = "Caramel/deps/imgui"
 IncludeDir["glm"] = "Caramel/deps/glm"
 IncludeDir["stb"] = "Caramel/deps/stb"
+IncludeDir["assimp"] = "Caramel/deps/assimp/include"
 
 group "Dependencies"
 	include "Caramel/deps/GLFW"
@@ -70,7 +71,8 @@ project "Caramel"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb}"
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.assimp}"
 	}
 
 	links 
@@ -78,7 +80,9 @@ project "Caramel"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"opengl32.lib"
+		"opengl32.lib",
+		"assimp-vc141-mtd.dll", 
+		"assimp-vc141-mtd.lib"
 	}
 
 	filter "system:windows"
@@ -93,6 +97,7 @@ project "Caramel"
 
 	filter "configurations:Debug"
 		defines {"CL_DEBUG", "CL_ENABLE_ASSERTS"}
+		libdirs {"%{prj.name}/deps/assimp/bin/Debug"}
 		runtime "Debug"
 		symbols "on"
 

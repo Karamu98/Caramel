@@ -64,6 +64,9 @@ namespace Caramel
 			Utility::ResetTimer();
 			m_isRunning = true;
 
+			// Default opengl
+			glEnable(GL_DEPTH_TEST);
+
 			// Program loop
 			do
 			{

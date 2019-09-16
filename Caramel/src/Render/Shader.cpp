@@ -46,7 +46,7 @@ namespace Caramel
 			return "fragment";
 
 		CL_CORE_ASSERT(false, "Unknown shader type");
-		return 0;
+		return "";
 	}
 
 	unsigned int Shader::ShaderTypeFromString(const std::string& a_type)
@@ -347,6 +347,20 @@ namespace Caramel
 		else if (loc != -1)
 		{
 			glUniformMatrix4fv(loc, 1, false, glm::value_ptr(a_value));
+		}
+	}
+
+	void Shader::SetMat4(const std::string& a_name, Transform& a_value, bool a_logErrors)
+	{
+		unsigned int loc = GetUniformLocation(a_name);
+
+		if (loc == -1 && a_logErrors)
+		{
+			CL_CORE_WARN("{0} not found in shader", a_name);
+		}
+		else if (loc != -1)
+		{
+			glUniformMatrix4fv(loc, 1, false, glm::value_ptr(*a_value.GetMatrix()));
 		}
 	}
 

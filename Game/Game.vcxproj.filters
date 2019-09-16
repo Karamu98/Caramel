@@ -16,6 +16,7 @@
     <ClInclude Include="src\Shapes\Shape.h">
       <Filter>Shapes</Filter>
     </ClInclude>
+    <ClInclude Include="src\Shapes\Sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp" />
@@ -29,5 +30,6 @@
       <Filter>Shapes</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Shapes\Sphere.cpp" />
   </ItemGroup>
 </Project>

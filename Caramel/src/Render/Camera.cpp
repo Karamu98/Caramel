@@ -13,16 +13,16 @@ namespace Caramel
 	Camera::Camera()
 	{
 		glm::vec3 pos = glm::vec3(0, 3, 5);
-		m_camMatrix = glm::inverse(glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+		m_Transform = glm::inverse(glm::lookAt(pos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 		m_projMatrix = glm::perspective(glm::radians(50.0f), (float)AppWindow::GetWidth() / (float)AppWindow::GetHeight(), 0.1f, 5000.0f);
 	}
 
 	void Camera::Draw(std::shared_ptr<Shader> a_program)
 	{
-		m_projViewMatrix = m_projMatrix * glm::inverse(m_camMatrix);
+		m_projViewMatrix = m_projMatrix * glm::inverse(*m_Transform.GetMatrix());
 
 		a_program->SetMat4("camProjView", m_projViewMatrix);
-		a_program->SetVec3("gCamPos", m_camMatrix[3].xyz);
+		a_program->SetVec3("gCamPos", m_Transform.GetPos());
 	}
 
 	void Camera::Update(float a_deltaTime)
@@ -30,10 +30,10 @@ namespace Caramel
 		GLFWwindow* window = glfwGetCurrentContext();
 
 		// Get the camera's forward, right, up, and location vectors
-		glm::vec4 vForward = m_camMatrix[2];
-		glm::vec4 vRight = m_camMatrix[0];
-		glm::vec4 vUp = m_camMatrix[1];
-		glm::vec4 vTranslation = m_camMatrix[3];
+		glm::vec4 vForward = (*m_Transform.GetMatrix())[2];
+		glm::vec4 vRight = (*m_Transform.GetMatrix())[0];
+		glm::vec4 vUp = (*m_Transform.GetMatrix())[1];
+		glm::vec4 vTranslation = (*m_Transform.GetMatrix())[3];
 
 		// check for camera rotation
 		static bool sbMouseButtonDown = false;
@@ -77,9 +77,9 @@ namespace Caramel
 				vForward = mMat * vForward;
 			}
 
-			m_camMatrix[0] = vRight;
-			m_camMatrix[1] = vUp;
-			m_camMatrix[2] = vForward;
+			(*m_Transform.GetMatrix())[0] = vRight;
+			(*m_Transform.GetMatrix())[1] = vUp;
+			(*m_Transform.GetMatrix())[2] = vForward;
 		}
 		else
 		{
@@ -115,7 +115,7 @@ namespace Caramel
 			vTranslation -= vUp * frameSpeed;
 		}
 
-		m_camMatrix[3] = vTranslation;
+		(*m_Transform.GetMatrix())[3] = vTranslation;
 	}
 
 	void Camera::SetProjectionMatrix(glm::mat4 a_newMat)
@@ -128,7 +128,7 @@ namespace Caramel
 	}
 	glm::mat4 Camera::GetViewMatrix()
 	{
-		return glm::inverse(m_camMatrix);
+		return glm::inverse((*m_Transform.GetMatrix()));
 	}
 	glm::mat4 Camera::GetProjectionView()
 	{

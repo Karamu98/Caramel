@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "Render/Shader.h"
+#include "Transform.h"
 
 
 namespace Caramel
@@ -17,12 +18,13 @@ namespace Caramel
 		glm::mat4 GetProjectionMatrix();
 		glm::mat4 GetViewMatrix();
 		glm::mat4 GetProjectionView();
-		inline glm::vec3 GetPos() { return glm::vec3(m_camMatrix[3]); }
+
+		inline Caramel::Transform* Transform() { return &m_Transform; }
 
 	private:
 
+		Caramel::Transform m_Transform;
 		glm::mat4 m_projMatrix;
-		glm::mat4 m_camMatrix;
 		glm::mat4 m_projViewMatrix;
 
 		float m_camSpeed = 2;
