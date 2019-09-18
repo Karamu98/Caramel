@@ -62,7 +62,6 @@ bool Game::OnCreate()
 		shapeAO = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/bamboo/ao.png");
 	}
 
-
 	m_viewFramebuffer = std::make_shared<Caramel::Framebuffer>();
 
 	// Setting up the shaders
@@ -70,7 +69,7 @@ bool Game::OnCreate()
 	lightShader = Caramel::Shader::CreateShader(workingDir + "resources/shaders/light.glsl");
 
 	// Setting up the skybox
-	const std::vector<std::string> faces = {
+	const std::vector<std::string> ocean = {
 		workingDir + "resources/engine/textures/defaultSkybox/right.jpg",
 		workingDir + "resources/engine/textures/defaultSkybox/left.jpg",
 		workingDir + "resources/engine/textures/defaultSkybox/top.jpg",
@@ -78,7 +77,15 @@ bool Game::OnCreate()
 		workingDir + "resources/engine/textures/defaultSkybox/front.jpg",
 		workingDir + "resources/engine/textures/defaultSkybox/back.jpg"
 	};
-	Caramel::Skybox::SetSkybox(faces);
+	const std::vector<std::string> maze = {
+		workingDir + "resources/engine/textures/mazeSkybox/right.bmp",
+		workingDir + "resources/engine/textures/mazeSkybox/left.bmp",
+		workingDir + "resources/engine/textures/mazeSkybox/top.bmp",
+		workingDir + "resources/engine/textures/mazeSkybox/bottom.bmp",
+		workingDir + "resources/engine/textures/mazeSkybox/front.bmp",
+		workingDir + "resources/engine/textures/mazeSkybox/back.bmp"
+	};
+	Caramel::Skybox::SetSkybox(ocean);
 
 	// Setting up the light 
 	lightShape = std::make_shared<Cube>();
@@ -178,11 +185,11 @@ void Game::ImDraw()
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Properties");
 	ImGui::Separator();
 
-	Caramel::Utility::TextureButton("Albedo", shapeAlbedo);
-	Caramel::Utility::TextureButton("Normal", shapeNormal);
-	Caramel::Utility::TextureButton("Metallic", shapeMetallic);
-	Caramel::Utility::TextureButton("Roughness", shapeRoughness);
-	Caramel::Utility::TextureButton("AO", shapeAO);
+	//Caramel::Utility::TextureButton("Albedo", shapeAlbedo);
+	//Caramel::Utility::TextureButton("Normal", shapeNormal);
+	//Caramel::Utility::TextureButton("Metallic", shapeMetallic);
+	//Caramel::Utility::TextureButton("Roughness", shapeRoughness);
+	//Caramel::Utility::TextureButton("AO", shapeAO);
 
 
 	ImGui::End();

@@ -92,7 +92,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>call $(SolutionDir)scripts/copyDepsToOut.bat</Command>
+      <Command>call $(SolutionDir)scripts/copyDepsToOutDebug.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -116,7 +116,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PreBuildEvent>
-      <Command>call $(SolutionDir)scripts/copyDepsToOut.bat</Command>
+      <Command>call $(SolutionDir)scripts/copyDepsToOutRelease.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -139,9 +139,6 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
-    <PreBuildEvent>
-      <Command>call $(SolutionDir)scripts/copyDepsToOut.bat</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h" />
@@ -155,8 +152,8 @@
     <ClCompile Include="src\Shapes\Cube.cpp" />
     <ClCompile Include="src\Shapes\Pyramid.cpp" />
     <ClCompile Include="src\Shapes\Shape.cpp" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shapes\Sphere.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caramel\Caramel.vcxproj">

@@ -8,6 +8,8 @@
 
 namespace Caramel
 {
+	std::unordered_map<std::string, std::weak_ptr<Texture>> Texture::s_textureLibrary;
+
 	Texture::Texture() : m_isActive(false)
 	{
 	}
@@ -88,10 +90,24 @@ namespace Caramel
 
 	std::shared_ptr<Texture> Texture::CreateTexture(const std::string& a_texturePath)
 	{
-		std::shared_ptr<Texture> newTexture = std::make_shared<Texture>();
+		std::shared_ptr<Texture> newTexture;
+
+		// If the texture is tracked
+		if (s_textureLibrary.find(a_texturePath) != s_textureLibrary.end())
+		{
+			// And if the texture is still loaded, return the texture
+			if (newTexture = s_textureLibrary[a_texturePath].lock())
+			{
+				return newTexture;
+			}
+		}
+
+		newTexture = std::make_shared<Texture>();
 
 		if (newTexture->LoadTexture(a_texturePath))
 		{
+			// Register the new texture
+			s_textureLibrary[a_texturePath] = newTexture;
 			return newTexture;
 		}
 		else

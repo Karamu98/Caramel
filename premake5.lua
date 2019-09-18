@@ -80,9 +80,7 @@ project "Caramel"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"opengl32.lib",
-		"assimp-vc141-mtd.dll", 
-		"assimp-vc141-mtd.lib"
+		"opengl32.lib"
 	}
 
 	filter "system:windows"
@@ -98,11 +96,22 @@ project "Caramel"
 	filter "configurations:Debug"
 		defines {"CL_DEBUG", "CL_ENABLE_ASSERTS"}
 		libdirs {"%{prj.name}/deps/assimp/bin/Debug"}
+		links 
+		{
+			"assimp-vc141-mtd.dll", 
+			"assimp-vc141-mtd.lib"
+		}
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "CL_RELEASE"
+		libdirs{"%{prj.name}/deps/assimp/bin/Release"}
+		links 
+		{
+			"assimp-vc141-mt.dll", 
+			"assimp-vc141-mt.lib"
+		}
 		runtime "Release"
 		optimize "on"
 
@@ -144,11 +153,6 @@ project "Game"
 		"Caramel"
 	}
 
-	prebuildcommands 
-	{
-		"call %{wks.location}scripts/copyDepsToOut.bat"
-	}
-
 	filter "system:windows"
 		systemversion "latest"
 
@@ -165,11 +169,19 @@ project "Game"
 
 	filter "configurations:Debug"
 		defines "CL_DEBUG"
+		prebuildcommands 
+		{
+			"call %{wks.location}scripts/copyDepsToOutDebug.bat"
+		}
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "CL_RELEASE"
+		prebuildcommands 
+		{
+			"call %{wks.location}scripts/copyDepsToOutRelease.bat"
+		}
 		runtime "Release"
 		optimize "on"
 

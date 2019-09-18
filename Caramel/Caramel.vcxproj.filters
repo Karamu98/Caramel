@@ -43,8 +43,8 @@
     <ClInclude Include="src\Render\Window.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="src\clpch.h" />
     <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\clpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -80,7 +80,7 @@
     <ClCompile Include="src\Render\Window.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="src\clpch.cpp" />
     <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\clpch.cpp" />
   </ItemGroup>
 </Project>

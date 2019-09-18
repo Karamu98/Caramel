@@ -8,6 +8,8 @@ namespace Caramel
 	{
 	public:
 		static std::shared_ptr<Texture> CreateTexture(const std::string& a_texturePath);
+	private:
+		static std::unordered_map<std::string, std::weak_ptr<Texture>> s_textureLibrary;
 
 
 	public:
