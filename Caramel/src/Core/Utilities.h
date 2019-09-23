@@ -4,6 +4,7 @@
 class GLFWwindow;
 
 #include "Render/Texture.h"
+#include "Render/Model.h"
 
 namespace Caramel
 {
@@ -29,6 +30,7 @@ namespace Caramel
 
 		// ImGui helpers
 		static void TextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture);
+		static void ModelButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Model>& a_texture);
 
 
 	private:

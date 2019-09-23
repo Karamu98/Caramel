@@ -9,7 +9,7 @@ namespace Caramel
 {
 	class Shader
 	{
-	public:
+	public: // M
 		Shader(const std::string& a_sourcePath);
 		~Shader();
 		bool Bind();
@@ -27,22 +27,24 @@ namespace Caramel
 		inline unsigned int GetProgramID() { return m_shaderProgram; }
 		void Recompile();
 
-	private:
+	private: // M
+		bool Compile(const std::unordered_map<unsigned int, std::string>& a_sources);
+		unsigned int GetUniformLocation(const std::string& a_name) const;
+
+	private: // V
 		unsigned int m_shaderProgram;
 		bool m_isValid;
 		std::string m_shaderPath;
 		mutable std::unordered_map<std::string, unsigned int> m_uniformCache;
 
-	public:
+	public: // M
 		static std::shared_ptr<Shader> CreateShader(const std::string& a_shaderPath);
-
-	private:
+	private: // M
 		static std::string StringFromShaderType(const unsigned int a_type);
 		static unsigned int ShaderTypeFromString(const std::string& a_type);
 		static std::shared_ptr<std::unordered_map<unsigned int, std::string>> Preprocess(const std::string& a_shaderPath);
-		bool Compile(const std::unordered_map<unsigned int, std::string>& a_sources);
-		unsigned int GetUniformLocation(const std::string& a_name) const;
-
+	private: // V
+		static std::unordered_map<std::string, std::weak_ptr<Shader>> s_shaderLibrary;
 	};
 
 }

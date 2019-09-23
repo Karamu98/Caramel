@@ -31,6 +31,16 @@ namespace Caramel
 		m_matrix[3] = glm::vec4(a_newPos, 1);
 	}
 
+	void Transform::LookAt(glm::vec3 a_pos)
+	{
+		m_matrix = glm::lookAt(GetPos(), a_pos, glm::vec3(0, 1, 0));
+	}
+
+	void Transform::LookAt(Transform& a_pos)
+	{
+		m_matrix = glm::inverse(glm::lookAt(GetPos(), a_pos.GetPos(), glm::vec3(0, 1, 0)));
+	}
+
 	void Transform::Rotate(float a_angle, glm::vec3 a_axis)
 	{
 		m_matrix = glm::rotate(m_matrix, a_angle, a_axis);

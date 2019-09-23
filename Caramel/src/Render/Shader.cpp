@@ -19,6 +19,7 @@ namespace Caramel
 
 #endif
 
+	std::unordered_map<std::string, std::weak_ptr<Shader>> Shader::s_shaderLibrary;
 
 	Shader::Shader(const std::string& a_sourcePath) : m_isValid(false)
 	{
@@ -63,9 +64,11 @@ namespace Caramel
 	bool Shader::Compile(const std::unordered_map<unsigned int, std::string>& a_sources)
 	{
 		GLuint program = glCreateProgram();
-		std::array<unsigned int, 5> glShaderIDs; // Stack alloc for performance over memory (20bytes max)
+		Utility::GetGLErrors();
+		std::vector<unsigned int> glShaderIDs; // Stack alloc for performance over memory (20bytes max)
+		glShaderIDs.reserve(5);
 		m_isValid = false;
-		int idIndex = 0;
+
 		// Loop through all our sources and compile them
 		for (auto& kv : a_sources)
 		{
@@ -74,13 +77,16 @@ namespace Caramel
 
 			// Create the shader
 			GLuint shader = glCreateShader(type);
+			Utility::GetGLErrors();
 
 			// Convert the source and give it to OpenGL
 			const GLchar* sourceStr = source.c_str();
 			glShaderSource(shader, 1, &sourceStr, 0);
+			Utility::GetGLErrors();
 
 			// Compile
 			glCompileShader(shader);
+			Utility::GetGLErrors();
 
 			GLint isCompiled = 0;
 			glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
@@ -100,14 +106,17 @@ namespace Caramel
 
 			// Finally attach the shader to the program
 			glAttachShader(program, shader);
-			glShaderIDs[idIndex++] = shader;
+			Utility::GetGLErrors();
+			glShaderIDs.push_back(shader);
 		}
 
 		// Now try link the program
 		glLinkProgram(program);
+		Utility::GetGLErrors();
 
 		GLint isLinked = 0;
 		glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
+		Utility::GetGLErrors();
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxLength = 0;
@@ -130,14 +139,16 @@ namespace Caramel
 		for (auto id : glShaderIDs)
 		{
 			glDetachShader(program, id);
+			Utility::GetGLErrors();
 			DeleteShader(id);
+			Utility::GetGLErrors();
 		}
 
 		// If we successfully created a shader, assign ID and validate
 		m_shaderProgram = program;
 		m_isValid = true;
 		m_uniformCache.clear(); // Clear to grab new uniforms
-
+		Utility::GetGLErrors();
 		return true;
 	}
 
@@ -192,6 +203,17 @@ namespace Caramel
 
 	std::shared_ptr<Shader> Shader::CreateShader(const std::string& a_shaderPath)
 	{
+		std::shared_ptr<Shader> newShader;
+		// If the shader is tracked
+		if (s_shaderLibrary.find(a_shaderPath) != s_shaderLibrary.end())
+		{
+			// And if the shader is still loaded, return the shader
+			if (newShader = s_shaderLibrary[a_shaderPath].lock())
+			{
+				return newShader;
+			}
+		}
+
 		std::shared_ptr< std::unordered_map<unsigned int, std::string>> sources = Preprocess(a_shaderPath);
 
 		if (sources == nullptr)
@@ -200,11 +222,12 @@ namespace Caramel
 		}
 
 		// Now that we have all the source files separated, give them to OpenGL
-		std::shared_ptr<Shader> newShader = std::make_shared<Shader>(a_shaderPath);
+		newShader = std::make_shared<Shader>(a_shaderPath);
 
 		// Now try create a shader with our sorted sources
 		if (newShader->Compile(*sources))
 		{
+			s_shaderLibrary[a_shaderPath] = newShader;
 			return newShader;
 		}
 		else

@@ -15,6 +15,7 @@ namespace Caramel
 		void Draw(std::shared_ptr<Shader> a_program);
 		void Update(float a_deltaTime);
 		void SetProjectionMatrix(glm::mat4 a_newMat);
+		void SetRatio(unsigned int a_w, unsigned int a_h);
 		glm::mat4 GetProjectionMatrix();
 		glm::mat4 GetViewMatrix();
 		glm::mat4 GetProjectionView();

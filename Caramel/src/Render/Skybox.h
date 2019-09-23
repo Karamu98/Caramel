@@ -14,7 +14,7 @@ namespace Caramel
 		/// </summary>
 		static void SetSkybox(const std::vector<std::string>& a_faces);
 		/// <summary>
-		/// Draws the skybox. You should call this at the end of drawing.
+		/// Draws the skybox.
 		/// </summary>
 		static void Draw(Camera& a_camera);
 	private:

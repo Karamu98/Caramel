@@ -45,6 +45,7 @@
     </ClInclude>
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\clpch.h" />
+    <ClInclude Include="src\Core\BoundingCube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -82,5 +83,6 @@
     </ClCompile>
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\clpch.cpp" />
+    <ClCompile Include="src\Core\BoundingCube.cpp" />
   </ItemGroup>
 </Project>

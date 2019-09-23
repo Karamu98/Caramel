@@ -52,7 +52,6 @@ bool Game::OnCreate()
 		// Load and position model
 		model = Caramel::Model::LoadModel(workingDir + "resources/models/cerberus/Cerberus_LP.fbx");
 		modelTransform.Scale(glm::vec3(0.05f));
-		modelTransform.Rotate(-90, glm::vec3(1, 0, 0));
 
 		// Setting up textures
 		shapeAlbedo = Caramel::Texture::CreateTexture(workingDir + "resources/models/cerberus/Textures/Cerberus_A.tga");
@@ -62,6 +61,10 @@ bool Game::OnCreate()
 		shapeAO = Caramel::Texture::CreateTexture(workingDir + "resources/textures/PBR/bamboo/ao.png");
 	}
 
+	cam->Transform()->LookAt(modelTransform);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	m_viewFramebuffer = std::make_shared<Caramel::Framebuffer>();
 
 	// Setting up the shaders
@@ -185,11 +188,12 @@ void Game::ImDraw()
 	ImGui::TextColored(ImVec4(0, 1, 0, 1), "Properties");
 	ImGui::Separator();
 
-	//Caramel::Utility::TextureButton("Albedo", shapeAlbedo);
-	//Caramel::Utility::TextureButton("Normal", shapeNormal);
-	//Caramel::Utility::TextureButton("Metallic", shapeMetallic);
-	//Caramel::Utility::TextureButton("Roughness", shapeRoughness);
-	//Caramel::Utility::TextureButton("AO", shapeAO);
+	Caramel::Utility::ModelButton("Model", model);
+	Caramel::Utility::TextureButton("Albedo", shapeAlbedo);
+	Caramel::Utility::TextureButton("Normal", shapeNormal);
+	Caramel::Utility::TextureButton("Metallic", shapeMetallic);
+	Caramel::Utility::TextureButton("Roughness", shapeRoughness);
+	Caramel::Utility::TextureButton("AO", shapeAO);
 
 
 	ImGui::End();
@@ -260,6 +264,7 @@ void Game::ImDraw()
 
 void Game::Draw()
 {
+	Caramel::Utility::GetGLErrors();
 	/// DRAW
 	m_viewFramebuffer->Bind();
 

@@ -7,16 +7,17 @@
 
 namespace Caramel
 {
-	void Framebuffer::Bind()
+	bool Framebuffer::Bind()
 	{
 		if (m_isValid)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			return;
+			return true;
 		}
 		CL_CORE_ERROR("Framebuffer is not valid");
+		return false;
 	}
 
 	void Framebuffer::ResizeFBO(float a_width, float a_height)
@@ -42,7 +43,7 @@ namespace Caramel
 		glGenFramebuffers(1, &m_FBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 
-		// Create a color attachment texture
+		// Create a colour attachment texture
 		glGenTextures(1, &m_colourTex);
 		glBindTexture(GL_TEXTURE_2D, m_colourTex);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_FBOWidth, m_FBOHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -67,17 +68,13 @@ namespace Caramel
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	Framebuffer::Framebuffer() : m_isValid(false), m_renderWireFrame(false), m_gammaCorrection(1.8f)
+	Framebuffer::Framebuffer() : m_isValid(false)
 	{
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
 		ResizeFBO(AppWindow::GetWidth(), AppWindow::GetHeight());
 	}
 
-	Framebuffer::Framebuffer(unsigned int a_width, unsigned int a_height) : m_isValid(false), m_renderWireFrame(false), m_gammaCorrection(1.8f)
+	Framebuffer::Framebuffer(unsigned int a_width, unsigned int a_height) : m_isValid(false)
 	{
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
 		ResizeFBO(a_width, a_height);
 	}
 

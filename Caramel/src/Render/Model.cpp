@@ -1,6 +1,8 @@
 #include "clpch.h"
 #include "Render/Model.h"
 
+#include <glm/ext.hpp>
+
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
@@ -10,6 +12,8 @@
 #include "glad/glad.h"
 
 #include "Core/Log.h"
+#include "Render/Camera.h"
+#include "Core/Utilities.h"
 
 namespace Caramel
 {
@@ -42,7 +46,7 @@ namespace Caramel
 		}
 	}
 
-	Model::Model() : m_isValid(false)
+	Model::Model() : m_isValid(false), m_hasPreview(false)
 	{
 	}
 
@@ -55,6 +59,83 @@ namespace Caramel
 				mesh.Draw();
 			}
 		}
+	}
+
+	void Model::Reload(const std::string& a_newPath)
+	{
+		m_isValid = false;
+		if (m_hasPreview)
+		{
+			glDeleteFramebuffers(1, &m_previewBuffer);
+			glDeleteTextures(1, &m_previewTexture);
+			m_hasPreview = false;
+		}
+		m_modelPath = a_newPath;
+		m_meshes.clear();
+
+		Load(a_newPath);
+	}
+
+	// TODO: This is garbage
+	unsigned int Model::GetPreviewTex()
+	{
+		if (m_hasPreview)
+		{
+			return m_previewTexture;
+		}
+		// Grab previously bound
+		int previousBound;
+		glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &previousBound);
+
+		int previousViewPort[4];
+		glGetIntegerv(GL_VIEWPORT, &previousViewPort[0]);
+
+		// Generate a framebuffer
+		glGenFramebuffers(1, &m_previewBuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_previewBuffer);
+
+		// Create a color attachment texture
+		glGenTextures(1, &m_previewTexture);
+		glBindTexture(GL_TEXTURE_2D, m_previewTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 80, 80, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_previewTexture, 0);
+
+		// Set the list of draw buffers.
+		GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+		glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			CL_CORE_ERROR("Framebuffer not complete.");
+		}
+		glViewport(0, 0, 80, 80);
+
+		std::shared_ptr<Shader> previewShader = Shader::CreateShader(Utility::GetWorkingDir() + "resources/engine/shaders/modelPreview.glsl");		
+		if (previewShader->Bind())
+		{
+			Transform modelTrans;
+			modelTrans.SetPosition(glm::vec3(0.0f));
+
+			glm::mat4x4 camProjMat = glm::ortho(m_bounds.GetMinBound().x, m_bounds.GetMaxBound().x, m_bounds.GetMinBound().z, m_bounds.GetMaxBound().z);
+			glm::mat4x4 camViewMat = glm::inverse(glm::lookAt(glm::vec3(5), modelTrans.GetPos(), glm::vec3(0, 1, 0)));
+
+			previewShader->SetVec3("previewColour", glm::vec3(1.0f, 1.0f, 1.0f));
+			previewShader->SetMat4("objMatrix", modelTrans, true);
+			previewShader->SetInt("gTex", 0);
+			previewShader->SetMat4("camProjView", camProjMat * camViewMat);
+			Draw();
+			m_hasPreview = true;
+		}
+		else
+		{
+			CL_CORE_ERROR("Unable to bind model preview shader.");
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, previousBound);
+		glViewport(previousViewPort[0], previousViewPort[1], previousViewPort[2], previousViewPort[3]);
+		Utility::GetGLErrors();
+		return m_previewTexture;
 	}
 
 	bool Model::Load(const std::string& a_path)
@@ -79,8 +160,13 @@ namespace Caramel
 		// Retrieve the directory path of the filepath
 		m_modelPath = a_path.substr(0, a_path.find_last_of('/'));
 
+		m_minmax = new glm::vec3[2];
+
 		// process ASSIMP's root node recursively
 		ProcessAssimpNode(scene->mRootNode, scene);
+
+		m_bounds.SetBounds(m_minmax[0], m_minmax[1]);
+		delete m_minmax;
 
 		m_isValid = true;
 		return true;
@@ -119,6 +205,7 @@ namespace Caramel
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
 			vertex.m_position = vector;
+			TestMinMax(vector);
 
 			// Normals
 			vector.x = mesh->mNormals[i].x;
@@ -175,6 +262,34 @@ namespace Caramel
 		return Mesh(vertices, indices);
 	}
 
+	void Model::TestMinMax(const glm::vec3& a_point)
+	{
+		if (a_point.x < m_minmax[0].x)
+		{
+			m_minmax[0].x = a_point.x;
+		}
+		if (a_point.y < m_minmax[0].y)
+		{
+			m_minmax[0].y = a_point.y;
+		}
+		if (a_point.z < m_minmax[0].z)
+		{
+			m_minmax[0].z = a_point.z;
+		}
+
+		if (a_point.x > m_minmax[1].x)
+		{
+			m_minmax[1].x = a_point.x;
+		}
+		if (a_point.y > m_minmax[1].y)
+		{
+			m_minmax[1].y = a_point.y;
+		}
+		if (a_point.z > m_minmax[1].z)
+		{
+			m_minmax[1].z = a_point.z;
+		}
+	}
 
 	Mesh::Mesh(std::vector<Vertex>& a_verts, std::vector<unsigned int>& a_inds)
 	{

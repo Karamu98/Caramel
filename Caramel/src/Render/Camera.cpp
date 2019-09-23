@@ -122,6 +122,10 @@ namespace Caramel
 	{
 		m_projMatrix = a_newMat;
 	}
+	void Camera::SetRatio(unsigned int a_w, unsigned int a_h)
+	{
+		m_projMatrix = glm::perspective(glm::radians(50.0f), (float)a_w / (float)a_h, 0.1f, 5000.0f);
+	}
 	glm::mat4 Camera::GetProjectionMatrix()
 	{
 		return m_projMatrix;

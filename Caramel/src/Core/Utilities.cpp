@@ -157,6 +157,18 @@ namespace Caramel
 		ImGui::Text(a_textureName.c_str());
 	}
 
+	void Utility::ModelButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Model>& a_model)
+	{
+		ImTextureID texID = (void*)(intptr_t)a_model->GetPreviewTex();
+
+		if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
+		{
+			a_model->Reload(Caramel::Utility::OpenFileDialog(AppWindow::GetNative()));
+		}
+		ImGui::SameLine();
+		ImGui::Text(a_textureName.c_str());
+	}
+
 	void Utility::Screenshot(const std::string& a_imageName, unsigned int a_width, unsigned int a_height)
 	{
 		std::string outPath = GetWorkingDir() + a_imageName;
