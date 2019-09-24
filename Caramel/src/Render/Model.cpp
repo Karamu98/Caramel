@@ -331,7 +331,7 @@ namespace Caramel
 		glBindVertexArray(0);
 
 		// Track indicies count
-		m_indicesCount = indices.size();
+		m_indicesCount = (unsigned int)indices.size();
 	}
 
 	Mesh::~Mesh()

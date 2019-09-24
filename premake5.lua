@@ -29,6 +29,7 @@ group "Dependencies"
 	include "Caramel/deps/GLFW"
 	include "Caramel/deps/Glad"
 	include "Caramel/deps/imgui"
+	--include "Caramel/deps/assimp"
 
 group ""
 

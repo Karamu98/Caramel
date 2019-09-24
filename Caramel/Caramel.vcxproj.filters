@@ -16,6 +16,9 @@
     <ClInclude Include="src\Core\Application.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\BoundingCube.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Core\Log.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -45,10 +48,12 @@
     </ClInclude>
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\clpch.h" />
-    <ClInclude Include="src\Core\BoundingCube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\BoundingCube.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Log.cpp">
@@ -83,6 +88,5 @@
     </ClCompile>
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\clpch.cpp" />
-    <ClCompile Include="src\Core\BoundingCube.cpp" />
   </ItemGroup>
 </Project>

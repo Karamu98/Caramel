@@ -117,7 +117,7 @@ namespace Caramel
 
 		// Grab IO and make sure size is correct
 		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(AppWindow::GetWidth(), AppWindow::GetHeight());
+		io.DisplaySize = ImVec2((float)AppWindow::GetWidth(), (float)AppWindow::GetHeight());
 
 		// Rendering
 		ImGui::Render();

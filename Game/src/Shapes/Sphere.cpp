@@ -19,7 +19,7 @@ Sphere::Sphere()
 
 	const unsigned int X_SEGMENTS = 64;
 	const unsigned int Y_SEGMENTS = 64;
-	const float PI = 3.14159265359;
+	const float PI = 3.14159265359f;
 	for (unsigned int y = 0; y <= Y_SEGMENTS; ++y)
 	{
 		for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
@@ -57,7 +57,7 @@ Sphere::Sphere()
 		}
 		oddRow = !oddRow;
 	}
-	m_indiciesCount = indices.size();
+	m_indiciesCount = (unsigned int)indices.size();
 
 	std::vector<float> data;
 	for (int i = 0; i < positions.size(); ++i)
@@ -83,7 +83,7 @@ Sphere::Sphere()
 	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-	float stride = (3 + 2 + 3) * sizeof(float);
+	GLsizei stride = (3 + 2 + 3) * sizeof(float);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
 	glEnableVertexAttribArray(1);

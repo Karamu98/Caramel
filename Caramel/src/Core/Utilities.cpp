@@ -2,19 +2,20 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <stdio.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 #include <imgui.h>
-#define IMGUI_IMPL_API
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_opengl3.h"
 
 #include "Utilities.h"
 
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
 #include "Core/Log.h"
+#include "Render/Skybox.h"
 #include "Render/Window.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
 namespace Caramel
@@ -144,33 +145,110 @@ namespace Caramel
 		}
 	}
 
-	void Utility::TextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture)
+	bool Utility::TextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture)
 	{
 		ImTextureID texID = (void*)(intptr_t)a_texture->GetID();
 
 		if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
 		{
-			
 			a_texture->Reload(Caramel::Utility::OpenFileDialog(AppWindow::GetNative()));
+			return true;
 		}
 		ImGui::SameLine();
 		ImGui::Text(a_textureName.c_str());
+		return false;
 	}
 
-	void Utility::ModelButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Model>& a_model)
+	bool Utility::ModelButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Model>& a_model)
 	{
 		ImTextureID texID = (void*)(intptr_t)a_model->GetPreviewTex();
 
 		if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
 		{
 			a_model->Reload(Caramel::Utility::OpenFileDialog(AppWindow::GetNative()));
+			return true;
 		}
 		ImGui::SameLine();
 		ImGui::Text(a_textureName.c_str());
+		return false;
+	}
+
+	bool Utility::SkyboxButton()
+	{
+		static bool skyboxEdit = false;
+
+		if (ImGui::Button("Edit Skybox"))
+		{
+			skyboxEdit = true;
+		}
+
+		if (!skyboxEdit)
+			return;
+		if (ImGui::Begin("Edit Skybox", &skyboxEdit))
+		{
+			// Show buttons for textures
+			std::string workingDir = Caramel::Utility::GetWorkingDir();
+
+			static char rightBuff[128] = {};
+			static char leftBuff[128] = {};
+			static char topBuff[128] = {};
+			static char bottomBuff[128] = {};
+			static char fBuff[128] = {};
+			static char bBuff[128] = {};
+
+			PathEntry("Right", &rightBuff[0], 128);
+			PathEntry("Left", &leftBuff[0], 128);
+			PathEntry("Top", &topBuff[0], 128);
+			PathEntry("Bottom", &bottomBuff[0], 128);
+			PathEntry("Front", &fBuff[0], 128);
+			PathEntry("Back", &bBuff[0], 128);
+
+			if (ImGui::Button("Apply"))
+			{
+				const std::vector<std::string> newBox =
+				{
+					rightBuff,
+					leftBuff,
+					topBuff,
+					bottomBuff,
+					fBuff,
+					bBuff
+				};
+
+				Skybox::SetSkybox(newBox);
+				return true;
+			}
+			ImGui::End();
+		}
+		return false;
+	}
+
+	bool Utility::PathEntry(const std::string& a_fieldName, char* a_buffer, size_t a_length)
+	{
+		ImGui::PushID(a_fieldName.c_str());
+		ImGui::Text(a_fieldName.c_str());
+		ImGui::SameLine();
+		ImGui::InputText("", a_buffer, a_length);
+		ImGui::SameLine();
+		if (ImGui::Button("Browse"))
+		{
+			std::string newPath = OpenFileDialog(Caramel::AppWindow::GetNative());
+			if (newPath.length() < a_length)
+			{
+				memcpy(a_buffer, newPath.c_str(), newPath.length());
+				return true;
+			}
+			else
+			{
+				CL_CORE_ERROR("Path entry buffer too small");
+			}
+		}
+		ImGui::PopID();
+		return false;
 	}
 
 	void Utility::Screenshot(const std::string& a_imageName, unsigned int a_width, unsigned int a_height)
-	{
+	{	
 		std::string outPath = GetWorkingDir() + a_imageName;
 		int imageSize = a_width * a_height * 3;
 

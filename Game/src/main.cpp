@@ -3,7 +3,7 @@
 int main()
 {	
 	Game* newGame = new Game();
-	newGame->Run("Caramel Engine", 1920, 1080, false);
+	newGame->Run("Caramel Engine", 1280, 720, false);
 
 	delete newGame;
 

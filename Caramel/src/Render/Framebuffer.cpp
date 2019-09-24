@@ -20,7 +20,7 @@ namespace Caramel
 		return false;
 	}
 
-	void Framebuffer::ResizeFBO(float a_width, float a_height)
+	void Framebuffer::ResizeFBO(unsigned int a_width, unsigned int a_height)
 	{
 		if (m_FBOWidth == a_width && m_FBOHeight == a_height)
 		{
@@ -46,7 +46,7 @@ namespace Caramel
 		// Create a colour attachment texture
 		glGenTextures(1, &m_colourTex);
 		glBindTexture(GL_TEXTURE_2D, m_colourTex);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_FBOWidth, m_FBOHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (GLsizei)m_FBOWidth, (GLsizei)m_FBOHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colourTex, 0);
@@ -54,7 +54,7 @@ namespace Caramel
 		// Create a renderbuffer object for depth attachment (not a texture because we're not sampling)
 		glGenRenderbuffers(1, &m_depthRender);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_depthRender);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_FBOWidth, m_FBOHeight); // Create the depth render buffer object
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, (GLsizei)m_FBOWidth, (GLsizei)m_FBOHeight); // Create the depth render buffer object
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthRender); // Attach the render buffer object to the FBO depth slot
 
 		// Test that the framebuffer is complete
@@ -64,7 +64,7 @@ namespace Caramel
 			return;
 		}
 		m_isValid = true;
-		glViewport(0, 0, m_FBOWidth, m_FBOHeight);
+		glViewport(0, 0, (GLsizei)m_FBOWidth, (GLsizei)m_FBOHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 

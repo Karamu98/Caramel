@@ -1,13 +1,9 @@
 #include "Game.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-#include "examples/imgui_impl_opengl3.cpp"
-#include "examples/imgui_impl_glfw.cpp"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <stb/stb_image_write.h>
 
 #include <iostream>
+#include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
 
@@ -34,7 +30,6 @@ bool Game::OnCreate()
 	cam->Transform()->SetPosition(glm::vec3(-3, 0, 3));
 
 	// Create the user picked shape
-	
 	if (isShapeScene)
 	{
 		// Load model
@@ -103,8 +98,8 @@ bool Game::OnCreate()
 	objectShader->SetInt("gMaterial.roughness", 3);
 	objectShader->SetInt("gMaterial.ao", 4);
 
-	objectShader->SetInt("gLight.linear", lightLinear);
-	objectShader->SetInt("gLight.quadratic", lightQuadratic);
+	objectShader->SetFloat("gLight.linear", lightLinear);
+	objectShader->SetFloat("gLight.quadratic", lightQuadratic);
 
 	return true;
 }
@@ -206,6 +201,7 @@ void Game::ImDraw()
 	{
 		Caramel::Application::SetTimeDilation(timeBuf);
 	}
+	Caramel::Utility::SkyboxButton();
 	if (ImGui::Button("Screenshot"))
 	{
 		shouldScreenshot = true;
@@ -252,10 +248,7 @@ void Game::ImDraw()
 	if (ImGui::Button("Simple Shader"))
 	{
 		objectShader->Recompile();
-	}
-	if (ImGui::Button("Light Shader"))
-	{
-		lightShader->Recompile();
+		// You'd also have to reinit constants here
 	}
 	ImGui::End();
 
@@ -297,7 +290,7 @@ void Game::Draw()
 	if (shouldScreenshot)
 	{
 		shouldScreenshot = false;
-		Caramel::Utility::Screenshot("image.png", portSize.x, portSize.y);
+		Caramel::Utility::Screenshot("image.png", (unsigned int)portSize.x, (unsigned int)portSize.y);
 	}
 }
 
