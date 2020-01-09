@@ -1,0 +1,21 @@
+Create premake file for assimp and add as dependancy, this will allow assimp to always be avalible.
+
+Material and MaterialInstance system to allow for more complex management of shaders and their required data. **Big task**
+
+An industry standard ECS with systems controlling data-only components. A "Render" system can look for "Model filter" components
+and "Material components" and use this data to submit a render command.
+
+Render commands system. An actual 3D renderer system needs to be created to handle draw calls on a seperate thread.
+
+		*** MULTITHREADING *** This is important to start soon.
+Create a asset streaming class/interface to allow for assets like textures and models to be ready when they're loaded without
+halting the program. For things like textures, maybe load in a shit version first very quickly and fade to the actual texture when it
+becomes avalible
+
+Theory:
+Render thread: handles sorting and calling OpenGL commands
+Game thread: Loop that should avoid pauses that allows for the application to run This would be stalled by waiting for render
+Loading thread(s?): Handles loading commands submitted by the game thread? (Texture load would send a command with path to here)
+(future) Network thread: Handles grabbing networked info and storing it for the game thread
+
+Asset pooling to reduce memory fragmentation

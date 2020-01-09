@@ -1,2 +1,0 @@
-framework.lib filter=lfs diff=lfs merge=lfs -text
-FBX_Loader.lib filter=lfs diff=lfs merge=lfs -text
