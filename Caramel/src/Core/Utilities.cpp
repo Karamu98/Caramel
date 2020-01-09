@@ -183,7 +183,7 @@ namespace Caramel
 		}
 
 		if (!skyboxEdit)
-			return;
+			return false;
 		if (ImGui::Begin("Edit Skybox", &skyboxEdit))
 		{
 			// Show buttons for textures
