@@ -29,7 +29,7 @@ group "Dependencies"
 	include "Caramel/deps/GLFW"
 	include "Caramel/deps/Glad"
 	include "Caramel/deps/imgui"
-	--include "Caramel/deps/assimp"
+	include "Caramel/deps/assimp"
 
 group ""
 
@@ -81,6 +81,7 @@ project "Caramel"
 		"GLFW",
 		"Glad",
 		"ImGui",
+		"assimp",
 		"opengl32.lib"
 	}
 
@@ -96,23 +97,11 @@ project "Caramel"
 
 	filter "configurations:Debug"
 		defines {"CL_DEBUG", "CL_ENABLE_ASSERTS"}
-		libdirs {"%{prj.name}/deps/assimp/bin/Debug"}
-		links 
-		{
-			"assimp-vc141-mtd.dll", 
-			"assimp-vc141-mtd.lib"
-		}
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "CL_RELEASE"
-		libdirs{"%{prj.name}/deps/assimp/bin/Release"}
-		links 
-		{
-			"assimp-vc141-mt.dll", 
-			"assimp-vc141-mt.lib"
-		}
 		runtime "Release"
 		optimize "on"
 

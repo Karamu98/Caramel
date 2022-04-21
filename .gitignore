@@ -2,3 +2,7 @@
 
 .vs/
 bin/
+
+**.vcxproj**
+**.sln
+**.vcxproj

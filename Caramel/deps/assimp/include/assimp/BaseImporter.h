@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2019, assimp team
+Copyright (c) 2006-2018, assimp team
 
 
 All rights reserved.
@@ -77,17 +77,19 @@ class IOStream;
  * imports the given file. ReadFile is not overridable, it just calls
  * InternReadFile() and catches any ImportErrorException that might occur.
  */
-class ASSIMP_API BaseImporter {
+class ASSIMP_API BaseImporter
+{
     friend class Importer;
 
 public:
 
     /** Constructor to be privately used by #Importer */
-    BaseImporter() AI_NO_EXCEPT;
+    BaseImporter();
 
     /** Destructor, private as well */
     virtual ~BaseImporter();
 
+public:
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
      *

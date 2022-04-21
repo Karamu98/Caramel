@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2019, assimp team
+Copyright (c) 2006-2018, assimp team
 
 
 
@@ -198,6 +198,8 @@ enum aiTextureType
      */
     aiTextureType_NONE = 0x0,
 
+
+
     /** The texture is combined with the result of the diffuse
      *  lighting equation.
      */
@@ -276,7 +278,7 @@ enum aiTextureType
      *
      *  A texture reference that does not match any of the definitions
      *  above is considered to be 'unknown'. It is still imported,
-     *  but is excluded from any further post-processing.
+     *  but is excluded from any further postprocessing.
     */
     aiTextureType_UNKNOWN = 0xC,
 
@@ -373,7 +375,7 @@ enum aiShadingMode
 */
 enum aiTextureFlags
 {
-    /** The texture's color values have to be inverted (component-wise 1-n)
+    /** The texture's color values have to be inverted (componentwise 1-n)
      */
     aiTextureFlags_Invert = 0x1,
 
@@ -481,7 +483,7 @@ struct aiUVTransform
 
 
 #ifdef __cplusplus
-    aiUVTransform() AI_NO_EXCEPT
+    aiUVTransform()
         :   mTranslation (0.0,0.0)
         ,   mScaling    (1.0,1.0)
         ,   mRotation   (0.0)
@@ -605,18 +607,17 @@ struct aiMaterialProperty
 
 #ifdef __cplusplus
 
-    aiMaterialProperty() AI_NO_EXCEPT
-    : mSemantic( 0 )
-    , mIndex( 0 )
-    , mDataLength( 0 )
-    , mType( aiPTI_Float )
-    , mData(nullptr) {
-        // empty
+    aiMaterialProperty()
+        : mSemantic( 0 )
+        , mIndex( 0 )
+        , mDataLength( 0 )
+        , mType( aiPTI_Float )
+        , mData( NULL )
+    {
     }
 
     ~aiMaterialProperty()   {
         delete[] mData;
-        mData = nullptr;
     }
 
 #endif
@@ -649,14 +650,6 @@ public:
 
     aiMaterial();
     ~aiMaterial();
-
-    // -------------------------------------------------------------------
-    /**
-      * @brief  Returns the name of the material.
-      * @return The name of the material.
-      */
-    // -------------------------------------------------------------------
-    aiString GetName();
 
     // -------------------------------------------------------------------
     /** @brief Retrieve an array of Type values with a specific key
@@ -900,7 +893,6 @@ extern "C" {
 #define AI_MATKEY_ENABLE_WIREFRAME "$mat.wireframe",0,0
 #define AI_MATKEY_BLEND_FUNC "$mat.blend",0,0
 #define AI_MATKEY_OPACITY "$mat.opacity",0,0
-#define AI_MATKEY_TRANSPARENCYFACTOR "$mat.transparencyfactor",0,0
 #define AI_MATKEY_BUMPSCALING "$mat.bumpscaling",0,0
 #define AI_MATKEY_SHININESS "$mat.shininess",0,0
 #define AI_MATKEY_REFLECTIVITY "$mat.reflectivity",0,0
@@ -913,13 +905,6 @@ extern "C" {
 #define AI_MATKEY_COLOR_TRANSPARENT "$clr.transparent",0,0
 #define AI_MATKEY_COLOR_REFLECTIVE "$clr.reflective",0,0
 #define AI_MATKEY_GLOBAL_BACKGROUND_IMAGE "?bg.global",0,0
-#define AI_MATKEY_GLOBAL_SHADERLANG "?sh.lang",0,0
-#define AI_MATKEY_SHADER_VERTEX "?sh.vs",0,0
-#define AI_MATKEY_SHADER_FRAGMENT "?sh.fs",0,0
-#define AI_MATKEY_SHADER_GEO "?sh.gs",0,0
-#define AI_MATKEY_SHADER_TESSELATION "?sh.ts",0,0
-#define AI_MATKEY_SHADER_PRIMITIVE "?sh.ps",0,0
-#define AI_MATKEY_SHADER_COMPUTE "?sh.cs",0,0
 
 // ---------------------------------------------------------------------------
 // Pure key names for all texture-related properties
@@ -1463,6 +1448,8 @@ inline aiReturn aiGetMaterialInteger(const C_STRUCT aiMaterial* pMat,
 
 #endif //!__cplusplus
 
+
+
 // ---------------------------------------------------------------------------
 /** @brief Retrieve a color value from the material property table
 *
@@ -1569,12 +1556,10 @@ C_ENUM aiReturn aiGetMaterialTexture(const C_STRUCT aiMaterial* mat,
     unsigned int* flags                 /*= NULL*/);
 #endif // !#ifdef __cplusplus
 
-
 #ifdef __cplusplus
 }
 
 #include "material.inl"
 
 #endif //!__cplusplus
-
 #endif //!!AI_MATERIAL_H_INC
