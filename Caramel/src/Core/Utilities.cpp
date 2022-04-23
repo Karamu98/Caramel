@@ -11,12 +11,16 @@
 
 #include "Utilities.h"
 
-#include "Core/Log.h"
 #include "Render/Skybox.h"
 #include "Render/Window.h"
 
+#include <commdlg.h>
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+
+#include "Core/Resource/ModelResource.h"
+#include "Render/Texture.h"
 
 namespace Caramel
 {
@@ -159,17 +163,19 @@ namespace Caramel
 		return false;
 	}
 
-	bool Utility::ModelButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Model>& a_model)
+	bool Utility::ModelButton(const std::string& a_textureName, const std::shared_ptr<Caramel::ModelResource>& a_model)
 	{
-		ImTextureID texID = (void*)(intptr_t)a_model->GetPreviewTex();
+		CL_CORE_ASSERT(false, "Function removed");
+		//ImTextureID texID = (void*)(intptr_t)a_model->GetPreviewTex();
 
-		if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
-		{
-			a_model->Reload(Caramel::Utility::OpenFileDialog(AppWindow::GetNative()));
-			return true;
-		}
-		ImGui::SameLine();
-		ImGui::Text(a_textureName.c_str());
+		//if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
+		//{
+		//	a_model->Reload(Caramel::Utility::OpenFileDialog(AppWindow::GetNative()));
+		//	return true;
+		//}
+		//ImGui::SameLine();
+		//ImGui::Text(a_textureName.c_str());
+		//return false;
 		return false;
 	}
 

@@ -3,11 +3,12 @@
 // Class declarations
 struct GLFWwindow;
 
-#include "Render/Texture.h"
-#include "Render/Model.h"
 
 namespace Caramel
 {
+	class ModelResource;
+	class Texture;
+
 	// A utility class with static helper methods
 	class Utility
 	{
@@ -29,8 +30,8 @@ namespace Caramel
 		static void Screenshot(const std::string& a_imageName, unsigned int a_width, unsigned int a_height);
 
 		// ImGui helpers
-		static bool TextureButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Texture>& a_texture);
-		static bool ModelButton(const std::string& a_textureName, const std::shared_ptr<Caramel::Model>& a_texture);
+		static bool TextureButton(const std::string& a_textureName, const std::shared_ptr<Texture>& a_texture);
+		static bool ModelButton(const std::string& a_textureName, const std::shared_ptr<ModelResource>& a_texture);
 		static bool SkyboxButton();
 		static bool PathEntry(const std::string& a_fieldName, char* a_buffer, size_t a_length);
 

@@ -1,11 +1,10 @@
 #include "Game.h"
 
 int main()
-{	
-	Game* newGame = new Game();
-	newGame->Run("Caramel Engine", 1280, 720, false);
-
-	delete newGame;
+{
+	Game newGame;
+	Caramel::Caramel engine(&newGame);
+	engine.Run("Caramel Test", 1920, 1080, false);
 
 	return 0;
 }

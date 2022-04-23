@@ -128,7 +128,8 @@ namespace Caramel
 		sm_instance->m_isValid = true;
 	}
 
-	void Skybox::Draw(Camera& a_camera)
+
+	void Skybox::Draw(Components::Camera& a_camera)
 	{
 		if (!sm_instance || !sm_instance->m_isValid)
 			return;
@@ -138,7 +139,7 @@ namespace Caramel
 			glm::mat4 view = glm::mat4(glm::mat3(a_camera.GetViewMatrix()));
 
 			// Change depth function so depth test passes when values are equal to depth buffer's content
-			glDepthFunc(GL_LEQUAL);  
+			glDepthFunc(GL_LEQUAL);
 			sm_shader->SetMat4("view", view);
 			sm_shader->SetMat4("proj", a_camera.GetProjectionMatrix());
 

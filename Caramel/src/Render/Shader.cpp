@@ -8,20 +8,7 @@
 
 namespace Caramel
 {
-	// If this is defined, we don't want to delete shaders to allow for easy debugging
-#ifndef CL_DEBUG
-
-#define DeleteShader(...) glDeleteShader(__VA_ARGS__)
-
-#else
-
-#define DeleteShader
-
-#endif
-
-	std::unordered_map<std::string, std::weak_ptr<Shader>> Shader::s_shaderLibrary;
-
-	Shader::Shader(const std::string& a_sourcePath) : m_isValid(false)
+	Shader::Shader(const std::string& a_sourcePath)
 	{
 		m_shaderPath = a_sourcePath;
 	}
@@ -98,7 +85,7 @@ namespace Caramel
 				std::vector<GLchar> infoLog(maxLength);
 				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-				DeleteShader(shader);
+				glDeleteProgram(shader);
 
 				CL_CORE_ERROR("{0} shader failed to compile\n{1}\n", StringFromShaderType(type), infoLog.data());
 				return false;
@@ -140,7 +127,7 @@ namespace Caramel
 		{
 			glDetachShader(program, id);
 			Utility::GetGLErrors();
-			DeleteShader(id);
+			glDeleteProgram(id);
 			Utility::GetGLErrors();
 		}
 
@@ -199,41 +186,6 @@ namespace Caramel
 		}
 
 		return sources;
-	}
-
-	std::shared_ptr<Shader> Shader::CreateShader(const std::string& a_shaderPath)
-	{
-		std::shared_ptr<Shader> newShader;
-		// If the shader is tracked
-		if (s_shaderLibrary.find(a_shaderPath) != s_shaderLibrary.end())
-		{
-			// And if the shader is still loaded, return the shader
-			if (newShader = s_shaderLibrary[a_shaderPath].lock())
-			{
-				return newShader;
-			}
-		}
-
-		std::shared_ptr< std::unordered_map<unsigned int, std::string>> sources = Preprocess(a_shaderPath);
-
-		if (sources == nullptr)
-		{
-			return nullptr;
-		}
-
-		// Now that we have all the source files separated, give them to OpenGL
-		newShader = std::make_shared<Shader>(a_shaderPath);
-
-		// Now try create a shader with our sorted sources
-		if (newShader->Compile(*sources))
-		{
-			s_shaderLibrary[a_shaderPath] = newShader;
-			return newShader;
-		}
-		else
-		{
-			return nullptr;
-		}
 	}
 
 	Shader::~Shader()
@@ -371,32 +323,5 @@ namespace Caramel
 		{
 			glUniformMatrix4fv(loc, 1, false, glm::value_ptr(a_value));
 		}
-	}
-
-	void Shader::SetMat4(const std::string& a_name, Transform& a_value, bool a_logErrors)
-	{
-		unsigned int loc = GetUniformLocation(a_name);
-
-		if (loc == -1 && a_logErrors)
-		{
-			CL_CORE_WARN("{0} not found in shader", a_name);
-		}
-		else if (loc != -1)
-		{
-			glUniformMatrix4fv(loc, 1, false, glm::value_ptr(*a_value.GetMatrix()));
-		}
-	}
-
-	void Shader::Recompile()
-	{
-		std::shared_ptr< std::unordered_map<unsigned int, std::string>> sources = Preprocess(m_shaderPath);
-
-		if (sources == nullptr)
-		{
-			return;
-		}
-
-		glDeleteProgram(m_shaderProgram);
-		Compile(*sources);
 	}
 }

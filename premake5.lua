@@ -24,6 +24,7 @@ IncludeDir["ImGui"] = "Caramel/deps/imgui"
 IncludeDir["glm"] = "Caramel/deps/glm"
 IncludeDir["stb"] = "Caramel/deps/stb"
 IncludeDir["assimp"] = "Caramel/deps/assimp/include"
+IncludeDir["entt"] = "Caramel/deps/entt/single_include"
 
 group "Dependencies"
 	include "Caramel/deps/GLFW"
@@ -73,7 +74,8 @@ project "Caramel"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.entt}"
 	}
 
 	links 
@@ -135,7 +137,8 @@ project "Game"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"Caramel/deps",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links

@@ -2,7 +2,9 @@
 
 #include "Render/Shader.h"
 #include <glm/glm.hpp>
-#include "Render/Camera.h"
+
+#include "Scene/Components.h"
+
 namespace Caramel
 {
 	class Skybox
@@ -16,7 +18,7 @@ namespace Caramel
 		/// <summary>
 		/// Draws the skybox.
 		/// </summary>
-		static void Draw(Camera& a_camera);
+		static void Draw(Components::Camera& a_camera);
 	private:
 		static std::shared_ptr<Skybox> sm_instance;
 		static std::shared_ptr<Shader> sm_shader;
