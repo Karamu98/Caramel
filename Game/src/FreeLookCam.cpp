@@ -1,19 +1,13 @@
 #include "FreeLookCam.h"
 
-#include "Scene/Components.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-FreeLookCam::FreeLookCam(Caramel::Scene* scene) : m_cameraSpeed(2.0f)
+FreeLookCam::FreeLookCam(Caramel::Scene* scene) : m_cameraSpeed(2.0f), m_mouseLastX(0), m_mouseLastY(0)
 {
 	m_entity = scene->CreateEntity("FreeLookCam");
 	m_transform = &m_entity.AddComponent<Caramel::Components::Transform>();
 	m_camera = &m_entity.AddComponent<Caramel::Components::Camera>(m_transform);
-}
-
-FreeLookCam::FreeLookCam()
-{
-
 }
 
 void FreeLookCam::Update(float deltaTime)

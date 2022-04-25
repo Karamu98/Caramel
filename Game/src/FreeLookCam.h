@@ -5,7 +5,6 @@
 class FreeLookCam
 {
 public:
-	FreeLookCam();
 	FreeLookCam(Caramel::Scene* scene);
 
 	void Update(float deltaTime);

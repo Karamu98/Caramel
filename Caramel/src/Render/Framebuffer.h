@@ -4,20 +4,22 @@ namespace Caramel
 {
 	class Framebuffer
 	{
+		struct Data
+		{
+			unsigned int Width, Height;
+		};
+
 	public:
-		Framebuffer();
-		Framebuffer(unsigned int a_width, unsigned int a_height);
+		Framebuffer(Framebuffer const&) = delete;
+		void operator=(Framebuffer const&) = delete;
+		Framebuffer(unsigned int width, unsigned int height);
 		~Framebuffer();
-		bool Bind();
 
-		// TEMP
-		void ResizeFBO(unsigned int a_width, unsigned int a_height);
+		virtual const bool Bind() const = 0;
+		virtual void ResizeFBO(unsigned int width, unsigned int height) = 0;
 
-	public:
-		unsigned int m_FBO;
-		unsigned int m_colourTex;
-		unsigned int m_depthRender;
+	private:
+		unsigned int m_FBOhandle;
 		unsigned int m_FBOWidth, m_FBOHeight;
-		bool m_isValid;
 	};
 }

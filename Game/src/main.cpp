@@ -3,8 +3,6 @@
 int main()
 {
 	Game newGame;
-	Caramel::Caramel engine(&newGame);
-	engine.Run("Caramel Test", 1920, 1080, false);
-
+	newGame.Run({"Caramel Test", 1920, 1080, false});
 	return 0;
 }

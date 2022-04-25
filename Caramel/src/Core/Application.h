@@ -1,10 +1,10 @@
 #pragma once
+#include "Event/ApplicationEvent.h"
+#include "Core/Window.h"
+#include "Core/Layer.h"
+#include "Core/LayerStack.h"
+#include "Scene/SceneManager.h"
 
-#include "clpch.h"
-
-#include "Render/Window.h"
-#include "Core/Input.h"
-#include "Core/Cursor.h"
 
 namespace Caramel
 {
@@ -12,16 +12,31 @@ namespace Caramel
 	{
 	public:
 		Application();
-		virtual ~Application() = default;
+		~Application();
 
-	protected:
-		friend class Caramel;
+		void Run(const WindowSpec& data);
 
-		// Client implementation
-		virtual bool OnCreate() = 0;
-		virtual void Update(float deltaTime) = 0;
-		virtual void ImDraw() = 0;
-		virtual void Draw() = 0;
-		virtual void Destroy() = 0;
+		void PushLayer(Layer* newLayer);
+		void PushOverlay(Layer* newOverlay);
+		virtual void OnEvent(Event& event);
+
+	private:
+		bool CreateApp(const WindowSpec& data);
+		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnWindowClose(WindowCloseEvent& e);
+
+	private:
+		std::shared_ptr<Window> m_appWindow;
+		Application* m_clientApplication;
+		SceneManager m_sceneManager;
+		LayerStack m_layerStack;
+		bool m_isRunning = false;
+		//Input m_input;
+		//Cursor m_cursor;
+		//Screen m_screen;
+		//AssetLoader m_assetLoader;
+		//AssetManager m_assetManager
+		//Log m_logger;
+		//Utility m_utilities;
 	};
 }

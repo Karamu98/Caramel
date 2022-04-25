@@ -14,3 +14,5 @@
 #include <unordered_set>
 
 #include "Core/Log.h"
+
+#define BIND_FN(x) std::bind(&x, this, std::placeholders::_1)

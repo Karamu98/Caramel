@@ -19,7 +19,7 @@ namespace Caramel
 		if (!sm_instance)
 		{
 			sm_instance = std::make_shared<Skybox>();
-			sm_shader = Shader::CreateShader(Utility::GetWorkingDir() + "resources/engine/shaders/skybox.glsl");
+			//sm_shader = Shader::CreateShader(Utility::GetWorkingDir() + "resources/engine/shaders/skybox.glsl");
 
 			const float skyboxVertices[] = {
 				// positions          

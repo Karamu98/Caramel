@@ -92,6 +92,7 @@ project "Caramel"
 
 		defines
 		{
+			"CL_ENGINE",
 			"CL_PLATFORM_WINDOWS",
 			"CL_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"

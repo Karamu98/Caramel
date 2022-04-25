@@ -12,7 +12,7 @@
 #include "Utilities.h"
 
 #include "Render/Skybox.h"
-#include "Render/Window.h"
+#include <Core/Window.h>
 
 #include <commdlg.h>
 
@@ -155,7 +155,7 @@ namespace Caramel
 
 		if (ImGui::ImageButton(texID, { 80, 80 }, ImVec2(0, 1), ImVec2(1, 0)))
 		{
-			a_texture->Reload(Caramel::Utility::OpenFileDialog(AppWindow::GetNative()));
+			//a_texture->Reload(Caramel::Utility::OpenFileDialog(Window::GetNative()));
 			return true;
 		}
 		ImGui::SameLine();
@@ -238,7 +238,7 @@ namespace Caramel
 		ImGui::SameLine();
 		if (ImGui::Button("Browse"))
 		{
-			std::string newPath = OpenFileDialog(Caramel::AppWindow::GetNative());
+			std::string newPath = "";// OpenFileDialog(Caramel::Window::GetNative());
 			if (newPath.length() < a_length)
 			{
 				memcpy(a_buffer, newPath.c_str(), newPath.length());
