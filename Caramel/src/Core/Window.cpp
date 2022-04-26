@@ -85,7 +85,5 @@ namespace Caramel
 	}
 
 	bool Window::sm_glfwInitialised = false;
-
 	bool Window::sm_gladInitialised = false;
-
 }

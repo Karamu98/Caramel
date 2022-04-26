@@ -21,7 +21,7 @@ namespace Caramel
 	{
 	protected:
 		Window(const WindowSpec& initData, WindowManager manager, WindowRenderer renderer, RendererFunctionLoader funcLoader) : 
-			m_windowManager(manager), m_windowRenderer(m_windowRenderer), m_rendererFuncLoader(funcLoader) {};
+			m_windowManager(manager), m_windowRenderer(renderer), m_rendererFuncLoader(funcLoader) {};
 	public:
 		using EventCallback = std::function<void(Event&)>;
 
@@ -45,9 +45,6 @@ namespace Caramel
 		virtual void SetEventCallback(const EventCallback& callback) = 0;
 		virtual const void* GetNative() const = 0;
 
-	protected:
-		void* m_nativeWindow;
-
 	public:
 		static void ShutdownContext(WindowRenderer renderContext);
 		static std::shared_ptr<Window> CreateApplicationWindow(const WindowSpec& data);
@@ -59,6 +56,5 @@ namespace Caramel
 		WindowRenderer m_windowRenderer;
 		WindowManager m_windowManager;
 		RendererFunctionLoader m_rendererFuncLoader;
-
 	};
 }
