@@ -11,29 +11,31 @@ public:
 
 	void OnDetach() override
 	{
-		//throw std::logic_error("The method or operation is not implemented.");
+		CL_TRACE("Detached layer!");
 	}
 
 	void OnUpdate(float deltaTime) override
 	{
-		//throw std::logic_error("The method or operation is not implemented.");
+		if (Caramel::Input::GetKey(Caramel::KeyCode::KEY_W))
+		{
+			CL_TRACE("Input key: W");
+		}
 	}
 
 	void OnImGuiRender() override
 	{
-		//throw std::logic_error("The method or operation is not implemented.");
 	}
 
 	void OnEvent(Caramel::Event& event) override
 	{
 		Caramel::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<Caramel::KeyPressedEvent>(BIND_EVENT_FN(BaseGameLayer::OnKeyPressed));
+		dispatcher.Dispatch<Caramel::KeyTypedEvent>(CL_BIND(BaseGameLayer::OnKeyTyped));
 	}
 
 private:
-	bool OnKeyPressed(Caramel::KeyPressedEvent& event)
+	bool OnKeyTyped(Caramel::KeyTypedEvent& event)
 	{
-		CL_TRACE("Pressed: {0}", (char)event.GetKeyCode());
+		CL_TRACE("Event key typed: {0}", (char)event.GetKeyCode());
 		return true;
 	}
 };

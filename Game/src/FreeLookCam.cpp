@@ -20,17 +20,17 @@ void FreeLookCam::Update(float deltaTime)
 
 	if (Caramel::Input::GetMouseButtonDown(1))
 	{
-		auto pos = Caramel::Cursor::GetPosition();
-		m_mouseLastX = pos.x;
-		m_mouseLastY = pos.y;
+		auto[x, y] = Caramel::Input::GetMousePosition();
+		m_mouseLastX = x;
+		m_mouseLastY = y;
 	}
 
 	if (Caramel::Input::GetMouseButton(1))
 	{
 		double curMouseX = 0, curMouseY = 0;
-		auto pos = Caramel::Cursor::GetPosition();
-		curMouseX = pos.x;
-		curMouseY = pos.y;
+		auto [x, y] = Caramel::Input::GetMousePosition();
+		curMouseX = x;
+		curMouseY = y;
 
 		double mouseDeltaX = curMouseX - m_mouseLastX;
 		double mouseDeltaY = curMouseY - m_mouseLastY;
@@ -63,30 +63,30 @@ void FreeLookCam::Update(float deltaTime)
 		(*m_transform->GetMatrix())[2] = vForward;
 	}
 
-	float frameSpeed = Caramel::Input::GetKey(GLFW_KEY_LEFT_SHIFT) ? deltaTime * m_cameraSpeed * 2 : deltaTime * m_cameraSpeed;
+	float frameSpeed = Caramel::Input::GetKey(Caramel::KeyCode::KEY_LEFT_SHIFT) ? deltaTime * m_cameraSpeed * 2 : deltaTime * m_cameraSpeed;
 
 	// Translate camera
-	if (Caramel::Input::GetKey('W'))
+	if (Caramel::Input::GetKey(Caramel::KeyCode::KEY_W))
 	{
 		vTranslation -= vForward * frameSpeed;
 	}
-	if (Caramel::Input::GetKey('S'))
+	if (Caramel::Input::GetKey(Caramel::KeyCode::KEY_S))
 	{
 		vTranslation += vForward * frameSpeed;
 	}
-	if (Caramel::Input::GetKey('D'))
+	if (Caramel::Input::GetKey(Caramel::KeyCode::KEY_D))
 	{
 		vTranslation += vRight * frameSpeed;
 	}
-	if (Caramel::Input::GetKey('A'))
+	if (Caramel::Input::GetKey(Caramel::KeyCode::KEY_A))
 	{
 		vTranslation -= vRight * frameSpeed;
 	}
-	if (Caramel::Input::GetKey('Q'))
+	if (Caramel::Input::GetKey(Caramel::KeyCode::KEY_Q))
 	{
 		vTranslation += vUp * frameSpeed;
 	}
-	if (Caramel::Input::GetKey('E'))
+	if (Caramel::Input::GetKey(Caramel::KeyCode::KEY_E))
 	{
 		vTranslation -= vUp * frameSpeed;
 	}

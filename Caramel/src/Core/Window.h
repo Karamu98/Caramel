@@ -3,17 +3,10 @@
 #include "clpch.h"
 
 #include "Event/Event.h"
+#include "Defines.h"
 
 namespace Caramel
 {
-	enum class WindowRenderer
-	{
-		OpenGL,
-		Vulkan,
-		DX12,
-		Invalid
-	};
-
 	struct WindowSpec
 	{
 		std::string Title = "Caramel Engine";
@@ -21,13 +14,14 @@ namespace Caramel
 		unsigned int Height = 720;
 		bool Fullscreen = false;
 		bool VSync = false;
-		WindowRenderer WindowRenderer;
+		WindowRenderer Renderer;
 	};
 
 	class Window
 	{
 	protected:
-		Window(const WindowSpec& initData) {};
+		Window(const WindowSpec& initData, WindowManager manager, WindowRenderer renderer, RendererFunctionLoader funcLoader) : 
+			m_windowManager(manager), m_windowRenderer(m_windowRenderer), m_rendererFuncLoader(funcLoader) {};
 	public:
 		using EventCallback = std::function<void(Event&)>;
 
@@ -43,11 +37,16 @@ namespace Caramel
 		virtual int const GetHeight() const = 0;
 		virtual bool const IsFocused() const = 0;
 		virtual void DestroyWindow() = 0;
-		virtual void* const GetNative() const = 0;
 		virtual void const SwapBuffers() const = 0;
 		virtual void const PollEvents() const = 0;
-		virtual WindowRenderer GetWindowRendererType() const = 0;
+		WindowManager GetWindowManagerType() const { return m_windowManager; };
+		WindowRenderer GetWindowRendererType() const { return m_windowRenderer; };
+		RendererFunctionLoader GetRenderFunctionLoaderType() const { return m_rendererFuncLoader; };
 		virtual void SetEventCallback(const EventCallback& callback) = 0;
+		virtual const void* GetNative() const = 0;
+
+	protected:
+		void* m_nativeWindow;
 
 	public:
 		static void ShutdownContext(WindowRenderer renderContext);
@@ -55,5 +54,11 @@ namespace Caramel
 	private:
 		static bool sm_glfwInitialised;
 		static bool sm_gladInitialised;
+
+	private:
+		WindowRenderer m_windowRenderer;
+		WindowManager m_windowManager;
+		RendererFunctionLoader m_rendererFuncLoader;
+
 	};
 }

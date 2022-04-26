@@ -1,5 +1,5 @@
 #include "clpch.h"
-#include "Core/Resource/ModelResource.h"
+#include "Resource/ModelResource.h"
 
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

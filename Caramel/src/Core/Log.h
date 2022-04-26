@@ -6,18 +6,22 @@ namespace Caramel
 {
 	class Log
 	{
+	private:
+		friend class Application;
+		Log() : m_coreLogger(nullptr), m_clientLogger(nullptr) {};
 	public:
-		Log();
 		~Log();
 
-		static void Init();
+		void Init();
 
-		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+		static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return sm_instance->m_coreLogger; }
+		static std::shared_ptr<spdlog::logger>& GetClientLogger() { return sm_instance->m_clientLogger; }
 
 	private:
-		static std::shared_ptr<spdlog::logger> s_CoreLogger;
-		static std::shared_ptr<spdlog::logger> s_ClientLogger;
+		std::shared_ptr<spdlog::logger> m_coreLogger;
+		std::shared_ptr<spdlog::logger> m_clientLogger;
+
+		static Log* sm_instance;
 	};
 }
 

@@ -4,6 +4,7 @@
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
 #include "Scene/SceneManager.h"
+#include "Input/Input.h"
 
 
 namespace Caramel
@@ -27,16 +28,14 @@ namespace Caramel
 
 	private:
 		std::shared_ptr<Window> m_appWindow;
-		Application* m_clientApplication;
 		SceneManager m_sceneManager;
 		LayerStack m_layerStack;
+		std::shared_ptr<Input> m_input;
 		bool m_isRunning = false;
-		//Input m_input;
-		//Cursor m_cursor;
+		Log m_logger;
 		//Screen m_screen;
 		//AssetLoader m_assetLoader;
 		//AssetManager m_assetManager
-		//Log m_logger;
 		//Utility m_utilities;
 	};
 }

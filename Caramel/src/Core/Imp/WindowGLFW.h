@@ -30,7 +30,7 @@ namespace Caramel::Implementation
 	class WindowGLFW : public Window
 	{
 	public:
-		WindowGLFW(const WindowSpec& initData);
+		WindowGLFW(const WindowSpec& initData, WindowManager manager, WindowRenderer renderer, RendererFunctionLoader funcLoader);
 		WindowGLFW(WindowGLFW const&) = delete;
 		void operator=(WindowGLFW const&) = delete;
 
@@ -43,11 +43,10 @@ namespace Caramel::Implementation
 		int const GetHeight() const override;
 		bool const IsFocused() const override;
 		void DestroyWindow() override;
-		void* const GetNative() const override;
 		void const SwapBuffers() const override;
 		void const PollEvents() const override;
-		WindowRenderer GetWindowRendererType() const override;
 		void SetEventCallback(const EventCallback& callback) override;
+		const void* GetNative() const override { return m_nativeWindow; }
 
 	private:
 		WindowGLFWData m_windowData;

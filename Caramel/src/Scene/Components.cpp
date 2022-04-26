@@ -5,8 +5,8 @@
 #include <string>
 
 #include "Scene/Components.h"
-#include "Core/Resource/ModelResource.h"
-#include "Core/Resource/MaterialResource.h"
+#include "Resource/ModelResource.h"
+#include "Resource/MaterialResource.h"
 
 /// THIS IS TO BE CHANGED
 

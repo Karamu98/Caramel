@@ -21,14 +21,14 @@ namespace Caramel
 
 	std::shared_ptr<Caramel::Window> Window::CreateApplicationWindow(const WindowSpec& data)
 	{
-		switch (data.WindowRenderer)
+		switch (data.Renderer)
 		{
 		case WindowRenderer::Vulkan:
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-			return std::make_shared<Implementation::WindowGLFW>(data);
+			return std::make_shared<Implementation::WindowGLFW>(data, WindowManager::GLFW, WindowRenderer::Vulkan, RendererFunctionLoader::Invalid);
 			break;
 		}
 		case WindowRenderer::OpenGL:
@@ -52,7 +52,7 @@ namespace Caramel
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-			auto newWindow = std::make_shared<Implementation::WindowGLFW>(data);
+			auto newWindow = std::make_shared<Implementation::WindowGLFW>(data, WindowManager::GLFW, WindowRenderer::OpenGL, RendererFunctionLoader::GLAD);
 			if (newWindow == nullptr)
 			{
 				return nullptr;

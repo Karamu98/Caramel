@@ -182,7 +182,7 @@ namespace Caramel::Implementation
 		OldWinHeight = Height = data.Height;
 		Fullscreen = data.Fullscreen;
 		VSync = data.VSync;
-		WindowRenderer = data.WindowRenderer;
+		WindowRenderer = data.Renderer;
 	}
 
 	const std::string& WindowGLFW::GetTitle()
@@ -253,7 +253,7 @@ namespace Caramel::Implementation
 		glfwDestroyWindow(m_nativeWindow);
 	}
 
-	WindowGLFW::WindowGLFW(const WindowSpec& initData) : Window(initData)
+	WindowGLFW::WindowGLFW(const WindowSpec& initData, WindowManager manager, WindowRenderer renderer, RendererFunctionLoader funcLoader) : Window(initData, manager, renderer, funcLoader)
 	{
 		m_windowData = initData;
 
@@ -284,11 +284,6 @@ namespace Caramel::Implementation
 		glfwSetCursorPosCallback(m_nativeWindow, OnMouseMove);
 	}
 
-	void* const WindowGLFW::GetNative() const
-	{
-		return m_nativeWindow;
-	}
-
 	void const WindowGLFW::SwapBuffers() const
 	{
 		glfwSwapBuffers(m_nativeWindow);
@@ -299,14 +294,8 @@ namespace Caramel::Implementation
 		glfwPollEvents();
 	}
 
-	Caramel::WindowRenderer WindowGLFW::GetWindowRendererType() const
-	{
-		return m_windowData.WindowRenderer;
-	}
-
 	void WindowGLFW::SetEventCallback(const EventCallback& callback)
 	{
 		m_windowData.EventCallback = callback;
 	}
-
 }

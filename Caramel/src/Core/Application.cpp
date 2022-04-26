@@ -16,11 +16,16 @@ namespace Caramel
 	{
 		// Prepare all engine tools
 		SceneManager::Initialise(&m_sceneManager);
-		Log::Init();
+		m_logger.Init();
 	}
 
 	Application::~Application()
 	{
+		for (auto layer : m_layerStack)
+		{
+			layer->OnDetach();
+		}
+
 		// Close all engine tools
 		SceneManager::Shutdown();
 	}
@@ -82,8 +87,8 @@ namespace Caramel
 		EventDispatcher dispatcher(event);
 
 		// Listen for WindowResize and Close
-		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(CL_BIND(Application::OnWindowResize));
+		dispatcher.Dispatch<WindowCloseEvent>(CL_BIND(Application::OnWindowClose));
 
 		// Propagate events back to front (UI Layers drawn last etc)
 		for (auto it = m_layerStack.end(); it != m_layerStack.begin(); )
@@ -116,8 +121,8 @@ namespace Caramel
 			CL_CORE_FATAL("Unable to create window.");
 			return false;
 		}
-
-		m_appWindow->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+		m_input = Input::CreateInputManager({ m_appWindow->GetWindowManagerType() }, m_appWindow);
+		m_appWindow->SetEventCallback(CL_BIND(Application::OnEvent));
 
 		// Setup Dear ImGui context
 		//IMGUI_CHECKVERSION();
