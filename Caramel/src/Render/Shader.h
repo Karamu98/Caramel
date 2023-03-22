@@ -5,6 +5,8 @@
 
 #include "Transform.h"
 
+#include <string> // temp bc lol it broke rn, this whole project needs refactor </3
+
 namespace Caramel
 {
 	class Shader
