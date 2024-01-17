@@ -1,21 +1,19 @@
-#include <Caramel.h>
-#include <iostream>
-
-class MyGame : public Caramel::Application
+#include "Game.h"
+Caramel::Application* CreateApplication()
 {
-public:
-	void Run() override;
-};
+	CL_TRACE("Creating application");
+	return new MyGame();
+}
+
+
 
 void MyGame::Run()
 {
-	while(true)
+	CL_TRACE("Application begin run");
+	while (true)
 	{
-	std::cout << "hey" <<std::endl;
+		//CL_TRACE("Hey");
 	}
 }
 
-Caramel::Application* CreateApplication()
-{
-	return new MyGame();
-}
+
