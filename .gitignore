@@ -1,7 +1,9 @@
 # Directories
 
 .vs/
-bin/
+.idea/
+Binaries/
+Intermediate/
 
 **.vcxproj**
 **.sln
