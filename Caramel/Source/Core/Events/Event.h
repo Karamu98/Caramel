@@ -20,7 +20,7 @@ namespace Caramel
 		Mouse = BIT(3),
 		MouseButton = BIT(4)
 	};
-	constexpr int operator|(const EventCategory& a, const EventCategory& b);
+	inline int operator|(const EventCategory& a, const EventCategory& b) { return (int)a | (int)b;}
 
 #define EVENT_CLASS_TYPE(type)	static EventType GetStaticType() { return EventType::##type; }\
 								virtual EventType GetEventType() const override {return GetStaticType();};\
@@ -42,8 +42,7 @@ namespace Caramel
 			return GetCategoryFlags() & (int)category;
 		}
 
-	protected:
-		bool m_handled = false;
+		bool Handled = false;
 	};
 
 	class EventDispatcher
@@ -58,7 +57,7 @@ namespace Caramel
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{
-				m_event.m_handled = function(*(T*)&m_event);
+				m_event.Handled = function(*(T*)&m_event);
 				return true;
 			}
 			return false;

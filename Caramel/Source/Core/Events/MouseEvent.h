@@ -11,6 +11,8 @@ namespace Caramel
 		inline float GetX() const { return m_mouseX; };
 		inline float GetY() const { return m_mouseY; };
 
+		std::string ToString() const override;
+
 		EVENT_CLASS_TYPE(MouseMove);
 		EVENT_CATEGORY(EventCategory::Mouse | EventCategory::Input);
 

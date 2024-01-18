@@ -1,19 +1,28 @@
 #include "Game.h"
+
+
 Caramel::Application* CreateApplication()
 {
 	CL_TRACE("Creating application");
 	return new MyGame();
 }
 
-
-
-void MyGame::Run()
+class TestLayer : public Caramel::Layer
 {
-	CL_TRACE("Application begin run");
-	while (true)
+public:
+	void OnUpdate() override
 	{
-		//CL_TRACE("Hey");
+		CL_INFO("Hey!");
 	}
+
+	void OnEvent(Caramel::Event& event) override
+	{
+
+	}
+};
+
+MyGame::MyGame()
+{
+	TestLayer* layer = new TestLayer();
+	TrackLayer(layer);
 }
-
-

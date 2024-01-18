@@ -17,4 +17,11 @@ namespace Caramel
 		return ss.str();
 	}
 
+	std::string MouseMoveEvent::ToString() const
+	{
+		std::stringstream ss;
+		ss << "MouseMove: x: " << m_mouseX << ", y: " << m_mouseY;
+		return ss.str();
+	}
+
 }

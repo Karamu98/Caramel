@@ -8,8 +8,10 @@ namespace Caramel
     struct WindowProperties
     {
         std::string Title = "Caramel Engine";
-        unsigned int Width;
-        unsigned int Height;
+        unsigned int Width = 800;
+        unsigned int Height = 600;
+        bool VSync = false;
+        unsigned int Framerate = 90;
     };
 
     class Window

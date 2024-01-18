@@ -5,5 +5,5 @@
 class MyGame : public Caramel::Application
 {
 public:
-	void Run() override;
+	MyGame();
 };

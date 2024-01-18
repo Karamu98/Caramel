@@ -8,6 +8,7 @@ namespace Caramel
 {
 	class Windows_Window_GLFW: public Window
 	{
+    public:
         Windows_Window_GLFW(const WindowProperties& properties);
 		virtual ~Windows_Window_GLFW();
 
@@ -22,9 +23,6 @@ namespace Caramel
         virtual void SetVSync(bool enabled) override;
         virtual void SetRefreshRate(unsigned int frameRate) override;
 
-
-        static Window* Create(const WindowProperties& properties = WindowProperties());
-
     private:
         struct WindowData
         {
@@ -32,9 +30,13 @@ namespace Caramel
             unsigned int Width, Height;
             bool VSync;
             unsigned int Framerate;
+
+            EventCallback Callback;
         };
 
         WindowData m_data;
+        GLFWwindow* m_window;
+
 	};
 }
 

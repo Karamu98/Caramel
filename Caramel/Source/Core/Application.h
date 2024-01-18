@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Window.h"
+#include "Layers/LayerStack.h"
 
 namespace Caramel
 {
@@ -8,7 +10,16 @@ namespace Caramel
         Application();
         virtual ~Application();
 
-        virtual void Run();    
+        void Run();
+        void OnEvent(Event& event);
+
+        void TrackLayer(Layer* layer);
+        void TrackOverlay(Layer* overlay);
+
+
+    private:
+        std::unique_ptr<Window> m_window;
+        LayerStack m_layerStack;
     };
 
 }
