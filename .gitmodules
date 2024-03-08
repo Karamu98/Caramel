@@ -4,3 +4,6 @@
 [submodule "Caramel/Vendor/glfw"]
 	path = Caramel/Vendor/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "Caramel/Vendor/imgui"]
+	path = Caramel/Vendor/imgui
+	url = https://github.com/Karamu98/imgui.git
