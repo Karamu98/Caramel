@@ -2,15 +2,14 @@
 #include "Core/Window.h"
 
 #include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
 
 namespace Caramel
 {
-	class Windows_Window_GLFW: public Window
+	class GLFW_Window : public Window
 	{
     public:
-        Windows_Window_GLFW(const WindowProperties& properties);
-		virtual ~Windows_Window_GLFW();
+        GLFW_Window(const WindowProperties& properties);
+		virtual ~GLFW_Window();
 
 		void OnUpdate() override;
 
@@ -23,19 +22,23 @@ namespace Caramel
         virtual void SetVSync(bool enabled) override;
         virtual void SetRefreshRate(unsigned int frameRate) override;
 
-    private:
+        
+
+    protected:
         struct WindowData
         {
             std::string Title;
             unsigned int Width, Height;
             bool VSync;
             unsigned int Framerate;
+            WindowRenderAPI RenderAPI;
 
             EventCallback Callback;
         };
 
         WindowData m_data;
         GLFWwindow* m_window;
+        class RenderAPI* m_renderer = nullptr;
 
 	};
 }

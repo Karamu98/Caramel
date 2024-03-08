@@ -26,12 +26,14 @@ namespace Caramel
 #define CL_CORE_INFO(...) ::Caramel::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define CL_CORE_TRACE(...) ::Caramel::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define CL_CORE_FATAL(...) ::Caramel::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define CL_CORE_NOT_IMPLEMENTED ::Caramel::Log::GetCoreLogger()->critical("{} not implemented", __FUNCTION__)
 
 #define CL_ERROR(...) ::Caramel::Log::GetClientLogger()->error(__VA_ARGS__)
 #define CL_WARN(...) ::Caramel::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define CL_INFO(...) ::Caramel::Log::GetClientLogger()->info(__VA_ARGS__)
 #define CL_TRACE(...) ::Caramel::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define CL_FATAL(...) ::Caramel::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define CL_NOT_IMPLEMENTED ::Caramel::Log::GetCoreLogger()->critical("{} not implemented", __FUNCTION__)
 
 #ifdef CL_ENABLE_ASSERTS
 

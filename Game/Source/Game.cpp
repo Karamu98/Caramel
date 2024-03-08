@@ -12,7 +12,7 @@ class TestLayer : public Caramel::Layer
 public:
 	void OnUpdate() override
 	{
-		CL_INFO("Hey!");
+		//CL_INFO("Hey!");
 	}
 
 	void OnEvent(Caramel::Event& event) override

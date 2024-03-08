@@ -1,12 +1,23 @@
 ﻿#include "clpch.h"
 #include "Core/Application.h"
+#include "Core/ArgumentParser.h"
 
 #include "Core/Log.h"
+#include "Events/ApplicationEvent.h"
 
 Caramel::Application::Application()
 {
-    m_window = std::unique_ptr<Window>(Window::Create());
-    m_window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+    WindowProperties props{};
+    std::string foundAPI;
+    if (ArgumentParser::GetFlag("-gapi", &foundAPI))
+    {
+        if (foundAPI == "dx12")
+        {
+            props.RenderAPI = WindowRenderAPI::DirectX12;
+        }
+    }
+    m_window = std::unique_ptr<Window>(Window::Create(props));
+    m_window->SetEventCallback(BIND_EVENT_FN(&Application::OnEvent));
 }
 
 Caramel::Application::~Application()
@@ -15,7 +26,9 @@ Caramel::Application::~Application()
 
 void Caramel::Application::Run()
 {
-    while (true)
+    m_bIsRunning = true;
+
+    while (m_bIsRunning)
     {
         for (Layer* layer : m_layerStack)
         {
@@ -30,6 +43,13 @@ void Caramel::Application::OnEvent(Event& event)
 {
     for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
     {
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<WindowCloseEvent>([&](WindowCloseEvent& closeEvent)
+        {
+                m_bIsRunning = false;
+                return true;
+        });
+
         (*--it)->OnEvent(event);
         if (event.Handled)
         {
@@ -37,8 +57,7 @@ void Caramel::Application::OnEvent(Event& event)
         }
     }
 
-    CL_CORE_TRACE("{0}", event.ToString());
-
+    //CL_CORE_TRACE("{0}", event.ToString());
 }
 
 void Caramel::Application::TrackLayer(Layer* layer)

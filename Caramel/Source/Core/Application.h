@@ -20,6 +20,8 @@ namespace Caramel
     private:
         std::unique_ptr<Window> m_window;
         LayerStack m_layerStack;
+
+        bool m_bIsRunning;
     };
 
 }
