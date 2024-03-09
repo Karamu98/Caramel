@@ -182,14 +182,12 @@ namespace Caramel
 
 	unsigned int GLFW_Window::GetWidth() const
 	{
-        CL_CORE_NOT_IMPLEMENTED;
-		return 0;
+        return m_data.Width;
 	}
 
 	unsigned int GLFW_Window::GetHeight() const
 	{
-        CL_CORE_NOT_IMPLEMENTED;
-		return 0;
+        return m_data.Height;
 	}
 
 	unsigned int GLFW_Window::GetRefreshRate() const
@@ -202,6 +200,11 @@ namespace Caramel
 	{
 		return m_data.VSync;
 	}
+
+    void* GLFW_Window::GetNativeWindow()
+    {
+        return m_window;
+    }
 
 	void GLFW_Window::SetEventCallback(const EventCallback& callback)
 	{
@@ -232,4 +235,8 @@ namespace Caramel
             CL_CORE_NOT_IMPLEMENTED;
         }
 	}
+    WindowRenderAPI GLFW_Window::GetRenderAPIType()
+    {
+        return m_data.RenderAPI;
+    }
 }

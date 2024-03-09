@@ -110,6 +110,8 @@ void Caramel::RenderAPI_DX12::RenderFrame()
 
     m_pd3dCommandList->OMSetRenderTargets(1, &rtvHandle, TRUE, &dsvHandle);
 
+    m_pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dSrvDescHeap);
+
     // State transition
     rdBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
     rdBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
@@ -266,6 +268,12 @@ HRESULT Caramel::RenderAPI_DX12::CreateRtvAndDsvDescriptorHeaps(int extraRtvCoun
     V_RETURN(m_pd3dDevice->CreateDescriptorHeap(
         &dsvHeapDesc, IID_PPV_ARGS(&m_pDSVDescriptorHeap)));
 
+    D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+    desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    desc.NumDescriptors = 1;
+    desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    V_RETURN(m_pd3dDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_pd3dSrvDescHeap)));
+
     return hr;
 }
 
@@ -288,6 +296,7 @@ void Caramel::RenderAPI_DX12::FlushCommandQueue()
 
 void Caramel::RenderAPI_DX12::FreeD3DResources()
 {
+    if (m_pd3dSrvDescHeap) { m_pd3dSrvDescHeap->Release(); m_pd3dSrvDescHeap = nullptr; }
     if (m_hFenceEvent)
     {
         CloseHandle(m_hFenceEvent);
@@ -296,7 +305,6 @@ void Caramel::RenderAPI_DX12::FreeD3DResources()
 
 HRESULT Caramel::RenderAPI_DX12::ResizeRenderedBuffers(int width, int height)
 {
-
     HRESULT hr;
     int i;
     DXGI_SWAP_CHAIN_DESC scDesc;

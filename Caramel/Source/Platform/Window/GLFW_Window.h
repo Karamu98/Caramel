@@ -17,12 +17,15 @@ namespace Caramel
         virtual unsigned int GetHeight() const override;
         virtual unsigned int GetRefreshRate() const override;
         virtual bool IsVSync() const override;
+        virtual void* GetNativeWindow() override;
+
+        WindowRenderAPI GetRenderAPIType() override;
 
         virtual void SetEventCallback(const EventCallback& callback) override;
         virtual void SetVSync(bool enabled) override;
         virtual void SetRefreshRate(unsigned int frameRate) override;
 
-        
+        class RenderAPI* GetRenderer() { return m_renderer; }
 
     protected:
         struct WindowData
@@ -40,7 +43,7 @@ namespace Caramel
         GLFWwindow* m_window;
         class RenderAPI* m_renderer = nullptr;
 
-	};
+    };
 }
 
 

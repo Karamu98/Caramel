@@ -36,6 +36,9 @@ namespace Caramel
         virtual unsigned int GetHeight() const = 0;
         virtual unsigned int GetRefreshRate() const = 0;
         virtual bool IsVSync() const = 0;
+        
+        virtual void* GetNativeWindow() { return nullptr; };
+        virtual WindowRenderAPI GetRenderAPIType() = 0;
 
         virtual void SetEventCallback(const EventCallback& callback) = 0;
         virtual void SetVSync(bool enabled) = 0;

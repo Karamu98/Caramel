@@ -5,8 +5,14 @@
 #include "Core/Log.h"
 #include "Events/ApplicationEvent.h"
 
+Caramel::Application* Caramel::Application::s_application = nullptr;
+
 Caramel::Application::Application()
 {
+    CL_CORE_ASSERT(!s_application);
+
+    s_application = this;
+
     WindowProperties props{};
     std::string foundAPI;
     if (ArgumentParser::GetFlag("-gapi", &foundAPI))
@@ -18,6 +24,9 @@ Caramel::Application::Application()
     }
     m_window = std::unique_ptr<Window>(Window::Create(props));
     m_window->SetEventCallback(BIND_EVENT_FN(&Application::OnEvent));
+
+    m_imGuiLayer = new ImGuiLayer();
+    TrackOverlay(m_imGuiLayer);
 }
 
 Caramel::Application::~Application()
@@ -34,6 +43,13 @@ void Caramel::Application::Run()
         {
             layer->OnUpdate();
         }
+
+        m_imGuiLayer->Begin();
+        for (Layer* layer : m_layerStack)
+        {
+            layer->OnImGuiRender();
+        }
+        m_imGuiLayer->End();
 
         m_window->OnUpdate();
     }

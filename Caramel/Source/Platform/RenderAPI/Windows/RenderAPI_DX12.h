@@ -35,7 +35,7 @@ namespace Caramel
 		void FreeD3DResources();
 		void DxTrace(const wchar_t* file, unsigned long line, HRESULT hr, const wchar_t* proc);
 
-
+	public:
 		Microsoft::WRL::ComPtr<ID3D12Device> m_pd3dDevice;
 		Microsoft::WRL::ComPtr<IDXGIAdapter1> m_adapter;
 		INT64 m_iFencePoint;
@@ -45,6 +45,8 @@ namespace Caramel
 		UINT m_uRtvDescriptorSize;
 		UINT m_uDsvDescriptorSize;
 		UINT m_uCbvSrvUavDescriptorSize;
+
+		ID3D12DescriptorHeap* m_pd3dSrvDescHeap = nullptr;
 
 		// Command queue
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_pd3dCommandQueue;
@@ -67,6 +69,8 @@ namespace Caramel
 
 		D3D12_VIEWPORT m_ScreenViewport;
 		D3D12_RECT m_ScreenScissorRect;
+
+	private:
 
 		// Inherited via RenderAPI
 		void SetVSync(bool enabled) override;

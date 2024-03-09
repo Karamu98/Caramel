@@ -51,9 +51,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Caramel/Vendor/glfw/include"
 IncludeDir["spdlog"] = "Caramel/Vendor/spdlog/include"
+IncludeDir["imgui"] = "Caramel/Vendor/imgui"
 
 group "Dependencies"
 include "Caramel/Vendor/glfw"
+include "Caramel/Vendor/imgui"
 
 group ""
 
@@ -90,14 +92,15 @@ project "Caramel"
 	{
 		"%{prj.name}/Source",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.spdlog}"
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.imgui}"
 	}
 
 	links 
 	{ 
 		"GLFW",
+		"ImGui"
 		--"Glad",
-		--"ImGui",
 		--"assimp",
 		--"opengl32.lib"
 	}
@@ -133,5 +136,6 @@ project "Game"
 
 	links
 	{
-		"Caramel"
+		"Caramel",
+		"ImGui"
 	}
