@@ -22,7 +22,7 @@ Caramel::Application::Application()
             props.RenderAPI = WindowRenderAPI::DirectX12;
         }
     }
-    m_window = std::unique_ptr<Window>(Window::Create(props));
+    m_window.reset(Window::Create(props));
     m_window->SetEventCallback(BIND_EVENT_FN(&Application::OnEvent));
 
     m_imGuiLayer = new ImGuiLayer();

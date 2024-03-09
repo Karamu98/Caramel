@@ -5,15 +5,6 @@
 
 namespace Caramel
 {
-    enum class WindowRenderAPI
-    {
-        OpenGL,
-        Vulkan,
-        DirectX11,
-        DirectX12,
-        Metal
-    };
-
     struct WindowProperties
     {
         std::string Title = "Caramel Engine";

@@ -17,10 +17,9 @@ namespace Caramel
         void TrackLayer(Layer* layer);
         void TrackOverlay(Layer* overlay);
 
-        Window* GetWindow() { return m_window.get(); };
-
-        template<typename T>
-        static constexpr T* Get() { return (T*)s_application; }
+        inline Window* GetWindow() { return m_window.get(); };
+        static inline Application* Get() { return s_application; }
+        static inline WindowRenderAPI GetRenderAPI() { return s_application->GetWindow()->GetRenderAPIType(); }
 
 
     private:

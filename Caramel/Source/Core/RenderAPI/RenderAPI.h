@@ -2,6 +2,7 @@
 
 // GLFW
 #include <glfw/glfw3.h>
+#include <Core/Core.h>
 
 namespace Caramel
 {
@@ -9,6 +10,8 @@ namespace Caramel
 	{
 	protected:
 		friend class GLFW_Window;
+
+		static RenderAPI* Create(WindowRenderAPI api);
 
 		virtual void Initialise(GLFWwindow* window, const struct WindowProperties* props) = 0;
 		virtual void Shutdown() = 0;

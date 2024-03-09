@@ -276,9 +276,12 @@ void Caramel::RenderAPI_DX12::FlushCommandQueue()
 
     V(m_pd3dCommandQueue->Signal(m_pd3dFence.Get(), m_iFencePoint));
 
-    if (m_pd3dFence->GetCompletedValue() != m_iFencePoint) {
+    if (m_pd3dFence->GetCompletedValue() != m_iFencePoint) 
+    {
         if (!m_hFenceEvent)
+        {
             m_hFenceEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
+        }
 
         m_pd3dFence->SetEventOnCompletion(m_iFencePoint, m_hFenceEvent);
 
@@ -288,11 +291,8 @@ void Caramel::RenderAPI_DX12::FlushCommandQueue()
 
 void Caramel::RenderAPI_DX12::FreeD3DResources()
 {
-    if (m_pd3dSrvDescHeap) { m_pd3dSrvDescHeap->Release(); m_pd3dSrvDescHeap = nullptr; }
-    if (m_hFenceEvent)
-    {
-        CloseHandle(m_hFenceEvent);
-    }
+    m_pd3dSrvDescHeap->Release();
+    CloseHandle(m_hFenceEvent);
 }
 
 HRESULT Caramel::RenderAPI_DX12::ResizeRenderedBuffers(int width, int height)

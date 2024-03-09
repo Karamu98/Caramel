@@ -48,7 +48,7 @@ void Caramel::ImGuiLayer::OnAttach()
     }
 
     // GLFW is assumed
-    GLFW_Window* window = (GLFW_Window*)Application::Get<Application>()->GetWindow();
+    GLFW_Window* window = (GLFW_Window*)Application::Get()->GetWindow();
     GLFWwindow* glfwWindow = (GLFWwindow*)window->GetNativeWindow();
 
     // TODO: CLEAN
@@ -105,7 +105,7 @@ void Caramel::ImGuiLayer::Begin()
 void Caramel::ImGuiLayer::End()
 {
     ImGuiIO& io = ImGui::GetIO();
-    Application* app = Application::Get<Application>();
+    Application* app = Application::Get();
     io.DisplaySize = ImVec2(app->GetWindow()->GetWidth(), app->GetWindow()->GetHeight());
 
     // Rendering

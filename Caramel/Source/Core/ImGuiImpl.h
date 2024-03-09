@@ -12,6 +12,9 @@ namespace Caramel
 		virtual void Shutdown() = 0;
 		virtual void NewFrame() = 0;
 		virtual void Render(ImDrawData* drawData) = 0;
+
+
+		static ImGuiImpl* Create();
 	};
 }
 

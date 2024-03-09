@@ -4,8 +4,8 @@
 #include <Core/Events/ApplicationEvent.h>
 #include <Core/Events/KeyEvents.h>
 #include <Core/Events/MouseEvent.h>
+#include <Core/RenderAPI/RenderAPI.h>
 
-#include <Platform/RenderAPI/Windows/RenderAPI_DX12.h>
 
 namespace Caramel
 {
@@ -14,11 +14,6 @@ namespace Caramel
     static void GLFWErrorCallback(int error, const char* desc)
     {
         CL_CORE_ERROR("GLFW Error ({0}): {1}", error, desc);
-    }
-
-    Window* Window::Create(const WindowProperties& properties)
-    {
-        return new GLFW_Window(properties);
     }
 
 	GLFW_Window::GLFW_Window(const WindowProperties& properties)
@@ -42,34 +37,20 @@ namespace Caramel
 
         CL_CORE_INFO("Creating new window named ({0})@{3}fps cap, w:{1} h:{2}, VSync: {4}", m_data.Title, m_data.Width, m_data.Height, m_data.Framerate, m_data.VSync);
 
-        if (m_data.RenderAPI != WindowRenderAPI::OpenGL)
-        {
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        }
+
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
         m_window = glfwCreateWindow(m_data.Width, m_data.Height, m_data.Title.c_str(), nullptr, nullptr);
-
-        if (m_data.RenderAPI != WindowRenderAPI::OpenGL)
+        m_renderer = RenderAPI::Create(m_data.RenderAPI);
+        if (!m_renderer)
         {
-            switch (m_data.RenderAPI)
-            {
-            case WindowRenderAPI::DirectX12: { m_renderer = new RenderAPI_DX12(); break; }
-            //case WindowRenderAPI::DirectX11: { m_renderer = RenderAPI::Create<RenderAPI_DX11>(); break; }
-            }
-
-            if (!m_renderer)
-            {
-                CL_CORE_FATAL("Unable to create render api {}", (int)m_data.RenderAPI);
-                return;
-            }
-            m_renderer->Initialise(m_window, &properties);
+            CL_CORE_FATAL("Unable to create render api {}", (int)m_data.RenderAPI);
+            return;
         }
-        else
-        {
-            glfwMakeContextCurrent(m_window);
-            SetRefreshRate(m_data.Framerate);
-        }
+        m_renderer->Initialise(m_window, &properties);
+        //glfwMakeContextCurrent(m_window);
 
+        SetRefreshRate(m_data.Framerate);
         glfwSetWindowUserPointer(m_window, &m_data);
         SetVSync(m_data.VSync);
 
@@ -83,14 +64,12 @@ namespace Caramel
                 data.Callback(newEvent);
                 //ResizeRenderedBuffers(w, h);
             });
-
         glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
                 WindowCloseEvent newEvent;
                 data.Callback(newEvent);
             });
-
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -119,7 +98,6 @@ namespace Caramel
                     break;
                 }
             });
-
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -140,7 +118,6 @@ namespace Caramel
                 }
                 }
             });
-
         glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xOff, double yOff)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -148,7 +125,6 @@ namespace Caramel
                 MouseScrollEvent newEvent((float)xOff, (float)yOff);
                 data.Callback(newEvent);
             });
-
         glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xPos, double yPos)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
