@@ -4,6 +4,7 @@
 
 std::shared_ptr<spdlog::logger> Caramel::Log::s_CoreLogger;
 std::shared_ptr<spdlog::logger> Caramel::Log::s_ClientLogger;
+std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> Caramel::Log::s_Converter;
 
 namespace Caramel
 {

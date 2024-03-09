@@ -1,7 +1,6 @@
 #include "clpch.h"
 #include "RenderAPI_DX12.h"
 
-
 #include "Core/Log.h"
 #include <Core/Window.h>
 #include <Core/Events/ApplicationEvent.h>
@@ -10,29 +9,25 @@
 
 
 // d3d12
-
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #include <windef.h>
 #include <DirectXMath.h> // For XMVector, XMFLOAT3, XMFLOAT4
 #include <comdef.h>      // for _com_error
 
-// spdlog wchar stuff
-#include <codecvt>
-#include <locale>
 
 
 #define V_RETURN(op)                                                           \
   if (FAILED(hr = (op))) {                                                     \
-    assert(0);                                                                 \
     DxTrace(__FILEW__, __LINE__, hr, L#op);                                    \
+    CL_ASSERT(0);                                                              \
     return hr;                                                                 \
   }
 
 #define V(op)                                                                  \
   if (FAILED(hr = (op))) {                                                     \
-    assert(0);                                                                 \
     DxTrace(__FILEW__, __LINE__, hr, L#op);                                    \
+    CL_ASSERT(0);                                                              \
   }
 
 #define SAFE_ADDREF(obj) ((obj) ? (obj)->AddRef() : 0)
@@ -50,21 +45,18 @@ void Caramel::RenderAPI_DX12::Initialise(GLFWwindow* window, const struct Window
     // Logging
     DXGI_ADAPTER_DESC adapterDesc;
     HRESULT hr = m_adapter->GetDesc(&adapterDesc);
-    if (FAILED(hr)) 
+    if (!FAILED(hr)) 
     {
-        // Handle error
+        CL_CORE_INFO("\n\t\t=== DirectX 12 ===\n\tModel: {}\n\tRevision: {}\n\tVideo Memory: {}\n\tVendor ID: {}",
+            adapterDesc.Description,
+            adapterDesc.Revision,
+            adapterDesc.DedicatedVideoMemory,
+            adapterDesc.VendorId);
     }
-
-    // TODO: Move this somewhere nice and reusable
-    static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-
-    std::string cardName(converter.to_bytes(adapterDesc.Description));
-    CL_CORE_INFO("\n\t\t=== DirectX 12 ===\n\tModel: {}\n\tRevision: {}\n\tVideo Memory: {}\n\tVendor ID: {}", 
-        cardName, 
-        adapterDesc.Revision, 
-        adapterDesc.DedicatedVideoMemory, 
-        adapterDesc.VendorId);
-
+    else
+    {
+        CL_CORE_NOT_IMPLEMENTED;
+    }
 }
 
 void Caramel::RenderAPI_DX12::RenderFrame()

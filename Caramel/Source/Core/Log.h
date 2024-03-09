@@ -1,5 +1,7 @@
 #include <spdlog/spdlog.h>
 
+
+
 namespace Caramel
 {
 	class Log
@@ -12,10 +14,28 @@ namespace Caramel
 
 		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
 		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+		inline static std::string ConvertWChar(const wchar_t* target) { return s_Converter.to_bytes(target); }
 
 	private:
+		static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> s_Converter;
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
+	};
+}
+
+namespace std
+{
+	// Kinda gross but does the trick (Printing DXGI_ADAPTER_DESC::Description)
+	template<>
+	struct formatter<WCHAR[128]> : formatter<std::string>
+	{
+		auto format(const WCHAR(&wstr)[128], std::format_context& ctx) const
+		{
+			// Convert the wide string to a UTF-8 string
+			std::string str = Caramel::Log::ConvertWChar(wstr);
+			// Use the existing std::formatter<std::string> to format the string
+			return formatter<std::string>::format(str, ctx);
+		}
 	};
 }
 
