@@ -3,10 +3,10 @@
 
 namespace Caramel
 {
-	class ImGuiImpl
+	class ImGuiRendererImpl
 	{
 	public:
-		ImGuiImpl() {};
+		ImGuiRendererImpl() {};
 
 		virtual void Init(class RenderAPI* renderAPI) = 0;
 		virtual void Shutdown() = 0;
@@ -14,7 +14,7 @@ namespace Caramel
 		virtual void Render(ImDrawData* drawData) = 0;
 
 
-		static ImGuiImpl* Create();
+		static ImGuiRendererImpl* Create();
 	};
 }
 

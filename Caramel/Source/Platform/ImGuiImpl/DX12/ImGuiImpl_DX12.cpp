@@ -2,11 +2,11 @@
 #include "ImGuiImpl_DX12.h"
 
 
-#include <Platform/RenderAPI/Windows/DX12/RenderAPI_DX12.h>
+#include <Platform/RenderAPI/DX12/RenderAPI_DX12.h>
 #include <backends/imgui_impl_dx12.h>
 
 
-void Caramel::ImGuiImpl_DX12::Init(RenderAPI* renderAPI)
+void Caramel::ImGuiRendererImpl_DX12::Init(RenderAPI* renderAPI)
 {
     m_dxAPI = (RenderAPI_DX12*)renderAPI;
 
@@ -20,17 +20,17 @@ void Caramel::ImGuiImpl_DX12::Init(RenderAPI* renderAPI)
     ImGui_ImplDX12_Init(device, num_frames_in_flight, rtv_format, cbv_srv_heap, font_srv_cpu_desc_handle, font_srv_gpu_desc_handle);
 }
 
-void Caramel::ImGuiImpl_DX12::NewFrame()
+void Caramel::ImGuiRendererImpl_DX12::NewFrame()
 {
     ImGui_ImplDX12_NewFrame();
 }
 
-void Caramel::ImGuiImpl_DX12::Render(ImDrawData* drawData)
+void Caramel::ImGuiRendererImpl_DX12::Render(ImDrawData* drawData)
 {
     ImGui_ImplDX12_RenderDrawData(drawData, m_dxAPI->m_pd3dCommandList.Get());
 }
 
-void Caramel::ImGuiImpl_DX12::Shutdown()
+void Caramel::ImGuiRendererImpl_DX12::Shutdown()
 {
     ImGui_ImplDX12_Shutdown();
 }

@@ -34,10 +34,9 @@
 #define SAFE_RELEASE(obj) ((obj) ? (obj)->Release() : 0)
 
 
-void Caramel::RenderAPI_DX12::Initialise(GLFWwindow* window, const struct WindowProperties* props)
+void Caramel::RenderAPI_DX12::Initialise(Window* window, const struct WindowProperties* props)
 {
-    m_glfwWindow = window;
-    m_nativeWindow = glfwGetWin32Window(m_glfwWindow);
+    m_nativeWindow = window->GetNativeWindow<HWND>();
     InitDirect3D(m_nativeWindow, props->Width, props->Height);
     ResizeRenderedBuffers(props->Width, props->Height);
 

@@ -4,7 +4,7 @@
 #include "Core/Application.h"
 
 
-#include "Platform/RenderAPI/Windows/DX12/RenderAPI_DX12.h"
+#include "Platform/RenderAPI/DX12/RenderAPI_DX12.h"
 #include <Core/Log.h>
 
 namespace Caramel

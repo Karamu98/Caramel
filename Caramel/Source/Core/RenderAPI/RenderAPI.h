@@ -1,7 +1,5 @@
 #pragma once
 
-// GLFW
-#include <glfw/glfw3.h>
 #include <Core/Core.h>
 
 namespace Caramel
@@ -13,7 +11,7 @@ namespace Caramel
 
 		static RenderAPI* Create(WindowRenderAPI api);
 
-		virtual void Initialise(GLFWwindow* window, const struct WindowProperties* props) = 0;
+		virtual void Initialise(class Window* window, const struct WindowProperties* props) = 0;
 		virtual void Shutdown() = 0;
 		virtual void RenderFrame() = 0;
 

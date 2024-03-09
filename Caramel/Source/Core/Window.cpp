@@ -1,7 +1,7 @@
 #include "clpch.h"
 #include "Window.h"
 
-#include <Platform/Window/GLFW_Window.h>
+#include <Platform/Window/GLFW/GLFW_Window.h>
 
 namespace Caramel
 {

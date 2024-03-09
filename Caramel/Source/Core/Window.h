@@ -27,14 +27,25 @@ namespace Caramel
         virtual unsigned int GetHeight() const = 0;
         virtual unsigned int GetRefreshRate() const = 0;
         virtual bool IsVSync() const = 0;
-        
-        virtual void* GetNativeWindow() { return nullptr; };
+
         virtual WindowRenderAPI GetRenderAPIType() = 0;
+        class RenderAPI* GetRenderer() { return m_renderer; }
+
+        template<typename T>
+        T GetNativeWindow() 
+        {
+            return (T)GetNativeWindowImpl(typeid(T)); 
+        };
 
         virtual void SetEventCallback(const EventCallback& callback) = 0;
         virtual void SetVSync(bool enabled) = 0;
         virtual void SetRefreshRate(unsigned int frameRate) = 0;
 
         static Window* Create(const WindowProperties& properties = WindowProperties());
+
+    protected:
+        virtual void* GetNativeWindowImpl(const type_info& typeInfo) = 0;
+
+        class RenderAPI* m_renderer = nullptr;
     };
 }

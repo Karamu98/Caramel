@@ -1,9 +1,6 @@
 #pragma once
 #include <Core/RenderAPI/RenderAPI.h>
 
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <glfw/glfw3native.h>
-
 #include <d3d12.h>       // for D3D12 interface
 #include <dxgi1_6.h>     // for DXGI
 #include <wrl.h>         // for Microsoft::WRL::ComPtr
@@ -16,13 +13,11 @@ namespace Caramel
 		RenderAPI_DX12() {};
 	protected:
 		// Inherited via NativeRenderAPI
-		void Initialise(GLFWwindow* window, const struct WindowProperties* props) override;
+		void Initialise(Window* window, const struct WindowProperties* props) override;
 		void RenderFrame() override;
 
 	private:
-		GLFWwindow* m_glfwWindow;
 		HWND m_nativeWindow;
-
 
 		HRESULT InitDirect3D(HWND hwnd, int width, int height);
 		HRESULT ResizeRenderedBuffers(int width, int height);

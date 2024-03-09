@@ -5,14 +5,11 @@
 
 #include <Core/Log.h>
 #include <Core/Application.h>
+#include <Core/Window.h>
 
-// Assume we're only using GLFW for now
-#include <Platform/Window/GLFW_Window.h>
-#include <backends/imgui_impl_glfw.h>
-
-// Todo: these could be moved
-// DX12
-#include <Platform/ImGui/ImGuiImpl_DX12.h>
+#include <Core/RenderAPI/RenderAPI.h>
+#include <Core/ImGui/ImGuiWindowImpl.h>
+#include <Core/ImGui/ImGuiRendererImpl.h>
 
 Caramel::ImGuiLayer::ImGuiLayer() : Layer("ImGui")
 {
@@ -47,42 +44,20 @@ void Caramel::ImGuiLayer::OnAttach()
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
-    // GLFW is assumed
-    GLFW_Window* window = (GLFW_Window*)Application::Get()->GetWindow();
-    GLFWwindow* glfwWindow = (GLFWwindow*)window->GetNativeWindow();
+    m_imGuiWindowImpl = ImGuiWindowImpl::Create();
+    m_imGuiRendererImpl = ImGuiRendererImpl::Create();
 
-    // TODO: CLEAN
-    switch (window->GetRenderAPIType())
-    {
-    case WindowRenderAPI::DirectX12:
-    {
-        ImGui_ImplGlfw_InitForOther(glfwWindow, true);
+    CL_CORE_ASSERT(m_imGuiWindowImpl && m_imGuiRendererImpl);
 
-        m_imGuiImpl = new ImGuiImpl_DX12();
-        m_imGuiImpl->Init(window->GetRenderer());
-        break;
-    }
-    case WindowRenderAPI::OpenGL:
-    {
-        //ImGui_ImplGlfw_InitForOpenGL(window, true);
-        //ImGui_ImplOpenGL3_Init("#version 410");
-        break;
-    }
-
-    default:
-    {
-        CL_CORE_NOT_IMPLEMENTED;
-    }
-    }
-
-    // Setup Platform/Renderer bindings
-
+    Window* targetWindow = Application::Get()->GetWindow();
+    m_imGuiWindowImpl->Init(targetWindow);
+    m_imGuiRendererImpl->Init(targetWindow->GetRenderer());
 }
 
 void Caramel::ImGuiLayer::OnDetach()
 {
-    m_imGuiImpl->Shutdown();
-    ImGui_ImplGlfw_Shutdown();
+    m_imGuiRendererImpl->Shutdown();
+    m_imGuiWindowImpl->Shutdown();
     ImGui::DestroyContext();
 }
 
@@ -94,11 +69,8 @@ void Caramel::ImGuiLayer::OnImGuiRender()
 
 void Caramel::ImGuiLayer::Begin()
 {
-    {
-        m_imGuiImpl->NewFrame(); //ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-    }
-
+    m_imGuiRendererImpl->NewFrame(); //ImGui_ImplOpenGL3_NewFrame();
+    m_imGuiWindowImpl->NewFrame();
     ImGui::NewFrame();
 }
 
@@ -110,13 +82,6 @@ void Caramel::ImGuiLayer::End()
 
     // Rendering
     ImGui::Render();
-    m_imGuiImpl->Render(ImGui::GetDrawData());
-
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        GLFWwindow* backup_current_context = glfwGetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        glfwMakeContextCurrent(backup_current_context);
-    }
+    m_imGuiRendererImpl->Render(ImGui::GetDrawData());
+    m_imGuiWindowImpl->Render();
 }

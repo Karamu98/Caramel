@@ -1,13 +1,12 @@
 #pragma once
 
-#include <Core/ImGuiImpl.h>
+#include <Core/ImGui/ImGuiRendererImpl.h>
 
 namespace Caramel
 {
-	class ImGuiImpl_DX12 : public ImGuiImpl
+	class ImGuiRendererImpl_DX12 : public ImGuiRendererImpl
 	{
 	public:
-
 		// Inherited via ImGuiImpl
 		void Init(class RenderAPI* renderAPI) override;
 		void Shutdown() override;
@@ -16,8 +15,6 @@ namespace Caramel
 
 	private:
 		class RenderAPI_DX12* m_dxAPI;
-
-
 	};
 }
 

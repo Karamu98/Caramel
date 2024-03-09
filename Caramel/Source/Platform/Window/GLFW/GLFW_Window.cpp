@@ -6,6 +6,10 @@
 #include <Core/Events/MouseEvent.h>
 #include <Core/RenderAPI/RenderAPI.h>
 
+// TODO: IFDEF
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <glfw/glfw3native.h>
+
 
 namespace Caramel
 {
@@ -47,7 +51,7 @@ namespace Caramel
             CL_CORE_FATAL("Unable to create render api {}", (int)m_data.RenderAPI);
             return;
         }
-        m_renderer->Initialise(m_window, &properties);
+        m_renderer->Initialise(this, &properties);
         //glfwMakeContextCurrent(m_window);
 
         SetRefreshRate(m_data.Framerate);
@@ -177,11 +181,6 @@ namespace Caramel
 		return m_data.VSync;
 	}
 
-    void* GLFW_Window::GetNativeWindow()
-    {
-        return m_window;
-    }
-
 	void GLFW_Window::SetEventCallback(const EventCallback& callback)
 	{
 		m_data.Callback = callback;
@@ -211,6 +210,22 @@ namespace Caramel
             CL_CORE_NOT_IMPLEMENTED;
         }
 	}
+
+    void* GLFW_Window::GetNativeWindowImpl(const type_info& typeInfo)
+    {
+        if (typeInfo == typeid(GLFWwindow*))
+        {
+            return m_window;
+        }
+
+        // TODO: IFDEF
+        if (typeInfo == typeid(HWND))
+        {
+            return glfwGetWin32Window(m_window);
+        }
+        return nullptr;
+    }
+
     WindowRenderAPI GLFW_Window::GetRenderAPIType()
     {
         return m_data.RenderAPI;

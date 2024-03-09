@@ -19,7 +19,8 @@ namespace Caramel
 		void End();
 
 	protected:
-		class ImGuiImpl* m_imGuiImpl;
+		class ImGuiRendererImpl* m_imGuiRendererImpl;
+		class ImGuiWindowImpl* m_imGuiWindowImpl;
 	};
 }
 
