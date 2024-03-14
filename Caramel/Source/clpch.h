@@ -10,3 +10,5 @@
 
 #include <codecvt>
 #include <locale>
+
+#include <Core/Log.h>

@@ -69,9 +69,10 @@ void Caramel::ImGuiLayer::OnImGuiRender()
 
 void Caramel::ImGuiLayer::Begin()
 {
-    m_imGuiRendererImpl->NewFrame(); //ImGui_ImplOpenGL3_NewFrame();
+    m_imGuiRendererImpl->NewFrame();
     m_imGuiWindowImpl->NewFrame();
     ImGui::NewFrame();
+    //ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 }
 
 void Caramel::ImGuiLayer::End()

@@ -29,6 +29,8 @@ project "ImGui"
 		"imgui/backends/imgui_impl_glfw.cpp",
 		"imgui/backends/imgui_impl_dx12.h",
 		"imgui/backends/imgui_impl_dx12.cpp",
+		"imgui/backends/imgui_impl_opengl3.h",
+		"imgui/backends/imgui_impl_opengl3.cpp",
 	}
 
 	includedirs
@@ -41,3 +43,4 @@ project "ImGui"
 	{
 		"GLFW"
 	}
+

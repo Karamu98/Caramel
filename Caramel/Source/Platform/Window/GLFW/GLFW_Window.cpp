@@ -7,6 +7,7 @@
 #include <Core/RenderAPI/RenderAPI.h>
 
 // TODO: IFDEF
+#include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw/glfw3native.h>
 
@@ -42,7 +43,10 @@ namespace Caramel
         CL_CORE_INFO("Creating new window named ({0})@{3}fps cap, w:{1} h:{2}, VSync: {4}", m_data.Title, m_data.Width, m_data.Height, m_data.Framerate, m_data.VSync);
 
 
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        if (m_data.RenderAPI != WindowRenderAPI::OpenGL)
+        {
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        }
 
         m_window = glfwCreateWindow(m_data.Width, m_data.Height, m_data.Title.c_str(), nullptr, nullptr);
         m_renderer = RenderAPI::Create(m_data.RenderAPI);
@@ -52,7 +56,6 @@ namespace Caramel
             return;
         }
         m_renderer->Initialise(this, &properties);
-        //glfwMakeContextCurrent(m_window);
 
         SetRefreshRate(m_data.Framerate);
         glfwSetWindowUserPointer(m_window, &m_data);
@@ -150,14 +153,6 @@ namespace Caramel
 	void GLFW_Window::OnUpdate()
 	{
 		glfwPollEvents();
-        if (m_renderer)
-        {
-            m_renderer->RenderFrame();
-        }
-        else
-        {
-            glfwSwapBuffers(m_window);
-        }
 	}
 
 	unsigned int GLFW_Window::GetWidth() const
@@ -191,10 +186,6 @@ namespace Caramel
         if (m_renderer)
         {
             m_renderer->SetVSync(enabled);
-        }
-        else
-        {
-            glfwSwapInterval(enabled == true ? 1 : 0);
         }
 		m_data.VSync = enabled;
 	}

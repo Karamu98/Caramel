@@ -9,8 +9,6 @@
 
 
 // d3d12
-#pragma comment(lib,"d3d12.lib")
-#pragma comment(lib,"dxgi.lib")
 #include <windef.h>
 #include <DirectXMath.h> // For XMVector, XMFLOAT3, XMFLOAT4
 #include <comdef.h>      // for _com_error
@@ -58,7 +56,7 @@ void Caramel::RenderAPI_DX12::Initialise(Window* window, const struct WindowProp
     }
 }
 
-void Caramel::RenderAPI_DX12::RenderFrame()
+void Caramel::RenderAPI_DX12::Render()
 {
     HRESULT hr;
 
@@ -113,11 +111,6 @@ void Caramel::RenderAPI_DX12::RenderFrame()
     ID3D12CommandList* cmdLists[] = { m_pd3dCommandList.Get() };
     m_pd3dCommandQueue->ExecuteCommandLists(1, cmdLists);
 
-    //
-    m_pSwapChain->Present(0, 0);
-    m_iCurrentFrameIndex = (m_iCurrentFrameIndex + 1) % m_iSwapChainBufferCount;
-
-    FlushCommandQueue();
 }
 
 HRESULT Caramel::RenderAPI_DX12::InitDirect3D(HWND hwnd, int width, int height)
@@ -458,6 +451,11 @@ void Caramel::RenderAPI_DX12::DxTrace(const wchar_t* file, unsigned long line, H
     CL_CORE_ERROR("file: {0}@{1}, {2} {3}", converter.to_bytes(file), line, converter.to_bytes(proc), (const char*)err.Description());
 }
 
+void Caramel::RenderAPI_DX12::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+{
+    CL_CORE_NOT_IMPLEMENTED;
+}
+
 void Caramel::RenderAPI_DX12::SetVSync(bool enabled)
 {
     CL_CORE_NOT_IMPLEMENTED;
@@ -471,6 +469,19 @@ void Caramel::RenderAPI_DX12::SetRefreshRate(unsigned int frameRate)
 void Caramel::RenderAPI_DX12::Shutdown()
 {
     FreeD3DResources();
+}
+
+void Caramel::RenderAPI_DX12::Clear()
+{
+    //CL_CORE_NOT_IMPLEMENTED;
+}
+
+void Caramel::RenderAPI_DX12::Present()
+{
+    m_pSwapChain->Present(0, 0);
+    m_iCurrentFrameIndex = (m_iCurrentFrameIndex + 1) % m_iSwapChainBufferCount;
+
+    FlushCommandQueue();
 }
 
 

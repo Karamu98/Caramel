@@ -7,14 +7,24 @@
 
 namespace Caramel
 {
+	class Window;
+
 	class RenderAPI_DX12 : public RenderAPI
 	{
 	public:
 		RenderAPI_DX12() {};
 	protected:
-		// Inherited via NativeRenderAPI
+		// Inherited via RenderAPI
 		void Initialise(Window* window, const struct WindowProperties* props) override;
-		void RenderFrame() override;
+		void Shutdown() override;
+
+		void SetVSync(bool enabled) override;
+		void SetRefreshRate(unsigned int frameRate) override;
+
+		void Clear() override;
+		void Render() override;
+		void Present() override;
+		void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
 
 	private:
 		HWND m_nativeWindow;
@@ -64,15 +74,6 @@ namespace Caramel
 
 		D3D12_VIEWPORT m_ScreenViewport;
 		D3D12_RECT m_ScreenScissorRect;
-
-	private:
-
-		// Inherited via RenderAPI
-		void SetVSync(bool enabled) override;
-		void SetRefreshRate(unsigned int frameRate) override;
-
-		// Inherited via RenderAPI
-		void Shutdown() override;
 	};
 }
 

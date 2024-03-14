@@ -11,7 +11,12 @@ namespace Caramel
 	void ImGuiWindowImpl_GLFW::Init(Window* window)
 	{
 		m_window = window->GetNativeWindow<GLFWwindow*>();
-		ImGui_ImplGlfw_InitForOther(m_window, true);
+		switch (window->GetRenderAPIType())
+		{
+		case WindowRenderAPI::OpenGL: { ImGui_ImplGlfw_InitForOpenGL(m_window, true); break; }
+		case WindowRenderAPI::Vulkan: { ImGui_ImplGlfw_InitForVulkan(m_window, true); break; }
+		default: {ImGui_ImplGlfw_InitForOther(m_window, true); break; }
+		}
 	}
 
 	void ImGuiWindowImpl_GLFW::Shutdown()

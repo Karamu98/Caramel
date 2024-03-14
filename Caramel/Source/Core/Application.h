@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include "Window.h"
 #include "Layers/LayerStack.h"
-#include "Layers/ImGuiLayer.h"
 
 namespace Caramel
 {
+    class ImGuiLayer;
+
     class Application
     {
     public:
@@ -28,7 +29,6 @@ namespace Caramel
         LayerStack m_layerStack;
 
         bool m_bIsRunning;
-
 
         static Application* s_application;
     };

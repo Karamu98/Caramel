@@ -37,6 +37,7 @@ workspace "Caramel"
 		{
 			"CL_PLATFORM_WINDOWS",
 		}
+
 	filter "system:linux"
 		systemversion "latest"
 
@@ -50,12 +51,14 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Caramel/Vendor/glfw/include"
+IncludeDir["glad"] = "Caramel/Vendor/glad/include"
 IncludeDir["spdlog"] = "Caramel/Vendor/spdlog/include"
 IncludeDir["imgui"] = "Caramel/Vendor/imgui"
 
 group "Dependencies"
 include "Caramel/Vendor/glfw"
 include "Caramel/Vendor/imgui"
+include "Caramel/Vendor/glad"
 
 group ""
 
@@ -86,6 +89,7 @@ project "Caramel"
 		--"GLM_FORCE_PURE",
 		--"GLM_ENABLE_EXPERIMENTAL",
 		--"IMGUI_IMPL_OPENGL_LOADER_GLAD"
+		"GLFW_INCLUDE_NONE"
 	}
 
 	includedirs
@@ -93,17 +97,25 @@ project "Caramel"
 		"%{prj.name}/Source",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.imgui}"
+		"%{IncludeDir.imgui}",
+		"%{IncludeDir.glad}"
 	}
 
 	links 
 	{ 
 		"GLFW",
-		"ImGui"
-		--"Glad",
+		"ImGui",
+		"glad",
 		--"assimp",
 		--"opengl32.lib"
 	}
+
+	filter "system:windows"
+		links
+		{
+			"d3d12.lib",
+			"dxgi.lib"
+		}
 
 project "Game"
 	location "Game"
@@ -126,8 +138,8 @@ project "Game"
 		"%{prj.name}/Source",
 		"Caramel/Source",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.glad}",
 		--"Caramel/deps/spdlog/include",
-		--"%{IncludeDir.Glad}",
 		--"%{IncludeDir.ImGui}",
 		--"Caramel/deps",
 		--"%{IncludeDir.glm}"
@@ -137,5 +149,6 @@ project "Game"
 	links
 	{
 		"Caramel",
-		"ImGui"
+		"ImGui",
+		"glad"
 	}
