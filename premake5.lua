@@ -54,6 +54,7 @@ IncludeDir["GLFW"] = "Caramel/Vendor/glfw/include"
 IncludeDir["glad"] = "Caramel/Vendor/glad/include"
 IncludeDir["spdlog"] = "Caramel/Vendor/spdlog/include"
 IncludeDir["imgui"] = "Caramel/Vendor/imgui"
+IncludeDir["stb"] = "Caramel/Vendor/stb"
 
 group "Dependencies"
 include "Caramel/Vendor/glfw"
@@ -99,7 +100,8 @@ project "Caramel"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.imgui}",
-		"%{IncludeDir.glad}"
+		"%{IncludeDir.glad}",
+		"%{IncludeDir.stb}",
 	}
 
 	links 

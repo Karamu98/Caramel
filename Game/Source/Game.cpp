@@ -1,5 +1,6 @@
 #include "Game.h"
-
+#include <Core/EntryPoint.h>
+#include "TestGameLayer.h"
 
 Caramel::Application* CreateApplication()
 {
@@ -7,22 +8,8 @@ Caramel::Application* CreateApplication()
 	return new MyGame();
 }
 
-class TestLayer : public Caramel::Layer
-{
-public:
-	void OnUpdate() override
-	{
-		//CL_INFO("Hey!");
-	}
-
-	void OnEvent(Caramel::Event& event) override
-	{
-
-	}
-};
-
 MyGame::MyGame()
 {
-	TestLayer* layer = new TestLayer();
+	TestGameLayer* layer = new TestGameLayer();
 	TrackLayer(layer);
 }

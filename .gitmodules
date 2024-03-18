@@ -7,3 +7,6 @@
 [submodule "Caramel/Vendor/imgui"]
 	path = Caramel/Vendor/imgui
 	url = https://github.com/Karamu98/imgui.git
+[submodule "Caramel/Vendor/stb"]
+	path = Caramel/Vendor/stb
+	url = https://github.com/Karamu98/stb.git

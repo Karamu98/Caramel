@@ -9,7 +9,7 @@ namespace Caramel
 	public:
 		friend class LayerStack;
 		Layer(const std::string& debugName = "Layer");
-		virtual ~Layer();
+		virtual ~Layer() noexcept;
 
 		virtual void OnAttach() {};
 		virtual void OnDetach() {};

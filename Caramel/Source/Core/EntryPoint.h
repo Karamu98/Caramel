@@ -1,4 +1,6 @@
-﻿extern Caramel::Application* CreateApplication();
+﻿#pragma once
+
+extern Caramel::Application* CreateApplication();
 
 int main(int argc, char *argv[])
 {
