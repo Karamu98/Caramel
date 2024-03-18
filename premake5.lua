@@ -143,7 +143,7 @@ project "Game"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glad}",
 		--"Caramel/deps/spdlog/include",
-		--"%{IncludeDir.ImGui}",
+		"%{IncludeDir.imgui}",
 		--"Caramel/deps",
 		--"%{IncludeDir.glm}"
 		"%{IncludeDir.spdlog}"

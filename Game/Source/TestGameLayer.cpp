@@ -1,5 +1,6 @@
 #include "TestGameLayer.h"
 
+#include <imgui.h>
 
 /// SHADER
 const char* vertexShaderSource = R"glsl(
@@ -117,6 +118,18 @@ void TestGameLayer::OnAttach()
     }
 }
 
+void TestGameLayer::OnImGuiRender()
+{
+    ImGui::Begin("Controls");
+
+    ImGui::DragFloat("Spin speed", &m_spinSpeed);
+    ImGui::DragFloat("Angle", &m_currrentAngle, 1.0f, 0.001f, 360.0f, "%.3f");
+    ImGui::DragFloat("Radius", &m_radius, 0.01f, 0.001f);
+    ImGui::Checkbox("Auto Spin", &m_spin);
+
+    ImGui::End();
+}
+
 void TestGameLayer::SetPointOnCircle(float radius, float angleInDegrees)
 {
     // Convert angle from degrees to radians
@@ -131,8 +144,12 @@ void TestGameLayer::SetPointOnCircle(float radius, float angleInDegrees)
 void TestGameLayer::OnUpdate(Caramel::Timestep ts)
 {
     m_testShader->Bind();
-    m_currrentAngle += m_spinSpeed * ts;
-    SetPointOnCircle(0.2f, m_currrentAngle);
+    if (m_spin)
+    {
+        m_currrentAngle += m_spinSpeed * ts;
+        
+    }
+    SetPointOnCircle(m_radius, m_currrentAngle);
     m_testShader->SetValue("offset", Caramel::ShaderDataType::Float2, &m_testOffset);
     m_testTexture->Bind(0);
     Caramel::Renderer::Submit(m_testTriangle);

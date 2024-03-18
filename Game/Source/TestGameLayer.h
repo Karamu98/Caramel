@@ -7,6 +7,8 @@ class TestGameLayer : public Caramel::Layer
 {
 public:
 	virtual void OnAttach() override;
+	virtual void OnImGuiRender() override;
+
 	virtual void OnUpdate(Caramel::Timestep ts) override;
 
 private:
@@ -23,4 +25,6 @@ private:
 
 	float m_spinSpeed = 90.0f;
 	float m_currrentAngle = 0.0f;
+	float m_radius = 0.2f;
+	bool m_spin = true;
 };
