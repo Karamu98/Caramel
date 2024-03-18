@@ -28,6 +28,8 @@ namespace Caramel
         ImGuiLayer* m_imGuiLayer;
         LayerStack m_layerStack;
 
+        float m_lastFrameTime = 0.0f;
+
         bool m_bIsRunning;
 
         static Application* s_application;

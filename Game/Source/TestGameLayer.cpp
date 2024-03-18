@@ -117,8 +117,6 @@ void TestGameLayer::OnAttach()
     }
 }
 
-#include <cmath>
-
 void TestGameLayer::SetPointOnCircle(float radius, float angleInDegrees)
 {
     // Convert angle from degrees to radians
@@ -130,10 +128,11 @@ void TestGameLayer::SetPointOnCircle(float radius, float angleInDegrees)
 }
 
 
-void TestGameLayer::OnUpdate()
+void TestGameLayer::OnUpdate(Caramel::Timestep ts)
 {
     m_testShader->Bind();
-    SetPointOnCircle(0.2f, 45);
+    m_currrentAngle += m_spinSpeed * ts;
+    SetPointOnCircle(0.2f, m_currrentAngle);
     m_testShader->SetValue("offset", Caramel::ShaderDataType::Float2, &m_testOffset);
     m_testTexture->Bind(0);
     Caramel::Renderer::Submit(m_testTriangle);

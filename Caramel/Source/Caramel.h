@@ -12,6 +12,8 @@
 #include "Core/RenderAPI/ShaderDataType.h"
 #include "Core/Renderer.h"
 
+#include "Core/Timestep.h"
+
 
 // ------------ ENTRY POINT
 //#include "Core/EntryPoint.h" // Maybe dont do this here? idk

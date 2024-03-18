@@ -4,6 +4,8 @@
 #include "Events/ApplicationEvent.h"
 #include "Layers/ImGuiLayer.h"
 #include "Core/Renderer.h"
+#include "Core/Platform.h"
+#include "Core/Timestep.h"
 
 Caramel::Application* Caramel::Application::s_application = nullptr;
 
@@ -41,12 +43,16 @@ void Caramel::Application::Run()
 
     while (m_bIsRunning)
     {
+        float time = Platform::GetTime();
+        Timestep timestep = time - m_lastFrameTime;
+        m_lastFrameTime = time;
+
         RenderCommand::Clear();
         Renderer::BeginScene();
 
         for (Layer* layer : m_layerStack)
         {
-            layer->OnUpdate();
+            layer->OnUpdate(timestep);
         }
 
         Renderer::EndScene();
