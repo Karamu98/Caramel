@@ -88,30 +88,15 @@ namespace Caramel
 		glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, m_minFilterMode);
 		glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, m_magFilterMode);
 
-		// TODO: Change how we load the texture onto the GPU based on m_textureType (2D currently)
+		switch (m_properties.Type)
 		{
-			int width, height, nrChannels;
-			unsigned char* data = stbi_load(params.Path.c_str(), &width, &height, &nrChannels, 0);
-			if (data)
-			{
-				GLenum format = GL_ZERO;
-				switch (nrChannels)
-				{
-				case 1: format = GL_RED; break;
-				case 3: format = GL_RGB; break;
-				case 4: format = GL_RGBA; break;
-				}
+		case TextureType::T_1D: Load1D(); break;
 
-				glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-				glGenerateMipmap(GL_TEXTURE_2D);
-			}
-			else
-			{
-				CL_CORE_ERROR("Failed to load texture");
-			}
-			stbi_image_free(data);
+		case TextureType::T_2D: Load2D(params.Path); break;
+
+		case TextureType::T_2DArray:
+		case TextureType::T_3D: Load3D(); break;
 		}
-
 	}
 
 	void Texture_OpenGL::Bind(unsigned int slot)
@@ -123,6 +108,39 @@ namespace Caramel
 	void Texture_OpenGL::Unbind(unsigned int slot)
 	{
 		glBindTexture(m_textureType, 0);
+	}
+
+	void Texture_OpenGL::Load1D()
+	{
+		CL_CORE_NOT_IMPLEMENTED;
+	}
+
+	void Texture_OpenGL::Load3D()
+	{
+	}
+
+	void Texture_OpenGL::Load2D(const std::string& path)
+	{
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			GLenum format = GL_ZERO;
+			switch (nrChannels)
+			{
+			case 1: format = GL_RED; break;
+			case 3: format = GL_RGB; break;
+			case 4: format = GL_RGBA; break;
+			}
+
+			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			CL_CORE_ERROR("Failed to load texture");
+		}
+		stbi_image_free(data);
 	}
 }
 

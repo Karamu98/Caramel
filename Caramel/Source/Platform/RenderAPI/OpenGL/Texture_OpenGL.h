@@ -14,6 +14,10 @@ namespace Caramel
 		virtual const TextureProperties& GetProperties() const override { return m_properties; }
 
 	private:
+		void Load1D();
+		void Load2D(const std::string& path);
+		void Load3D();
+
 		unsigned int m_ID;
 		TextureProperties m_properties;
 

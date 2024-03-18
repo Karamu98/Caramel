@@ -117,6 +117,11 @@ namespace Caramel
 			return;
 		}
 
+		for (auto& uniform : params.Uniforms)
+		{
+			m_uniformLocations[uniform] = glGetUniformLocation(m_id, uniform.c_str());
+		}
+
 		// Always detach shaders after a successful link.
 		glDetachShader(m_id, vertexShader);
 		glDetachShader(m_id, fragmentShader);
@@ -135,6 +140,35 @@ namespace Caramel
 	void Shader_OpenGL::Unbind()
 	{
 		glUseProgram(0);
+	}
+
+	void Shader_OpenGL::SetValue(const std::string& name, ShaderDataType type, void* value)
+	{
+		if (m_uniformLocations.find(name) == m_uniformLocations.end())
+		{
+			CL_CORE_WARN("Uniform ({0}), is not found in bound shader with ID: {1}", name, m_id);
+			return;
+		}
+
+		uint32_t targetUniform = m_uniformLocations[name];
+
+		glUseProgram(m_id);	
+		switch (type)
+		{
+		case ShaderDataType::Mat3:
+		case ShaderDataType::Mat4:
+
+		case ShaderDataType::Float:		{ glUniform1f(targetUniform, *(float*)value); break; }
+		case ShaderDataType::Float2:	{ glUniform2f(targetUniform, *(float*)value, *((float*)value+1)); break; }
+		case ShaderDataType::Float3:	{ glUniform3f(targetUniform, *(float*)value, *((float*)value + 1), *((float*)value + 2)); break; }
+		case ShaderDataType::Float4:	{ glUniform4f(targetUniform, *(float*)value, *((float*)value + 1), *((float*)value + 2), *((float*)value + 3)); break; }
+
+		case ShaderDataType::Int:		{ glUniform1i(targetUniform, *(uint32_t*)value); break; }
+		case ShaderDataType::Int2:		{ glUniform2i(targetUniform, *(uint32_t*)value, *((uint32_t*)value + 1)); break; }
+		case ShaderDataType::Int3:		{ glUniform3i(targetUniform, *(uint32_t*)value, *((uint32_t*)value + 1), *((uint32_t*)value + 2)); break; }
+		case ShaderDataType::Int4:		{ glUniform4i(targetUniform, *(uint32_t*)value, *((uint32_t*)value + 1), *((uint32_t*)value + 2), *((uint32_t*)value + 3)); break; }
+
+		}
 	}
 }
 

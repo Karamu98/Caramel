@@ -11,9 +11,12 @@ const char* vertexShaderSource = R"glsl(
     out vec3 vColour;
     out vec2 vUV;
 
+    uniform vec2 offset;
+
     void main()
     {
-        gl_Position = vec4(position.x, position.y, position.z, 1.0);
+        vec2 newPos = position.xy + offset;
+        gl_Position = vec4(newPos.xy, position.z, 1.0);
         vColour = colour;
         vUV = uv;
     }
@@ -38,7 +41,7 @@ const char* fragmentShaderSource = R"glsl(
 
 void TestGameLayer::OnAttach()
 {
-    m_testShader = Caramel::Shader::Create({ vertexShaderSource, fragmentShaderSource });
+    m_testShader = Caramel::Shader::Create({ vertexShaderSource, fragmentShaderSource, {"offset"}});
     m_testTexture = Caramel::Texture::Create({ "Assets/wall.jpg", {Caramel::TextureType::T_2D} });
     Caramel::BufferLayout layout =
     {
@@ -114,11 +117,24 @@ void TestGameLayer::OnAttach()
     }
 }
 
+#include <cmath>
+
+void TestGameLayer::SetPointOnCircle(float radius, float angleInDegrees)
+{
+    // Convert angle from degrees to radians
+    float angleInRadians = angleInDegrees * 3.14159265358979323846 / 180.0f;
+
+    // Calculate x and y using the polar coordinates to Cartesian coordinates conversion
+    m_testOffset[0] = radius * cos(angleInRadians); // x-coordinate
+    m_testOffset[1] = radius * sin(angleInRadians); // y-coordinate
+}
+
+
 void TestGameLayer::OnUpdate()
 {
-    Caramel::Renderer::BeginScene();
     m_testShader->Bind();
+    SetPointOnCircle(0.2f, 45);
+    m_testShader->SetValue("offset", Caramel::ShaderDataType::Float2, &m_testOffset);
     m_testTexture->Bind(0);
     Caramel::Renderer::Submit(m_testTriangle);
-    Caramel::Renderer::EndScene();
 }

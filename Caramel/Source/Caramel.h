@@ -9,6 +9,7 @@
 #include "Core/RenderAPI/Shader.h"
 #include "Core/RenderAPI/Texture.h"
 #include "Core/RenderAPI/Buffer.h"
+#include "Core/RenderAPI/ShaderDataType.h"
 #include "Core/Renderer.h"
 
 

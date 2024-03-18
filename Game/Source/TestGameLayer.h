@@ -10,9 +10,14 @@ public:
 	virtual void OnUpdate() override;
 
 private:
+	void SetPointOnCircle(float radius, float angleInDegrees);
+
+
 	std::shared_ptr<Caramel::Texture> m_testTexture;
 	std::shared_ptr<Caramel::Shader> m_testShader;
 
 	std::shared_ptr<Caramel::VertexArray> m_testTriangle;
 	std::shared_ptr<Caramel::VertexArray> m_testStar;
+
+	float m_testOffset[2] = { 0.0f, 0.0f };
 };
