@@ -47,11 +47,11 @@ namespace Caramel
 	struct TextureProperties
 	{
 		TextureType Type = TextureType::T_1D;
-		MinFilterMode MinFilter;
-		MagFilterMode MagFilter;
+		MinFilterMode MinFilter = MinFilterMode::Linear;
+		MagFilterMode MagFilter = MagFilterMode::Linear;
 		TextureWrapMode WrapMode_U = TextureWrapMode::ClampToEdge;
-		TextureWrapMode WrapMode_V;
-		TextureWrapMode WrapMode_W;
+		TextureWrapMode WrapMode_V = TextureWrapMode::ClampToEdge;
+		TextureWrapMode WrapMode_W = TextureWrapMode::ClampToEdge;
 	};
 
 	struct TextureParams
