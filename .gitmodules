@@ -10,3 +10,6 @@
 [submodule "Caramel/Vendor/stb"]
 	path = Caramel/Vendor/stb
 	url = https://github.com/Karamu98/stb.git
+[submodule "Caramel/Vendor/assimp"]
+	path = Caramel/Vendor/assimp
+	url = https://github.com/Karamu98/assimp.git

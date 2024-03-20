@@ -2,6 +2,11 @@
 
 #include <imgui.h>
 
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 /// SHADER
 const char* vertexShaderSource = R"glsl(
     #version 330 core
@@ -115,6 +120,23 @@ void TestGameLayer::OnAttach()
 
         std::shared_ptr<Caramel::IndexBuffer> iBuffer = Caramel::IndexBuffer::Create({ starIndices, sizeof(starIndices) });
         m_testStar->SetIndexBuffer(iBuffer);
+    }
+
+
+
+    Assimp::Importer importer;
+    const std::string modelPath = "Assets/Models/ship.obj";
+    const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        // Error handling
+        CL_CORE_FATAL("ERROR::ASSIMP::{}", importer.GetErrorString());
+        return;
+    }
+    else
+    {
+        CL_CORE_INFO("Loaded model ({0}):\n\tMeshes: {1}\n\tMaterials: {2}\n\tTextures: {5}\n\tAnimations: {3}\n\tSkeletons: {4}", modelPath, scene->mNumMeshes, scene->mNumMaterials, scene->mNumAnimations, scene->mNumSkeletons, scene->mNumTextures);
     }
 }
 

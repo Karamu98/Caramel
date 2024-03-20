@@ -55,11 +55,17 @@ IncludeDir["glad"] = "Caramel/Vendor/glad/include"
 IncludeDir["spdlog"] = "Caramel/Vendor/spdlog/include"
 IncludeDir["imgui"] = "Caramel/Vendor/imgui"
 IncludeDir["stb"] = "Caramel/Vendor/stb"
+IncludeDir["assimp"] = "Caramel/Vendor/assimp/include"
+
+-- Configs
+IncludeDir["conf"] = "Caramel/Vendor/_config_headers"
+IncludeDir["conf_assimp"] = "Caramel/Vendor/_config_headers/assimp"
 
 group "Dependencies"
 include "Caramel/Vendor/glfw"
 include "Caramel/Vendor/imgui"
 include "Caramel/Vendor/glad"
+include "Caramel/Vendor/assimp"
 
 group ""
 
@@ -102,6 +108,9 @@ project "Caramel"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.stb}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.conf}",
+		"%{IncludeDir.conf_assimp}",
 	}
 
 	links 
@@ -109,7 +118,7 @@ project "Caramel"
 		"GLFW",
 		"ImGui",
 		"glad",
-		--"assimp",
+		"assimp",
 		--"opengl32.lib"
 	}
 
@@ -146,7 +155,10 @@ project "Game"
 		"%{IncludeDir.imgui}",
 		--"Caramel/deps",
 		--"%{IncludeDir.glm}"
-		"%{IncludeDir.spdlog}"
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.conf}",
+		"%{IncludeDir.conf_assimp}",
 	}
 
 	links
