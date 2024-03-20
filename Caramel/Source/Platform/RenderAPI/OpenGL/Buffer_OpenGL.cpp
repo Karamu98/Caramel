@@ -55,9 +55,11 @@ namespace Caramel
 
 	VertexBuffer_OpenGL::VertexBuffer_OpenGL(const VertexBufferParams& params)
 	{
+		m_count = params.Count;
+
 		glGenBuffers(1, &m_id);
 		glBindBuffer(GL_ARRAY_BUFFER, m_id);
-		glBufferData(GL_ARRAY_BUFFER, params.Size, params.Verticies, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, params.Count * sizeof(float), params.Verticies, GL_STATIC_DRAW);
 	}
 
 	void VertexBuffer_OpenGL::Bind() const
@@ -70,11 +72,16 @@ namespace Caramel
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	IndexBuffer_OpenGL::IndexBuffer_OpenGL(const IndexBufferParams& params) : m_count(params.Size / sizeof(uint32_t))
+	uint32_t VertexBuffer_OpenGL::GetVertexCount()
+	{
+		return m_count;
+	}
+
+	IndexBuffer_OpenGL::IndexBuffer_OpenGL(const IndexBufferParams& params) : m_count(params.Count)
 	{
 		glGenBuffers(1, &m_id);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, params.Size, params.Indicies, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, params.Count * sizeof(uint32_t), params.Indicies, GL_STATIC_DRAW);
 	}
 
 	IndexBuffer_OpenGL::~IndexBuffer_OpenGL()
@@ -123,6 +130,8 @@ namespace Caramel
 		glBindVertexArray(m_id);
 		vertexBuffer->Bind();
 
+		m_totalVerticies += vertexBuffer->GetVertexCount();
+
 		uint32_t i = 0;
 		const BufferLayout& layout = vertexBuffer->GetLayout();
 		for (const auto& ele : layout)
@@ -148,6 +157,16 @@ namespace Caramel
 		indexBuffer->Bind();
 
 		m_indexBuffer = indexBuffer;
+	}
+
+	bool VertexArray_OpenGL::HasIndexBuffer()
+	{
+		return m_indexBuffer != nullptr;
+	}
+
+	uint32_t VertexArray_OpenGL::GetTotalVertexCount()
+	{
+		return m_totalVerticies;
 	}
 
 	const std::vector<std::shared_ptr<VertexBuffer>>& VertexArray_OpenGL::GetVertexBuffers() const

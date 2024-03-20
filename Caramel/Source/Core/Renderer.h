@@ -29,6 +29,10 @@ namespace Caramel
 			s_renderAPI->Present();
 		}
 
+		inline static void DrawArray(const std::shared_ptr<VertexArray>& vertexArray)
+		{
+			s_renderAPI->DrawArray(vertexArray);
+		}
 	private:
 		static RenderAPI* s_renderAPI;
 	};

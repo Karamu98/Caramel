@@ -15,11 +15,13 @@ namespace Caramel
 		virtual const BufferLayout& GetLayout() override;
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
+		virtual uint32_t GetVertexCount() override;
 
 	private:		
 
 		uint32_t m_id;
 		BufferLayout m_layout;
+		uint32_t m_count;
 	};
 
 	class IndexBuffer_OpenGL : public IndexBuffer
@@ -52,6 +54,8 @@ namespace Caramel
 
 		virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) override;
 		virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) override;
+		virtual bool HasIndexBuffer() override;
+		virtual uint32_t GetTotalVertexCount() override;
 
 		virtual const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const override;
 		virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const override;
@@ -61,6 +65,7 @@ namespace Caramel
 		uint32_t m_id;
 		std::vector<std::shared_ptr<VertexBuffer>> m_vertexBuffers;
 		std::shared_ptr<IndexBuffer> m_indexBuffer;
+		uint32_t m_totalVerticies = 0;
 	};
 }
 

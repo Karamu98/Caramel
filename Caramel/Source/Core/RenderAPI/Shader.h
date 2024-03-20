@@ -8,7 +8,7 @@ namespace Caramel
 	{
 		const std::string& vertexSrc;
 		const std::string& fragmentSrc;
-		const std::vector<std::string>& Uniforms;
+		const std::vector<std::string>& Uniforms = {};
 	};
 
 	class Shader

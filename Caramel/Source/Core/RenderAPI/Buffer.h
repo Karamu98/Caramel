@@ -55,13 +55,13 @@ namespace Caramel
 	struct VertexBufferParams
 	{
 		float* Verticies;
-		uint32_t Size;
+		uint32_t Count;
 	};
 
 	struct IndexBufferParams
 	{
 		uint32_t* Indicies;
-		uint32_t Size;
+		uint32_t Count;
 	};
 
 	class VertexBuffer
@@ -74,6 +74,7 @@ namespace Caramel
 
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 		virtual const BufferLayout& GetLayout() = 0;
+		virtual uint32_t GetVertexCount() = 0;
 
 		static std::shared_ptr<VertexBuffer> Create(const VertexBufferParams& params);
 	};
@@ -102,6 +103,8 @@ namespace Caramel
 
 		virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) = 0;
 		virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) = 0;
+		virtual bool HasIndexBuffer() = 0;
+		virtual uint32_t GetTotalVertexCount() = 0;
 
 		virtual const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const = 0;
 		virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const = 0;

@@ -20,6 +20,7 @@ namespace Caramel
 		virtual void Present() = 0;
 
 		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
+		virtual void DrawArray(const std::shared_ptr<VertexArray>& vertexArray) = 0;
 
 		virtual void SetVSync(bool enabled) = 0;
 		virtual void SetRefreshRate(unsigned int frameRate) = 0;

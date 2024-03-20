@@ -15,16 +15,17 @@ namespace Caramel
 		RenderAPI_DX12() {};
 	protected:
 		// Inherited via RenderAPI
-		void Initialise(Window* window, const struct WindowProperties* props) override;
-		void Shutdown() override;
+		virtual void Initialise(Window* window, const struct WindowProperties* props) override;
+		virtual void Shutdown() override;
 
-		void SetVSync(bool enabled) override;
-		void SetRefreshRate(unsigned int frameRate) override;
+		virtual void SetVSync(bool enabled) override;
+		virtual void SetRefreshRate(unsigned int frameRate) override;
 
-		void Clear() override;
-		void Render() override;
-		void Present() override;
-		void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
+		virtual void Clear() override;
+		virtual void Render() override;
+		virtual void Present() override;
+		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
+		virtual void DrawArray(const std::shared_ptr<VertexArray>& vertexArray) override;
 
 	private:
 		HWND m_nativeWindow;

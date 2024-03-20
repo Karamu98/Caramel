@@ -456,6 +456,11 @@ void Caramel::RenderAPI_DX12::DrawIndexed(const std::shared_ptr<VertexArray>& ve
     CL_CORE_NOT_IMPLEMENTED;
 }
 
+void Caramel::RenderAPI_DX12::DrawArray(const std::shared_ptr<VertexArray>& vertexArray)
+{
+    CL_CORE_NOT_IMPLEMENTED;
+}
+
 void Caramel::RenderAPI_DX12::SetVSync(bool enabled)
 {
     CL_CORE_NOT_IMPLEMENTED;
