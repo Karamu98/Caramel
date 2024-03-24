@@ -13,3 +13,9 @@
 [submodule "Caramel/Vendor/assimp"]
 	path = Caramel/Vendor/assimp
 	url = https://github.com/Karamu98/assimp.git
+[submodule "Caramel/Vendor/JoltPhysics"]
+	path = Caramel/Vendor/JoltPhysics
+	url = https://github.com/Karamu98/JoltPhysics.git
+[submodule "Caramel/Vendor/eigen"]
+	path = Caramel/Vendor/eigen
+	url = https://gitlab.com/libeigen/eigen.git

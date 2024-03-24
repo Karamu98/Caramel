@@ -11,4 +11,6 @@
 #include <codecvt>
 #include <locale>
 
+#include <Eigen/Dense>
+
 #include <Core/Log.h>

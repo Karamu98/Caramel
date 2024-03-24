@@ -59,7 +59,7 @@ namespace Caramel
 
 		glGenBuffers(1, &m_id);
 		glBindBuffer(GL_ARRAY_BUFFER, m_id);
-		glBufferData(GL_ARRAY_BUFFER, params.Count * sizeof(float), params.Verticies, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, params.Count * params.VertexSize, params.Verticies, GL_STATIC_DRAW);
 	}
 
 	void VertexBuffer_OpenGL::Bind() const

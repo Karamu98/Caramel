@@ -4,8 +4,6 @@
 
 namespace Caramel
 {
-
-
 	struct BufferElement
 	{
 		std::string Name;
@@ -55,6 +53,7 @@ namespace Caramel
 	struct VertexBufferParams
 	{
 		float* Verticies;
+		size_t VertexSize;
 		uint32_t Count;
 	};
 

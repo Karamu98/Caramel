@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Core/RenderAPI/RenderAPI.h"
 #include "Core/RenderAPI/Buffer.h"
+#include "Core/Renderer/Model.h"
 
 
 namespace Caramel
@@ -23,6 +24,17 @@ namespace Caramel
 		else
 		{
 			RenderCommand::DrawArray(vertexArray);
+		}
+	}
+
+	void Renderer::Submit(const std::shared_ptr<Model>& model)
+	{
+		// Call draw indexed on all meshes with correct materials
+		// TODO: IMPROVE
+		for (const auto& mesh : *model)
+		{
+			// TODO: Bind material
+			Renderer::Submit(mesh.Data);
 		}
 	}
 

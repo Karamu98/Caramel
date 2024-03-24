@@ -5,6 +5,7 @@
 namespace Caramel
 {
 	class VertexArray;
+	class Model;
 
 	class RenderCommand
 	{
@@ -46,6 +47,7 @@ namespace Caramel
 
 
 		static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+		static void Submit(const std::shared_ptr<Model>& model);
 	};
 }
 

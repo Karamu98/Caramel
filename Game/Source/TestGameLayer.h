@@ -13,7 +13,7 @@ public:
 
 
 	std::shared_ptr<Caramel::Shader> m_test3DShader;
-	std::vector<std::shared_ptr<Caramel::VertexArray>> m_testMeshes;
+	std::shared_ptr<Caramel::Model> m_testModel;
 
 	float m_curModelSpin;
 	float m_modelSpinSpeed = 0.5f;

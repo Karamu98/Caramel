@@ -12,6 +12,8 @@
 #include "Core/RenderAPI/ShaderDataType.h"
 #include "Core/Renderer.h"
 
+#include "Core/Renderer/Model.h"
+
 #include "Core/Timestep.h"
 
 
