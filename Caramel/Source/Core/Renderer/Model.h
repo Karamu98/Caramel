@@ -9,21 +9,11 @@ namespace Caramel
 	class Texture;
 	class VertexArray;
 
-	struct TestVector3
-	{
-		float X, Y, Z;
-	};
-
-	struct TestVector2
-	{
-		float X, Y;
-	};
-
 	struct Vertex
 	{
-		TestVector3 Position;
-		TestVector3 Normal;
-		TestVector2 UV = {0.0f, 0.0f};
+		glm::vec3 Position;
+		glm::vec3 Normal;
+		glm::vec2 UV = {0.0f, 0.0f};
 	};
 
 	struct Mesh

@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "Core/Core.h"
 #include "Core/ArgumentParser.h"
 #include "Core/Application.h"
 #include "Core/Layers/Layer.h"
@@ -11,10 +12,12 @@
 #include "Core/RenderAPI/Buffer.h"
 #include "Core/RenderAPI/ShaderDataType.h"
 #include "Core/Renderer.h"
+#include "Core/Renderer/Camera.h"
 
 #include "Core/Renderer/Model.h"
 
 #include "Core/Timestep.h"
+
 
 
 // ------------ ENTRY POINT

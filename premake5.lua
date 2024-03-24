@@ -56,7 +56,7 @@ IncludeDir["spdlog"] = "Caramel/Vendor/spdlog/include"
 IncludeDir["imgui"] = "Caramel/Vendor/imgui"
 IncludeDir["stb"] = "Caramel/Vendor/stb"
 IncludeDir["assimp"] = "Caramel/Vendor/assimp/include"
-IncludeDir["eigen"] = "Caramel/Vendor/eigen"
+IncludeDir["glm"] = "Caramel/Vendor/glm"
 
 -- Configs
 IncludeDir["conf"] = "Caramel/Vendor/_config_headers"
@@ -110,7 +110,7 @@ project "Caramel"
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.eigen}",
+		"%{IncludeDir.glm}",
 		"%{IncludeDir.conf}",
 		"%{IncludeDir.conf_assimp}",
 	}
@@ -159,7 +159,7 @@ project "Game"
 		--"%{IncludeDir.glm}"
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.eigen}",
+		"%{IncludeDir.glm}",
 		"%{IncludeDir.conf}",
 		"%{IncludeDir.conf_assimp}",
 	}

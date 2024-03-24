@@ -1,14 +1,13 @@
 #include "TestGameLayer.h"
 
-#include <imgui.h>
-#include <assimp/BaseImporter.h>
-
 const char* vertexShaderSource3D = R"glsl(
     #version 330 core
     layout (location = 0) in vec3 v_Position;
+    layout (location = 1) in vec3 v_Normal;
+    layout (location = 2) in vec3 v_UV;
     
-    uniform mat4 viewMat;
-    uniform mat4 camTrans;
+    uniform mat4 view;
+    uniform mat4 projection;
 
     uniform mat4 transform;
 
@@ -16,8 +15,8 @@ const char* vertexShaderSource3D = R"glsl(
 
     void main()
     {
-        vec4 worldPos = transform * vec4(v_Position.xyz, 1.0);
-        vPos = v_Position.xyz;
+        vec4 worldPos = projection * view * transform * vec4(v_Position, 1.0);
+        vPos = v_Position;
         gl_Position = worldPos;
     }
 )glsl";
@@ -39,9 +38,11 @@ const char* fragmentShaderSource3D = R"glsl(
 
 void TestGameLayer::OnAttach()
 {
-    m_test3DShader = Caramel::Shader::Create({ vertexShaderSource3D, fragmentShaderSource3D, {"transform"} });
+    m_test3DShader = Caramel::Shader::Create({ vertexShaderSource3D, fragmentShaderSource3D, {"transform", "view", "projection"}});
 
     m_testModel = Caramel::Model::GetOrLoad("Assets/Models/sonic.obj");
+    m_testCamera.Position = { -10.0f, 5.0f, 0.0f };
+    m_testCamera.Rotation = { 0.0f, 90.0f, 0.0f };
 }
 
 void TestGameLayer::OnImGuiRender()
@@ -49,64 +50,26 @@ void TestGameLayer::OnImGuiRender()
     ImGui::Begin("Controls");
 
     ImGui::DragFloat("Model spin speed", &m_modelSpinSpeed, 0.01f);
+    ImGui::DragFloat3("Model position", glm::value_ptr(m_modelPosition));
+    ImGui::DragFloat3("Model rotation", glm::value_ptr(m_modelRotation));
     ImGui::Spacing();
-    ImGui::DragFloat("FOV", &m_fov, 0.1f);
-    ImGui::DragFloat("Near plane", &m_nearPlane, 0.01f);
-    ImGui::DragFloat("Far plane", &m_farPlane, 0.01f);
+
+    ImGui::DrawWidget<Caramel::Camera>(&m_testCamera);
 
     ImGui::End();
-}
-
-double degreesToRadians(double degrees)
-{
-    return degrees * 3.14159265358979323846 / 180.0;
 }
 
 void TestGameLayer::OnUpdate(Caramel::Timestep ts)
 {
     m_curModelSpin += m_modelSpinSpeed * ts;
 
-    float tanHalfFOV = tanf(degreesToRadians(m_fov / 2));
-    float d = 1 / tanHalfFOV;
-
-    auto wind = Caramel::Application::Get()->GetWindow();
-    float ar = (float)wind->GetWidth() / (float)wind->GetHeight();
-
-    float nearFarRange = m_nearPlane - m_farPlane;
-
-    float projA = (-m_farPlane - m_nearPlane) / nearFarRange;
-    float projB = 2.0f * m_farPlane * m_nearPlane / nearFarRange;
-
-    aiMatrix4x4 rot
-    {
-        cosf(m_curModelSpin), 0.0f, -sinf(m_curModelSpin), 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        sinf(m_curModelSpin), 0.0f, cosf(m_curModelSpin), 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f
-    };
-
-    aiMatrix4x4 trans
-    {
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, -5.0f,
-        0.0f, 0.0f, 1.0f, 10.0f,
-        0.0f, 0.0f, 0.0f, 1.0f,
-    };
-
-    aiMatrix4x4 proj
-    {
-        d/ar, 0.0f, 0.0f, 0.0f,
-        0.0f, d, 0.0f, 0.0f,
-        0.0f, 0.0f, projA, projB,
-        0.0f, 0.0f, 1.0f, 0.0f,
-    };
-
-    aiMatrix4x4 finalMat = proj * trans * rot;
-
-
+    glm::mat4 modelTransform = glm::mat4(1);
+    modelTransform = glm::translate(modelTransform, m_modelPosition);
 
     m_test3DShader->Bind();
-    m_test3DShader->SetValue("transform", Caramel::ShaderDataType::Mat4, &finalMat);
-    //Caramel::Renderer::Submit(m_testCube);
+    m_test3DShader->SetValue("view", Caramel::ShaderDataType::Mat4, glm::value_ptr(m_testCamera.GetView()));
+    m_test3DShader->SetValue("projection", Caramel::ShaderDataType::Mat4, glm::value_ptr(m_testCamera.GetProjection()));
+    m_test3DShader->SetValue("transform", Caramel::ShaderDataType::Mat4, glm::value_ptr(modelTransform));
+
     Caramel::Renderer::Submit(m_testModel);
 }

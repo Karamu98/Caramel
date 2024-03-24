@@ -10,3 +10,12 @@ enum class WindowRenderAPI
     DirectX12,
     Metal
 };
+
+namespace ImGui
+{
+    template<typename T>
+    inline void DrawWidget(T* obj)
+    {
+
+    }
+}

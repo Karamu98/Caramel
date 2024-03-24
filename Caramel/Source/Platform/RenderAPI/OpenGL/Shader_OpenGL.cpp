@@ -155,8 +155,8 @@ namespace Caramel
 		glUseProgram(m_id);	
 		switch (type)
 		{
-		case ShaderDataType::Mat3:		{ glUniformMatrix3fv(targetUniform, 1, GL_TRUE, (float*)value); break; }
-		case ShaderDataType::Mat4:		{ glUniformMatrix4fv(targetUniform, 1, GL_TRUE, (float*)value); break; }
+		case ShaderDataType::Mat3:		{ glUniformMatrix3fv(targetUniform, 1, GL_FALSE, (float*)value); break; }
+		case ShaderDataType::Mat4:		{ glUniformMatrix4fv(targetUniform, 1, GL_FALSE, (float*)value); break; }
 
 		case ShaderDataType::Float:		{ glUniform1f(targetUniform, *(float*)value); break; }
 		case ShaderDataType::Float2:	{ glUniform2f(targetUniform, *(float*)value, *((float*)value+1)); break; }

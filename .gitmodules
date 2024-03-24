@@ -16,6 +16,6 @@
 [submodule "Caramel/Vendor/JoltPhysics"]
 	path = Caramel/Vendor/JoltPhysics
 	url = https://github.com/Karamu98/JoltPhysics.git
-[submodule "Caramel/Vendor/eigen"]
-	path = Caramel/Vendor/eigen
-	url = https://gitlab.com/libeigen/eigen.git
+[submodule "Caramel/Vendor/glm"]
+	path = Caramel/Vendor/glm
+	url = https://github.com/Karamu98/glm.git

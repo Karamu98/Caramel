@@ -6,6 +6,7 @@ namespace Caramel
 {
 	class VertexArray;
 	class Model;
+	class Camera;
 
 	class RenderCommand
 	{

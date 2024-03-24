@@ -3,6 +3,7 @@
 #include "Core/RenderAPI/RenderAPI.h"
 #include "Core/RenderAPI/Buffer.h"
 #include "Core/Renderer/Model.h"
+#include "Core/Renderer/Camera.h"
 
 
 namespace Caramel
