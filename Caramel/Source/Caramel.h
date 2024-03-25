@@ -5,6 +5,10 @@
 #include "Core/Application.h"
 #include "Core/Layers/Layer.h"
 #include "Core/Log.h"
+#include "Core/Input.h"
+
+#include "Core/Events/KeyEvents.h"
+#include "Core/Events/MouseEvent.h"
 
 #include "Core/RenderAPI/RenderAPI.h"
 #include "Core/RenderAPI/Shader.h"

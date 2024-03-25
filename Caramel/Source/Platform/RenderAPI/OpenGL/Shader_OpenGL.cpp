@@ -119,7 +119,15 @@ namespace Caramel
 
 		for (auto& uniform : params.Uniforms)
 		{
-			m_uniformLocations[uniform] = glGetUniformLocation(m_id, uniform.c_str());
+			int newUniform = glGetUniformLocation(m_id, uniform.c_str());
+			if (newUniform != -1)
+			{
+				m_uniformLocations[uniform] = newUniform;
+			}
+			else
+			{
+				CL_CORE_WARN("Uniform ({}) was not found in shader when compiling", uniform);
+			}
 		}
 
 		// Always detach shaders after a successful link.
@@ -146,7 +154,7 @@ namespace Caramel
 	{
 		if (m_uniformLocations.find(name) == m_uniformLocations.end())
 		{
-			CL_CORE_WARN("Uniform ({0}), is not found in bound shader with ID: {1}", name, m_id);
+			//CL_CORE_WARN("Uniform ({0}), is not found in bound shader with ID: {1}", name, m_id);
 			return;
 		}
 
@@ -169,6 +177,33 @@ namespace Caramel
 		case ShaderDataType::Int4:		{ glUniform4i(targetUniform, *(uint32_t*)value, *((uint32_t*)value + 1), *((uint32_t*)value + 2), *((uint32_t*)value + 3)); break; }
 
 		}
+	}
+
+	void Shader_OpenGL::SetTexture(const std::string& name, uint32_t unit)
+	{
+		if (m_uniformLocations.find(name) == m_uniformLocations.end())
+		{
+			CL_CORE_WARN("Uniform ({0}), is not found in bound shader with ID: {1}", name, m_id);
+			return;
+		}
+
+		uint32_t targetUniform = m_uniformLocations[name];
+		glUniform1i(targetUniform, unit);
+	}
+
+	bool Shader_OpenGL::HasUniform(const std::string& name, bool checkClient)
+	{
+		if (checkClient)
+		{
+			auto loc = glGetUniformLocation(m_id, name.c_str());
+			return loc != -1;
+		}
+
+		if (m_uniformLocations.find(name) == m_uniformLocations.end())
+		{
+			return false;
+		}
+		return true;
 	}
 }
 

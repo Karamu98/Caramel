@@ -70,6 +70,8 @@ namespace Caramel
 
 		virtual const TextureProperties& GetProperties() const = 0;
 
+		virtual const std::string& GetPath() const = 0;
+
 
 		static std::shared_ptr<Texture> Create(const TextureParams& params);
 	};

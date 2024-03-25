@@ -2,22 +2,21 @@
 
 #include <Caramel.h>
 
+#include "FreeCamera.h"
+#include "TestModel.h"
+
 class TestGameLayer : public Caramel::Layer
 {
 public:
 	virtual void OnAttach() override;
 	virtual void OnImGuiRender() override;
-
 	virtual void OnUpdate(Caramel::Timestep ts) override;
 
+	void Spawn();
 
-	std::shared_ptr<Caramel::Shader> m_test3DShader;
-	std::shared_ptr<Caramel::Model> m_testModel;
-	Caramel::Camera m_testCamera;
+	int m_countToSpawn = 5;
+	float m_seperation = 10.0f;
 
-	float m_curModelSpin;
-	float m_modelSpinSpeed = 0.5f;
-
-	glm::vec3 m_modelPosition;
-	glm::vec3 m_modelRotation;
+	FreeCamera m_cam;
+	std::vector<std::shared_ptr<TestModel>> m_models;
 };

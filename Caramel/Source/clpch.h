@@ -15,6 +15,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <magic_enum/magic_enum.hpp>
+
 #include <imgui.h>
 
 #include <Core/Log.h>

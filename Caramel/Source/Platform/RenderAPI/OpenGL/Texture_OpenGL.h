@@ -13,6 +13,8 @@ namespace Caramel
 		void Unbind(unsigned int slot) override;
 		virtual const TextureProperties& GetProperties() const override { return m_properties; }
 
+		virtual const std::string& GetPath() const override { return m_path; }
+
 	private:
 		void Load1D();
 		void Load2D(const std::string& path);
@@ -20,6 +22,7 @@ namespace Caramel
 
 		unsigned int m_ID;
 		TextureProperties m_properties;
+		std::string m_path;
 
 		int m_textureType;
 		int m_uWrapMode;

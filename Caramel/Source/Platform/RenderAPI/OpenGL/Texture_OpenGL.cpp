@@ -59,6 +59,7 @@ namespace Caramel
 
 	Texture_OpenGL::Texture_OpenGL(const TextureParams& params)
 	{
+		m_path = params.Path;
 		m_properties = params.Properties;
 
 		m_textureType = TextureTypeToGLenum(m_properties.Type);
@@ -102,6 +103,7 @@ namespace Caramel
 	void Texture_OpenGL::Bind(unsigned int slot)
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
+		//glEnable(m_textureType);
 		glBindTexture(m_textureType, m_ID);
 	}
 
@@ -138,7 +140,7 @@ namespace Caramel
 		}
 		else
 		{
-			CL_CORE_ERROR("Failed to load texture");
+			CL_CORE_ERROR("Failed to load texture ({})", path);
 		}
 		stbi_image_free(data);
 	}

@@ -16,7 +16,8 @@ namespace Caramel
 		void Unbind() override;
 
 		virtual void SetValue(const std::string& name, ShaderDataType type, void* value) override;
-
+		virtual void SetTexture(const std::string& name, uint32_t unit) override;
+		virtual bool HasUniform(const std::string& name, bool checkClient = false) override;
 
 	private:
 		uint32_t m_id;

@@ -5,6 +5,9 @@
 #include <Core/Events/KeyEvents.h>
 #include <Core/Events/MouseEvent.h>
 #include <Core/RenderAPI/RenderAPI.h>
+#include <Core/Input.h>
+
+#include <Platform/Window/GLFW/GLFW_Input.h>
 
 // TODO: IFDEF
 #include <GLFW/glfw3.h>
@@ -29,6 +32,8 @@ namespace Caramel
         m_data.VSync = properties.VSync;
         m_data.Framerate = properties.Framerate;
         m_data.RenderAPI = properties.RenderAPI;
+
+        Input::Init(new GLFW_Input());
 
         if (!s_GLFWInitialised)
         {

@@ -5,33 +5,17 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <Core/RenderAPI/Buffer.h>
+#include <Core/Renderer/Material.h>
 
-inline std::string aiTypeToString(aiTextureType type)
+
+std::string aiIllumModelToString(unsigned int type)
 {
-    switch (type)
+    switch (type) 
     {
-    case aiTextureType_DIFFUSE: return "Diffuse";
-    case aiTextureType_SPECULAR: return "Specular";
-    case aiTextureType_AMBIENT: return "Ambient";
-    case aiTextureType_EMISSIVE: return "Emissive";
-    case aiTextureType_HEIGHT: return "Height";
-    case aiTextureType_NORMALS: return "Normals";
-    case aiTextureType_SHININESS: return "Shininess";
-    case aiTextureType_OPACITY: return "Opacity";
-    case aiTextureType_DISPLACEMENT: return "Displacement";
-    case aiTextureType_LIGHTMAP: return "Lightmap";
-    case aiTextureType_REFLECTION: return "Reflection";
-    case aiTextureType_BASE_COLOR: return "Base_Color";
-    case aiTextureType_NORMAL_CAMERA: return "Normal_Camera";
-    case aiTextureType_EMISSION_COLOR: return "Emission_Color";
-    case aiTextureType_METALNESS: return "Metalness";
-    case aiTextureType_DIFFUSE_ROUGHNESS: return "Diffuse_Roughness";
-    case aiTextureType_AMBIENT_OCCLUSION: return "Ambient_Occlusion";
-    case aiTextureType_SHEEN: return "Sheen";
-    case aiTextureType_CLEARCOAT: return "Clearcoat";
-    case aiTextureType_TRANSMISSION: return "Transmission";
-    default:
-    case aiTextureType_UNKNOWN: return "Unknown";
+    case 0: return "NoShading";
+    case 1: return "Gouraud";
+    case 2: return "Phong";
+    default: return "Unknown";
     }
 }
 
@@ -45,7 +29,7 @@ namespace Caramel
     std::shared_ptr<Model> Model::Load(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             CL_CORE_FATAL("Assimp error: {}", importer.GetErrorString());
@@ -62,12 +46,15 @@ namespace Caramel
         }
         newModel->m_vertCount = vertCount;
 
-        newModel->ProcessNode(scene->mRootNode, scene);
+        newModel->processNode(scene->mRootNode, scene);
+        //newModel->printDebug(scene->mRootNode, scene);
+
+        newModel->createLUT();
 
         return newModel;
     }
 
-    void Model::ProcessNode(aiNode* node, const aiScene* scene)
+    void Model::processNode(aiNode* node, const aiScene* scene)
     {
         // process each mesh located at the current node
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -75,17 +62,17 @@ namespace Caramel
             // the node object only contains indices to index the actual objects in the scene. 
             // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            m_meshes.emplace_back(mesh, scene);
+            m_meshes.emplace_back(mesh, scene, m_path);
         }
 
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            ProcessNode(node->mChildren[i], scene);
+            processNode(node->mChildren[i], scene);
         }
     }
 
-    void Model::PrintDebug(aiNode* node, const aiScene* scene)
+    void Model::printDebug(aiNode* node, const aiScene* scene)
     {
         std::string info = std::format("Loaded model ({0})\n\tMeshes: {1}\n\tSkeletons: {2}\n\tAnimations: {3}\n\tTextures: {4}", m_path, scene->mNumMeshes, scene->mNumSkeletons, scene->mNumAnimations, scene->mNumTextures);
         for (int i = 0; i < scene->mNumTextures; ++i)
@@ -97,26 +84,118 @@ namespace Caramel
         {
             const aiMaterial* curMat = scene->mMaterials[i];
             info += std::format("\n\t\t({0}) properties: {1}", curMat->GetName().C_Str(), curMat->mNumProperties);
-
-            for (int j = 0; j < curMat->mNumProperties; ++j)
-            {
-                const aiMaterialProperty* curProp = curMat->mProperties[j];
-                if (curProp->mSemantic != aiTextureType_NONE)
-                {
-                    aiString texPath;
-                    curMat->GetTexture((aiTextureType)curProp->mSemantic, curProp->mIndex, &texPath);
-                    info += std::format("\n\t\t\tTexture property ({2}):\n\t\t\t\tType: {0}\n\t\t\t\tPath: {1}", aiTypeToString((aiTextureType)curProp->mSemantic), texPath.C_Str(), curProp->mKey.C_Str());
-                }
-                else
-                {
-                    //info += std::format("\n\t\t\t{}", curProp->mKey.C_Str());
-                }
-            }
+            info += GetMaterialInfo(curMat);
         }
         CL_CORE_INFO(info.c_str());
     }
 
-    Mesh::Mesh(aiMesh* mesh, const aiScene* scene)
+    void Model::createLUT()
+    {
+        for (auto& mesh : m_meshes)
+        {
+            MeshByMaterials[mesh.Material].push_back(&mesh);
+        }
+    }
+
+    std::string Model::GetMaterialInfo(const aiMaterial* material)
+    {
+        std::string outInfo{};
+        for (int i = 0; i < material->mNumProperties; ++i) 
+        {
+            aiMaterialProperty* curProp = material->mProperties[i];
+
+            outInfo += std::format("\n\t\t\tProperty {0} ({1}):", std::to_string(i), std::string(curProp->mKey.C_Str()));
+            if (curProp->mSemantic != aiTextureType_NONE)
+            {
+                outInfo += std::format("\n\t\t\t\tSemantic: {}", magic_enum::enum_name((aiTextureType)curProp->mSemantic));
+                outInfo += "\n\t\t\t\tIndex: " + std::to_string(curProp->mIndex) + ", ";
+            }
+
+            if (curProp->mKey == aiString("$mat.shadingm"))
+            {
+                std::vector<uint32_t> values;
+                GetValues(curProp->mData, curProp->mDataLength, values);
+                outInfo += "\n\t\t\t\tType: Shading mode";
+                outInfo += std::format("\n\t\t\t\t\t{1} - {0}", magic_enum::enum_name((aiShadingMode)values[0]),  values[0]);
+                continue;
+            }
+
+            if (curProp->mKey == aiString("$mat.illum"))
+            {
+                std::vector<uint32_t> values;
+                GetValues(curProp->mData, curProp->mDataLength, values);
+                outInfo += "\n\t\t\t\tType: Illumination model";
+                outInfo += std::format("\n\t\t\t\t\t{1} - {0}", aiIllumModelToString(values[0]), values[0]);
+                continue;
+            }
+
+            //outInfo += "\n\t\t\tType: " + std::to_string(property->mType) + ", ";
+            //outInfo += "\n\t\t\t\tData length: " + std::to_string(curProp->mDataLength);
+
+            switch (curProp->mType) 
+            {
+            case aiPTI_Float:
+            {
+                std::vector<float> values;
+                GetValues(curProp->mData, curProp->mDataLength, values);
+
+                std::string keyAsStr(curProp->mKey.C_Str());
+                if (keyAsStr.starts_with("$clr."))
+                {
+                    std::vector<float> colours(values.begin(), values.end());
+                    for (auto& val : colours)
+                    {
+                        val *= 255;
+                    }
+
+                    outInfo += "\n\t\t\t\tType: Colour";
+                    outInfo += std::format("\n\t\t\t\t\tData: {3}\033[48;2;{0};{1};{2}m\t-        -\033[0m\033[32m", colours[0], colours[1], colours[2], FormatVector(values));
+                }
+                else
+                {
+                    outInfo += "\n\t\t\t\tType: Float";
+                    outInfo += "\n\t\t\t\t\tData: " + FormatVector(values);
+                }
+
+                continue;
+            }
+
+            case aiPTI_Integer:
+            {
+                std::vector<uint32_t> values;
+                GetValues(curProp->mData, curProp->mDataLength, values);
+                outInfo += "\n\t\t\t\tType: Int";
+                outInfo += "\n\t\t\t\t\tData: " + FormatVector(values);
+                continue;
+            }
+            case aiPTI_String:
+            {
+                outInfo += "\n\t\t\t\tType: String";
+                std::vector<char> values;
+                GetValues(&curProp->mData[4], curProp->mDataLength - 5, values);
+                std::string value(values.begin(), values.end());
+                outInfo += std::format("\n\t\t\t\t\tData: {}", value);
+                continue;
+            }
+
+            case aiPTI_Buffer:
+            {
+                std::vector<char> values;
+                GetValues(curProp->mData, curProp->mDataLength, values);
+                outInfo += "\n\t\t\t\tType: Buffer";
+                outInfo += "\n\t\t\t\t\tData: " + FormatVector(values);
+                continue;
+            }
+            default:
+                outInfo += "\n\t\t\t\tType: Unknown";
+                outInfo += "\n\t\t\t\t\tData: [Unknown type]";
+                continue;
+            }
+        }
+        return outInfo;
+    }
+
+    Mesh::Mesh(aiMesh* mesh, const aiScene* scene, const std::string& modelPath)
     {
         // walk through each of the mesh's vertices
         for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -184,26 +263,15 @@ namespace Caramel
         Data->SetIndexBuffer(iBuffer);
 
 
-        //// process materials
+        // process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        //// we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-        //// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
-        //// Same applies to other texture as the following list summarizes:
-        //// diffuse: texture_diffuseN
-        //// specular: texture_specularN
-        //// normal: texture_normalN
 
-        //// 1. diffuse maps
-        //vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        //textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        //// 2. specular maps
-        //vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-        //textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        //// 3. normal maps
-        //std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-        //textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        //// 4. height maps
-        //std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-        //textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        std::string modelID = modelPath + material->GetName().C_Str();
+        Material = Material::Get(modelID);
+        if (Material == nullptr)
+        {
+            Material = Material::CreateFromAssimp(modelPath, modelID, material);
+        }
+
     }
 }

@@ -2,9 +2,14 @@
 
 #include "Core/Core.h"
 
+#define UNIFORM_NAME_CAMERA_VIEW "u_View"
+#define UNIFORM_NAME_CAMERA_PROJECTION "u_Projection"
+#define UNIFORM_NAME_VIEW_POSITION "u_ViewPos"
+
 namespace Caramel
 {
 	class Window;
+	class Shader;
 	class Camera
 	{
 	public:
@@ -19,10 +24,16 @@ namespace Caramel
 
 		glm::mat4& GetProjection(bool calculate = true);
 		glm::mat4& GetView(bool calculate = true);
+		glm::mat4& GetRotationMatrix(bool calculate = true);
+
+		glm::vec3 GetForward();
+
+		void Bind(std::shared_ptr<Shader> target);
 
 	private:
 		glm::mat4 m_projectionMatrix;
 		glm::mat4 m_viewMatrix;
+		glm::mat4 m_rotationMatrix;
 
 		Window* m_window;
 	};

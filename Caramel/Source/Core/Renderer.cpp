@@ -4,15 +4,17 @@
 #include "Core/RenderAPI/Buffer.h"
 #include "Core/Renderer/Model.h"
 #include "Core/Renderer/Camera.h"
+#include "Core/Renderer/Material.h"
+#include "Core/RenderAPI/Shader.h"
 
 
 namespace Caramel
 {
 	RenderAPI* RenderCommand::s_renderAPI = nullptr;
+	Camera* Renderer::s_ActiveCam;
 
 	void Renderer::BeginScene()
 	{
-
 	}
 
 	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray)
@@ -28,15 +30,29 @@ namespace Caramel
 		}
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Model>& model)
+	void Renderer::Submit(const std::shared_ptr<Model>& model, glm::mat4& transform)
 	{
-		// Call draw indexed on all meshes with correct materials
-		// TODO: IMPROVE
-		for (const auto& mesh : *model)
+		if (model == nullptr)
 		{
-			// TODO: Bind material
-			Renderer::Submit(mesh.Data);
+			return;
 		}
+
+		// TODO: Improve to use instanced
+		for (const auto& kvp : model->MeshByMaterials)
+		{
+			kvp.first->Bind();
+			s_ActiveCam->Bind(kvp.first->Shader); // Gross
+			kvp.first->Shader->SetValue("u_ModelTransform", Caramel::ShaderDataType::Mat4, glm::value_ptr(transform)); // Gross
+			for (const auto& mesh : kvp.second)
+			{
+				Renderer::Submit(mesh->Data);
+			}
+		}
+	}
+
+	void Renderer::Submit(Camera* active)
+	{
+		s_ActiveCam = active;
 	}
 
 	void Renderer::EndScene()
