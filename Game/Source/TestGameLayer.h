@@ -19,4 +19,6 @@ public:
 
 	FreeCamera m_cam;
 	std::vector<std::shared_ptr<TestModel>> m_models;
+	Caramel::Scene m_scene;
+	std::vector<Caramel::Entity> m_testModels;
 };

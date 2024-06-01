@@ -20,3 +20,5 @@
 #include <imgui.h>
 
 #include <Core/Log.h>
+#include <Core/UUID.h>
+#include <Core/Timestep.h>

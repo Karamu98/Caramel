@@ -22,3 +22,6 @@
 [submodule "Caramel/Vendor/magic_enum"]
 	path = Caramel/Vendor/magic_enum
 	url = https://github.com/Karamu98/magic_enum.git
+[submodule "Caramel/Vendor/entt"]
+	path = Caramel/Vendor/entt
+	url = https://github.com/Karamu98/entt.git

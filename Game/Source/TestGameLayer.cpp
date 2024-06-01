@@ -69,12 +69,19 @@ void TestGameLayer::Spawn()
 
     m_models.clear();
     m_models.resize(m_countToSpawn);
+    m_testModels.clear();
+    m_testModels.resize(m_countToSpawn);
     for (int i = 0; i < m_countToSpawn; ++i)
     {
-        // Generate random index
+        // Generate random 
         int randomIndex = std::rand() % ModelPaths.size();
 
         const std::string& randPath = ModelPaths[randomIndex];
+        Caramel::Entity& currentEntity = m_testModels[i];
+        currentEntity = m_scene.CreateEntity();
+        currentEntity.AddComponent<Caramel::COM_Model>();
+        currentEntity.RefPosition().x = m_seperation * i;
+
         m_models[i] = std::make_shared<TestModel>();
         m_models[i]->Model = Caramel::Model::GetOrLoad(randPath);
         m_models[i]->Position.x = m_seperation * i;

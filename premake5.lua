@@ -58,6 +58,7 @@ IncludeDir["stb"] = "Caramel/Vendor/stb"
 IncludeDir["assimp"] = "Caramel/Vendor/assimp/include"
 IncludeDir["glm"] = "Caramel/Vendor/glm"
 IncludeDir["magic_enum"] = "Caramel/Vendor/magic_enum/include"
+IncludeDir["entt"] = "Caramel/Vendor/entt/single_include"
 
 -- Configs
 IncludeDir["conf"] = "Caramel/Vendor/_config_headers"
@@ -113,6 +114,7 @@ project "Caramel"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.magic_enum}",
+		"%{IncludeDir.entt}",
 		"%{IncludeDir.conf}",
 		"%{IncludeDir.conf_assimp}",
 	}
