@@ -4,12 +4,10 @@
 
 namespace Caramel
 {
-	class Scene;
-
 	class Entity
 	{
 	public:
-		Entity() = delete;
+		Entity() {};
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
@@ -35,7 +33,7 @@ namespace Caramel
 			return m_scene->m_scene.try_get<T>(m_entityHandle) != nullptr;
 		}
 
-		glm::vec3& RefPosition();
+		inline glm::vec3& RefPosition();
 
 	private:
 		friend class Scene;

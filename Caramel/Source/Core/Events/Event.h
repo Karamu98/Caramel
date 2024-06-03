@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 
-#define BIND_EVENT_FN(x) std::bind(x, this, std::placeholders::_1)
+#define BIND_EVENT_FN(x) [this](auto&&... args) -> decltype(auto) { return this->x(std::forward<decltype(args)>(args)...); }
 
 namespace Caramel
 {

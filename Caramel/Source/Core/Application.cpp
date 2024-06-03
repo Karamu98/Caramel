@@ -26,7 +26,7 @@ Caramel::Application::Application()
         }
     }
     m_window.reset(Window::Create(props));
-    m_window->SetEventCallback(BIND_EVENT_FN(&Application::OnEvent));
+    m_window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
     RenderCommand::Init(m_window->GetRenderer());
 
     m_imGuiLayer = new ImGuiLayer();

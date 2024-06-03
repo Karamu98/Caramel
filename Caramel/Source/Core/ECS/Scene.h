@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Core/ECS/Entity.h"
+#include <entt/entt.hpp>
 
 namespace Caramel
 {
+	class Entity;
+
 	class Scene
 	{
 	public:

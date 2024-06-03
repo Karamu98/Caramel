@@ -65,6 +65,8 @@ void TestGameLayer::Spawn()
         "Assets/Models/Sonic/sonic.obj",
         "Assets/Models/Callum/callu.obj",
         "Assets/Models/SpongeBoat/SPONGE1.obj",
+        //"Assets/Models/Room/Room.fbx",
+        "Assets/Models/Sylvanas/Sylvanas (Mawsworn).dae"
     };
 
     m_models.clear();
@@ -79,11 +81,9 @@ void TestGameLayer::Spawn()
         const std::string& randPath = ModelPaths[randomIndex];
         Caramel::Entity& currentEntity = m_testModels[i];
         currentEntity = m_scene.CreateEntity();
-        currentEntity.AddComponent<Caramel::COM_Model>();
         currentEntity.RefPosition().x = m_seperation * i;
 
-        m_models[i] = std::make_shared<TestModel>();
-        m_models[i]->Model = Caramel::Model::GetOrLoad(randPath);
-        m_models[i]->Position.x = m_seperation * i;
+        auto& model = currentEntity.AddComponent<Caramel::COM_Model>();
+        model.Model = Caramel::Model::GetOrLoad(randPath);
     }
 }

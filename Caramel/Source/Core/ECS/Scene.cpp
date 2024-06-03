@@ -1,5 +1,6 @@
 #include "clpch.h"
 #include "Scene.h"
+#include "Core/ECS/Entity.h"
 #include "Components/COM_Transform.h"
 #include "Components/COM_UUID.h"
 
@@ -14,6 +15,7 @@ namespace Caramel
 	{
 		auto newEntt = Entity(this, m_scene.create());
 		newEntt.AddComponent<COM_UUID>();
+		newEntt.AddComponent<COM_Transform>();
 		return newEntt;
 	}
 
