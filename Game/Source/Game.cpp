@@ -10,6 +10,6 @@ Caramel::Application* CreateApplication()
 
 MyGame::MyGame()
 {
-	TestGameLayer* layer = new TestGameLayer();
-	TrackLayer(layer);
+	TrackLayer(new TestGameLayer());
+	EnableEditorLayer(); // TODO: strip this in release
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "entt/entt.hpp"
+#include "Scene.h"
+#include "Components/COM_Transform.h"
 
 namespace Caramel
 {
@@ -33,7 +35,11 @@ namespace Caramel
 			return m_scene->m_scene.try_get<T>(m_entityHandle) != nullptr;
 		}
 
-		inline glm::vec3& RefPosition();
+		inline glm::vec3& RefPosition()
+		{
+			auto& transformComp = GetComponent<COM_Transform>();
+			return transformComp.RefPosition();
+		}
 
 	private:
 		friend class Scene;

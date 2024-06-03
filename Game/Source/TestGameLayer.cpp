@@ -23,18 +23,6 @@ void TestGameLayer::OnImGuiRender()
         Spawn();
     }
 
-    ImGui::BeginListBox("Models");
-    for (int i = 0; i < m_models.size(); ++i)
-    {
-        if (m_models[i])
-        {
-            ImGui::PushID(1000+i);
-            m_models[i]->ImGui();
-            ImGui::PopID();
-        }
-    }
-    ImGui::EndListBox();
-
     m_cam.ImGui();
 
     ImGui::End();
@@ -43,18 +31,6 @@ void TestGameLayer::OnImGuiRender()
 void TestGameLayer::OnUpdate(Caramel::Timestep ts)
 {
     m_cam.OnUpdate(ts);
-    
-    // Render temp
-    {
-        Caramel::Renderer::Submit(&m_cam.Camera);
-        for (const auto& model : m_models)
-        {
-            if (model != nullptr)
-            {
-                model->Render();
-            }
-        }
-    }
 }
 
 void TestGameLayer::Spawn()
@@ -66,20 +42,18 @@ void TestGameLayer::Spawn()
         "Assets/Models/Callum/callu.obj",
         "Assets/Models/SpongeBoat/SPONGE1.obj",
         //"Assets/Models/Room/Room.fbx",
-        "Assets/Models/Sylvanas/Sylvanas (Mawsworn).dae"
+        //"Assets/Models/Sylvanas/Sylvanas (Mawsworn).dae"
     };
 
     m_models.clear();
     m_models.resize(m_countToSpawn);
-    m_testModels.clear();
-    m_testModels.resize(m_countToSpawn);
     for (int i = 0; i < m_countToSpawn; ++i)
     {
         // Generate random 
         int randomIndex = std::rand() % ModelPaths.size();
 
         const std::string& randPath = ModelPaths[randomIndex];
-        Caramel::Entity& currentEntity = m_testModels[i];
+        Caramel::Entity& currentEntity = m_models[i];
         currentEntity = m_scene.CreateEntity();
         currentEntity.RefPosition().x = m_seperation * i;
 

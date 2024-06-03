@@ -16,8 +16,8 @@ Caramel::Application::Application()
     s_application = this;
 
     WindowProperties props{};
-    std::string foundAPI;
     props.RenderAPI = WindowRenderAPI::OpenGL; // Default as its cross platform
+    std::string foundAPI;
     if (ArgumentParser::GetFlag("-gapi", &foundAPI))
     {
         if (foundAPI == "dx12")
@@ -26,7 +26,7 @@ Caramel::Application::Application()
         }
     }
     m_window.reset(Window::Create(props));
-    m_window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+    m_window->SetEventCallback(BIND_EVENT_FN(Application::OnWindowEvent));
     RenderCommand::Init(m_window->GetRenderer());
 
     m_imGuiLayer = new ImGuiLayer();
@@ -69,16 +69,16 @@ void Caramel::Application::Run()
     }
 }
 
-void Caramel::Application::OnEvent(Event& event)
+void Caramel::Application::OnWindowEvent(Event& event)
 {
     for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
     {
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<WindowCloseEvent>([&](WindowCloseEvent& closeEvent)
-        {
+            {
                 m_bIsRunning = false;
                 return true;
-        });
+            });
 
         (*--it)->OnEvent(event);
         if (event.Handled)

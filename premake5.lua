@@ -135,48 +135,6 @@ project "Caramel"
 			"dxgi.lib"
 		}
 
-project "Sugar"
-	location "Sugar"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++latest"
-	staticruntime "on"
-
-	targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
-	}
-
-	includedirs
-	{
-		"%{prj.name}/Source",
-		"Caramel/Source",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.glad}",
-		--"Caramel/deps/spdlog/include",
-		"%{IncludeDir.imgui}",
-		--"Caramel/deps",
-		--"%{IncludeDir.glm}"
-		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.assimp}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.magic_enum}",
-		"%{IncludeDir.entt}",
-		"%{IncludeDir.conf}",
-		"%{IncludeDir.conf_assimp}",
-	}
-
-	links
-	{
-		"Caramel",
-		"ImGui",
-		"glad"
-	}
-
 project "Game"
 	location "Game"
 	kind "ConsoleApp"
