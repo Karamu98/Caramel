@@ -14,7 +14,7 @@ namespace Caramel
         virtual ~Application();
 
         void Run();
-        void OnEvent(Event& event);
+        void OnWindowEvent(Event& event);
 
         void TrackLayer(Layer* layer);
         void TrackOverlay(Layer* overlay);
