@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/ImGui/ImGuiWindowImpl.h>
+#include <Caramel/ImGui/ImGuiWindowImpl.h>
 
 #include <GLFW/glfw3.h>
 

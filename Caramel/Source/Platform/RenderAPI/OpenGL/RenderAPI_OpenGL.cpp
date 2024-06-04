@@ -1,8 +1,8 @@
 #include "clpch.h"
 #include "RenderAPI_OpenGL.h"
-#include "Core/Window.h"
+#include "Caramel/Core/Window.h"
+#include "Caramel/Renderer/API/Buffer.h"
 
-#include "Core/RenderAPI/Buffer.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>

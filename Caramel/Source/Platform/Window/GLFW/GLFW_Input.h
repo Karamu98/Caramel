@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Input.h"
+#include "Caramel/Core/Input.h"
 
 namespace Caramel
 {

@@ -1,30 +1,31 @@
 ﻿#pragma once
 
-#include "Core/Core.h"
-#include "Core/ArgumentParser.h"
-#include "Core/Application.h"
-#include "Core/Layers/Layer.h"
-#include "Core/Log.h"
-#include "Core/Input.h"
+#include "Caramel/Core/Core.h"
+#include "Caramel/Core/ArgumentParser.h"
+#include "Caramel/Core/Application.h"
+#include "Caramel/Core/Layer.h"
+#include "Caramel/Core/Log.h"
+#include "Caramel/Core/Input.h"
 
-#include "Core/Events/KeyEvents.h"
-#include "Core/Events/MouseEvent.h"
+#include "Caramel/Events/KeyEvents.h"
+#include "Caramel/Events/MouseEvent.h"
 
-#include "Core/RenderAPI/RenderAPI.h"
-#include "Core/RenderAPI/Shader.h"
-#include "Core/RenderAPI/Texture.h"
-#include "Core/RenderAPI/Buffer.h"
-#include "Core/RenderAPI/ShaderDataType.h"
-#include "Core/Renderer.h"
-#include "Core/Renderer/Camera.h"
+#include "Caramel/Renderer/API/RenderAPI.h"
+#include "Caramel/Renderer/API/Shader.h"
+#include "Caramel/Renderer/API/Texture.h"
+#include "Caramel/Renderer/API/Buffer.h"
+#include "Caramel/Renderer/API/ShaderDataType.h"
+#include "Caramel/Renderer/Renderer.h"
+#include "Caramel/Renderer/Camera.h"
 
-#include "Core/Renderer/Model.h"
+#include "Caramel/Renderer/Primitives/Model.h"
 
-#include "Core/ECS/Scene.h"
-#include "Core/ECS/Entity.h"
-#include "Core/ECS/Components.h"
+#include "Caramel/ECS/Scene.h"
+#include "Caramel/ECS/SceneManager.h"
+#include "Caramel/ECS/Entity.h"
+#include "Caramel/ECS/Components.h"
 
-#include "Core/Timestep.h"
+#include "Caramel/Core/Timestep.h"
 
 
 

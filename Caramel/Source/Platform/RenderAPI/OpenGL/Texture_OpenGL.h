@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/RenderAPI/Texture.h"
+#include "Caramel/Renderer/API/Texture.h"
 
 namespace Caramel
 {

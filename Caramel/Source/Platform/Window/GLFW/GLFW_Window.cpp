@@ -1,13 +1,12 @@
 #include "clpch.h"
 #include "GLFW_Window.h"
-#include "Core/Log.h"
-#include <Core/Events/ApplicationEvent.h>
-#include <Core/Events/KeyEvents.h>
-#include <Core/Events/MouseEvent.h>
-#include <Core/RenderAPI/RenderAPI.h>
-#include <Core/Input.h>
-
-#include <Platform/Window/GLFW/GLFW_Input.h>
+#include "Caramel/Core/Log.h"
+#include "Caramel/Core/Input.h"
+#include "Caramel/Events/ApplicationEvent.h"
+#include "Caramel/Events/KeyEvents.h"
+#include "Caramel/Events/MouseEvent.h"
+#include "Caramel/Renderer/API/RenderAPI.h"
+#include "Platform/Window/GLFW/GLFW_Input.h"
 
 // TODO: IFDEF
 #include <GLFW/glfw3.h>

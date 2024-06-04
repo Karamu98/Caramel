@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/ImGui/ImGuiRendererImpl.h>
+#include <Caramel/ImGui/ImGuiRendererImpl.h>
 
 namespace Caramel
 {

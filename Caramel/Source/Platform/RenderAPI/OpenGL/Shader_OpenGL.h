@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/RenderAPI/Shader.h"
+#include "Caramel/Renderer/API/Shader.h"
 
 
 namespace Caramel

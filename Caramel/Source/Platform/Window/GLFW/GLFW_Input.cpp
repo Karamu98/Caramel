@@ -1,7 +1,7 @@
 #include "clpch.h"
 #include "GLFW_Input.h"
+#include "Caramel/Core/Application.h"
 
-#include "Core/Application.h"
 #include <GLFW/glfw3.h>
 
 namespace Caramel

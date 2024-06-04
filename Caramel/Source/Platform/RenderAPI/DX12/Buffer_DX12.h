@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/RenderAPI/Buffer.h>
+#include "Caramel/Renderer/API/Buffer.h"
 
 namespace Caramel
 {

@@ -21,6 +21,6 @@
 
 #include <imgui.h>
 
-#include <Core/Log.h>
-#include <Core/UUID.h>
-#include <Core/Timestep.h>
+#include "Caramel/Core/Log.h"
+#include "Caramel/Core/UUID.h"
+#include "Caramel/Core/Timestep.h"
