@@ -1,0 +1,4 @@
+Modules:
+	Being the S in ECS, instead of virtual Update functions, define update(s) for a module
+	- Dependancy graphing - .DGML
+	- Threading
