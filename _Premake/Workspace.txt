@@ -1,0 +1,53 @@
+LUA Project Structure
+
+Core.Lua
+	.Utils = Utils.lua.NameSpace // This is a namespace of free functions in a single lua files
+	.FProjectCommon = NameSpace.lua.function()  // This is a lua file that contains a single function (denoted F)
+
+
+
+Engine (Common workspace)
+	Components
+		Project (.lua)
+	Premake5.lua (Compilation Ordered)
+
+
+// All project/components have Common Workspace (Debug/Release/Dist + WindowsEditor64/WindowsGame64)
+Project/Component
+	Bin (Generated)
+	Int (Generated)
+	Source (All .h/.cpp)
+	Premake5.lua
+
+ProjectName IS ComponentName
+
+
+
+
+
+StaticComponent (static lib)
+	Project/Component
+	Bin (Generated)
+	Int (Generated)
+	Source (All .h/.cpp)
+	Premake5.lua
+
+
+EngineCore (static lib)
+This is a StaticComponent wrangler and configurer
+Collection of StaticComponent
+	RTTI
+	MathLib
+	RayLib???
+
+Client (exe)
+All platform code lives here
+Includes engine and whatever components its made of
+GenericDeclares
+{
+	SaveLoad<T>From<Y>
+}
+
+Editor (exe)
+Includes Client
+Systems to author ClientData exist here
